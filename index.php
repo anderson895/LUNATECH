@@ -1,3 +1,11 @@
+<?php
+
+session_start();
+echo "<pre>";
+print_r($_SESSION);
+echo "</pre>";
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,13 +41,13 @@
     <form id="frmLogin" class="space-y-4 sm:space-y-5">
       <div>
         <label for="username" class="block text-sm font-semibold text-gray-700">Username</label>
-        <input type="text" id="username" name="username" required
+        <input type="text" id="username" name="username" 
                class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
       </div>
 
       <div>
         <label for="password" class="block text-sm font-semibold text-gray-700">Password</label>
-        <input type="password" id="password" name="password" required
+        <input type="password" id="password" name="password" 
                class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
       </div>
 
@@ -53,6 +61,6 @@
     </form>
   </div>
 
-  <script src="js/app.js"></script>
+  <script src="assets/js/app.js"></script>
 </body>
 </html>
