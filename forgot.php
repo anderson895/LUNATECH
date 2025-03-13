@@ -23,36 +23,30 @@
       </div>
     </div>
 
-    <!-- Logo -->
-    <div class="flex justify-center mb-5 sm:mb-6">
-      <img src="assets/images/logo/business_logo.jpeg" alt="Adornasia" class="w-20 h-20 sm:w-24 sm:h-24 object-contain rounded-full shadow-md">
-    </div>
-
-    <h2 class="text-2xl sm:text-3xl font-extrabold text-center text-gray-800 mb-5">NDG Company</h2>
-
-    <form id="frmLogin" class="space-y-4 sm:space-y-5">
+    
+    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Forgot Password</h2>
+    
+    <p class="text-sm text-gray-600 text-center mb-4">
+      Enter your email address below, and we'll send you a link to reset your password.
+    </p>
+    
+    <form id="frmForgotPassword" class="space-y-6">
       <div>
-        <label for="username" class="block text-sm font-semibold text-gray-700">Username</label>
-        <input type="text" id="username" name="username" required
-               class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+        <input type="email" id="email" name="email" class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-indigo-500" required>
       </div>
 
-      <div>
-        <label for="password" class="block text-sm font-semibold text-gray-700">Password</label>
-        <input type="password" id="password" name="password" required
-               class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-      </div>
-
-     
-
-      <div>
-        <button type="submit" id="btnLogin" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-md text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200">
-          Sign in
-        </button>
-      </div>
+      <button type="submit" id="btnForgotPassword" class="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75">
+        Request New Password
+      </button>
     </form>
-  </div>
 
-  <script src="js/app.js"></script>
+    <p class="mt-6 text-center text-sm text-gray-600">
+      Remembered your password? <a href="login.php" class="text-indigo-600 hover:text-indigo-500">Sign In</a>
+    </p>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
 </body>
 </html>
