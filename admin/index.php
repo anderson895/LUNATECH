@@ -17,22 +17,22 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
     <!-- Card for Total Customer -->
     <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
-        <img src="assets/service.png" alt="students icon" class="mb-4 w-12 max-w-full" />
-        <h3 class="text-gray-700 font-semibold text-lg">Total Customer</h3>
+        <img src="assets/image/management.png" alt="students icon" class="mb-4 w-12 max-w-full" />
+        <h3 class="text-gray-700 font-semibold text-lg">No of user</h3>
         <p class="text-blue-500 text-2xl font-bold count_users">3</p>
     </div>
 
     <!-- Card for Total Sales -->
     <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
-        <img src="assets/sales.png" alt="students icon" class="mb-4 w-12 max-w-full" />
-        <h3 class="text-gray-700 font-semibold text-lg">Total Sales</h3>
+        <img src="assets/image/business.png" alt="students icon" class="mb-4 w-12 max-w-full" />
+        <h3 class="text-gray-700 font-semibold text-lg">Total Branch</h3>
         <p class="text-blue-500 text-2xl font-bold totalSales">0</p>
     </div>
 
     <!-- Card for No of Orders -->
     <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
-        <img src="assets/cargo.png" alt="students icon" class="mb-4 w-12 max-w-full" />
-        <h3 class="text-gray-700 font-semibold text-lg">No of Orders</h3>
+        <img src="assets/image/financial-profit.png" alt="students icon" class="mb-4 w-12 max-w-full" />
+        <h3 class="text-gray-700 font-semibold text-lg">Total Sales</h3>
         <p class="text-blue-500 text-2xl font-bold numOrders" id="numOrders">0</p>
     </div>
 </div>
@@ -71,44 +71,8 @@
     </div>
 </div>
 
-<!-- Horizontal Scrollable Cards for Product Categories -->
-<div class="mt-8">
-    
 
 
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full mx-auto justify-center">
-    <!-- Best Selling Products Card -->
-    <a href="product.php">
-        <h3 class='text-center text-gray-700 font-semibold text-lg mb-4'>Top 5 Best Selling Products</h3>
-        <div class="bg-white p-6 rounded-lg shadow-lg w-full h-96 overflow-y-auto hide-scrollbar" id="bestSellingProducts">
-            <!-- Content goes here -->
-        </div>
-    </a>
-
-    <!-- New Products Card -->
-    <a href="product.php">
-        <h3 class='text-center text-gray-700 font-semibold text-lg mb-4'>Top 5 New Products</h3>
-        <div class="bg-white p-6 rounded-lg shadow-lg w-full h-96 overflow-y-auto hide-scrollbar" id="NewProduct">
-            <!-- Content goes here -->
-        </div>
-    </a>
-
-    <!-- Inventory Status Low Stock Card -->
-    <a href="product.php">
-        <h3 class='text-center text-gray-700 font-semibold text-lg mb-4'>Stock Status (Low Stocks)</h3>
-        <div class="bg-white p-6 rounded-lg shadow-lg w-full h-96 overflow-y-auto hide-scrollbar" id="stock_status">
-            <!-- Content goes here -->
-        </div>
-    </a>
-
-    <!-- Empty Column for Layout Consistency -->
-    <a href="customer.php">
-        <h3 class='text-center text-gray-700 font-semibold text-lg mb-4'>Top 5 Customers</h3>
-        <div class="bg-white p-6 rounded-lg shadow-lg w-full h-96 overflow-y-auto hide-scrollbar" id="top_customer">
-            <!-- Content goes here -->
-        </div>
-    </a>
-</div>
 
 
 
