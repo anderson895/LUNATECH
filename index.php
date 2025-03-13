@@ -1,10 +1,31 @@
 <?php
-
 session_start();
-echo "<pre>";
-print_r($_SESSION);
-echo "</pre>";
+include('backend/class.php');
+
+$db = new global_class();
+
+if (isset($_SESSION['id'])) {
+    $id = intval($_SESSION['id']);
+
+   
+    $On_Session = $db->check_account($id);
+
+
+  
+    if (isset($On_Session)) {
+        if($_SESSION['user_type']=="admin"){
+          header('location: admin/');
+        }else if($_SESSION['user_type']=="branch_manager"){
+          header('location: index');
+        }
+    } else {
+       header('location: branch_manager/');
+    }
+} 
 ?>
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -24,12 +45,12 @@ echo "</pre>";
 
   <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-6 sm:p-8 relative">
     
-    <!-- Spinner -->
-    <div id="spinner" style="display:none;">
-      <div class="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center">
-        <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    </div>
+     <!-- Spinner -->
+     <div class="spinner" id="spinner" style="display:none;">
+                <div class="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center">
+                    <div class="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            </div>
 
     <!-- Logo -->
     <div class="flex justify-center mb-5 sm:mb-6">

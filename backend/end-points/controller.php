@@ -34,9 +34,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         // Determine the redirect path based on user_type
                         $redirectPath = '';
                         if ($user['user_type'] === 'admin') {
-                            $redirectPath = 'admin/index';
+                            $redirectPath = 'admin/';
                         } elseif ($user['user_type'] === 'branch_manager') {
-                            $redirectPath = 'branch_manager/index';
+                            $redirectPath = 'branch_manager/';
                         }
 
                         echo json_encode([
