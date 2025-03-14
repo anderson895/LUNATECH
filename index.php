@@ -14,7 +14,7 @@ if (isset($_SESSION['id'])) {
   
     if (isset($On_Session)) {
         if($_SESSION['user_type']=="admin"){
-          header('location: admin/');
+          header('location: admin/dashboard');
         }else if($_SESSION['user_type']=="branch_manager"){
           header('location: index');
         }
