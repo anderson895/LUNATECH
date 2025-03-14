@@ -68,33 +68,37 @@ if (isset($_SESSION['id'])) {
           <span>Dashboard</span>
       </a>
 
+      <a href="users" class="flex items-center lg:justify-start space-x-3 text-gray-600 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
+          <span class="material-icons">manage_accounts</span>
+          <span>Manage users</span>
+      </a>
 
       
-      <a href="customer.php" class="flex items-center lg:justify-start space-x-3 text-gray-600 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
+      <a href="branches" class="flex items-center lg:justify-start space-x-3 text-gray-600 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
           <span class="material-icons">add_business</span>
           <span>Manage branches</span>
       </a>
 
 
-      <a href="product.php" class="flex items-center lg:justify-start  space-x-3 text-gray-600 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
+      <a href="inventory" class="flex items-center lg:justify-start  space-x-3 text-gray-600 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
           <span class="material-icons">store</span>
           <span>Inventory</span>
       </a>
 
 
-      <a href="report.php" class="flex items-center lg:justify-start  space-x-3 text-gray-600 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
+      <a href="report" class="flex items-center lg:justify-start  space-x-3 text-gray-600 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
           <span class="material-icons">description</span>
           <span>Reports</span>
       </a>
 
-      <a href="user_role.php" class="flex items-center lg:justify-start  space-x-3 text-gray-600 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
+      <a href="sales" class="flex items-center lg:justify-start  space-x-3 text-gray-600 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
             <span class="material-icons">point_of_sale</span>
 
           <span>Sales</span>
       </a>
 
 
-      <a href="user_role.php" class="flex items-center lg:justify-start  space-x-3 text-gray-600 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
+      <a href="settings" class="flex items-center lg:justify-start  space-x-3 text-gray-600 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
             <span class="material-icons">admin_panel_settings</span>
 
           <span>Settings</span>
