@@ -57,7 +57,56 @@
 
 
 
+<!-- Modal for Adding Promo -->
+<div id="updateUserModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center" style="display:none;">
+    <div class="bg-white rounded-lg shadow-lg w-96 p-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Update Information</h3>
+        <form id="updateuserForm">
 
+            <div hidden class="mb-4">
+                <label for="update_id" class="block text-sm font-medium text-gray-700">ID</label>
+                <input type="text" id="update_id" name="update_id" class="w-full p-2 border rounded-md" required>
+            </div>
+
+
+            <div class="mb-4">
+                <label for="update_user_fullname" class="block text-sm font-medium text-gray-700">Fullname</label>
+                <input type="text" id="update_user_fullname" name="update_user_fullname" class="w-full p-2 border rounded-md" required>
+            </div>
+
+            <div class="mb-4">
+                <label for="update_user_username" class="block text-sm font-medium text-gray-700">User Name</label>
+                <input type="text" id="update_user_username" name="update_user_username" class="w-full p-2 border rounded-md" required>
+            </div>
+
+            <div class="mb-4">
+                <label for="update_user_email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="text" id="update_user_email" name="update_user_email" class="w-full p-2 border rounded-md" required>
+            </div>
+            
+            <div class="mb-4">
+                <label for="update_admin_password" class="block text-sm font-medium text-gray-700">New Password</label>
+                <input type="text" id="update_admin_password" name="update_admin_password" class="w-full p-2 border rounded-md" required>
+            </div>
+
+            
+            <div class="mb-4">
+                <label for="update_user_type" class="block text-sm font-medium text-gray-700">Position</label>
+                <select name="update_user_type" id="update_user_type" class="w-full p-2 border rounded-md" required>
+                    <option value="branch Manager">Branch Manager</option>
+                    <option value="general Manager">General Manager</option>
+                    <option value="admin">Administrator</option>
+                </select>
+            </div>
+
+
+            <div class="flex justify-end gap-2">
+                <button type="button" class="togglerUpdateUserClose bg-gray-500 hover:bg-gray-600 text-white py-1 px-3 rounded-md">Cancel</button>
+                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-md">Update</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 
 
@@ -99,8 +148,9 @@
             <div class="mb-4">
                 <label for="user_type" class="block text-sm font-medium text-gray-700">Position</label>
                 <select name="user_type" id="user_type" class="w-full p-2 border rounded-md" required>
-                    <option value="Branch Manager">Branch Manager</option>
-                    <option value="General Manager">General Manager</option>
+                    <option value="branch Manager">Branch Manager</option>
+                    <option value="general Manager">General Manager</option>
+                    <option value="admin">Administrator</option>
                    
                 </select>
             </div>

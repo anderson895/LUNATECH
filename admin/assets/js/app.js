@@ -1,3 +1,35 @@
+$('.togglerUpdateUserAdmin').click(function (e) { 
+    var id =$(this).data('id');
+    var user_fullname =$(this).data('user_fullname');
+    var user_email =$(this).data('user_email');
+    var user_username =$(this).data('user_username');
+    var user_type =$(this).data('user_type');
+
+
+    $('#update_id').val(id)
+    $('#update_user_fullname').val(user_fullname)
+    $('#update_user_username').val(user_username)
+    $('#update_user_email').val(user_email)
+    $('#update_user_type').val(user_type)
+   
+    
+    e.preventDefault();
+    $('#updateUserModal').fadeIn();
+  });  
+
+  $('.togglerUpdateUserClose').click(function (e) { 
+    e.preventDefault();
+    $('#updateUserModal').fadeOut();
+  });  
+
+
+
+
+
+
+
+
+
 $('#adduserButton').click(function (e) { 
     e.preventDefault();
     $('#addUserModal').fadeIn();

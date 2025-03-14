@@ -17,6 +17,8 @@ if ($fetch_all_user): ?>
                 data-id="<?=$user['id']?>"
                 data-user_username="<?=$user['user_username']?>"
                 data-user_fullname="<?=$user['user_fullname']?>"
+                data-user_email="<?=$user['user_email']?>"
+                data-user_type="<?=$user['user_type']?>"
                 >Update</button>
                 <button class="bg-red-500 text-white py-1 px-3 rounded-md togglerDeleteUserAdmin" data-id=<?=$user['id']?>>Delete</button>
             </td>
