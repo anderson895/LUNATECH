@@ -30,24 +30,39 @@ class global_class extends db_connect
 
 
     public function Adduser($user_fullname, $user_email, $user_username, $user_password, $user_type) {
-        // Hash the password using the default PHP hash algorithm (BCRYPT)
+        // Check if email or username already exists
+        $check_query = $this->conn->prepare("SELECT user_email, user_username FROM `user` WHERE user_email = ? OR user_username = ?");
+        $check_query->bind_param("ss", $user_email, $user_username);
+        $check_query->execute();
+        $result = $check_query->get_result();
+    
+        if ($row = $result->fetch_assoc()) {
+            if ($row['user_email'] === $user_email && $row['user_username'] === $user_username) {
+                return 'Both Email and Username already exist!';
+            } elseif ($row['user_email'] === $user_email) {
+                return 'Email already exists!';
+            } elseif ($row['user_username'] === $user_username) {
+                return 'Username already exists!';
+            }
+        }
+    
+        // Hash the password
         $hashed_password = password_hash($user_password, PASSWORD_DEFAULT);
     
-        // Prepare the SQL query
+        // Insert user data
         $query = $this->conn->prepare(
             "INSERT INTO `user` (`user_fullname`, `user_username`, `user_email`, `user_password`, `user_type`) VALUES (?, ?, ?, ?, ?)"
-        );  
-    
-        // Bind parameters (s = string)
+        );
         $query->bind_param("sssss", $user_fullname, $user_username, $user_email, $hashed_password, $user_type);
     
-        // Execute the query and check for success
         if ($query->execute()) {
             return 'success';
         } else {
             return 'Error: ' . $query->error;
         }
     }
+    
+    
     
 
 

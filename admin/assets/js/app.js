@@ -12,29 +12,47 @@ $('#adduserButton').click(function (e) {
 
 
 
-  $("#adduserForm").submit(function (e) {
-    e.preventDefault();
+  $(document).ready(function () {
+    $("#adduserForm").submit(function (e) {
+        e.preventDefault();
+
+
+        $('.spinner').show();
+        $('#btnAdduser').prop('disabled', true);
     
-    var formData = $(this).serializeArray();
-    formData.push({ name: 'requestType', value: 'Adduser' });
-    var serializedData = $.param(formData);
-  
-    $.ajax({
-      type: "POST",
-      url: "backend/end-points/controller.php",
-      data: serializedData,
-      success: function (response) {
-        if (response == "200") {
-          alertify.success('Added Successful');
-          $('#addUserModal').fadeOut();
-          setTimeout(function () {
-            location.reload(); 
-          }, 1000); 
-        } else {
-          console.log(response);
-          alertify.error('Added Failed. Please check the details.');
-        }
-      },
+        var formData = new FormData(this); // Use FormData for better handling
+        var formData = new FormData(this); // Use FormData for better handling
+        formData.append('requestType', 'Adduser'); // Append request type
+        $.ajax({
+            type: "POST",
+            url: "backend/end-points/controller.php",
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: "json", // Expect JSON response
+            beforeSend: function () {
+                $("#submitBtn").prop("disabled", true).text("Processing...");
+            },
+            success: function (response) {
+                console.log(response); // Debugging
+                
+                if (response.status === 200) {
+                    alertify.success(response.message);
+                    setTimeout(function () { location.reload(); }, 1000);
+                } else {
+                    $('.spinner').hide();
+                    $('#btnAdduser').prop('disabled', false);
+                    alertify.error(response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error:", xhr.responseText); // Log detailed error response
+                alertify.error("Something went wrong. Please try again.");
+            },
+            complete: function () {
+                $("#submitBtn").prop("disabled", false).text("Submit");
+            }
+        });
     });
     
-  });
+});

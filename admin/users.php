@@ -67,6 +67,13 @@
     <div class="bg-white rounded-lg shadow-lg w-96 p-6">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">Add New User</h3>
         <form id="adduserForm">
+            
+            <!-- Spinner -->
+            <div class="spinner" id="spinner" style="display:none;">
+                <div class="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center">
+                    <div class="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            </div>
 
             <div class="mb-4">
                 <label for="user_fullname" class="block text-sm font-medium text-gray-700">Fullname</label>
@@ -85,22 +92,23 @@
             
             <div class="mb-4">
                 <label for="user_password" class="block text-sm font-medium text-gray-700">Password</label>
-                <input type="text" id="user_password" name="user_password" class="w-full p-2 border rounded-md" required>
+                <input type="password" id="user_password" name="user_password" class="w-full p-2 border rounded-md" required>
             </div>
 
 
             <div class="mb-4">
                 <label for="user_type" class="block text-sm font-medium text-gray-700">Position</label>
                 <select name="user_type" id="user_type" class="w-full p-2 border rounded-md" required>
-                    <option value="General Manager">General Manager</option>
                     <option value="Branch Manager">Branch Manager</option>
+                    <option value="General Manager">General Manager</option>
+                   
                 </select>
             </div>
 
 
             <div class="flex justify-end gap-2">
                 <button type="button" class="addUserModalClose bg-gray-500 hover:bg-gray-600 text-white py-1 px-3 rounded-md">Cancel</button>
-                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-md">Add new</button>
+                <button id="btnAdduser" type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-md">Add new</button>
             </div>
         </form>
     </div>
