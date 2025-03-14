@@ -27,4 +27,44 @@ class global_class extends db_connect
         }
         return $items; 
     }
+
+
+    public function Adduser($user_fullname, $user_email, $user_username, $user_password, $user_type) {
+        // Hash the password using the default PHP hash algorithm (BCRYPT)
+        $hashed_password = password_hash($user_password, PASSWORD_DEFAULT);
+    
+        // Prepare the SQL query
+        $query = $this->conn->prepare(
+            "INSERT INTO `user` (`user_fullname`, `user_username`, `user_email`, `user_password`, `user_type`) VALUES (?, ?, ?, ?, ?)"
+        );  
+    
+        // Bind parameters (s = string)
+        $query->bind_param("sssss", $user_fullname, $user_username, $user_email, $hashed_password, $user_type);
+    
+        // Execute the query and check for success
+        if ($query->execute()) {
+            return 'success';
+        } else {
+            return 'Error: ' . $query->error;
+        }
+    }
+    
+
+
+
+    public function fetch_all_user(){
+        $query = $this->conn->prepare("SELECT * FROM `user` where user_status='1'");
+
+        if ($query->execute()) {
+            $result = $query->get_result();
+            return $result;
+        }
+    }
+
+
+
+
+
+
+
 }
