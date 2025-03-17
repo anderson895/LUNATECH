@@ -3,6 +3,7 @@
 
 <?php include "components/header.php";?>
 
+
 <!-- Top bar with user profile -->
 <div class="flex justify-between items-center bg-white p-4 mb-6 rounded-md shadow-md">
     <h2 class="text-lg font-semibold text-gray-700">Manage Users</h2>
@@ -62,7 +63,13 @@
     <div class="bg-white rounded-lg shadow-lg w-96 p-6">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">Update Information</h3>
         <form id="updateuserForm">
-
+            <!-- Spinner -->
+            <div class="spinner" id="spinner" style="display:none;">
+                <div class="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center">
+                    <div class="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            </div>
+            
             <div hidden class="mb-4">
                 <label for="update_id" class="block text-sm font-medium text-gray-700">ID</label>
                 <input type="text" id="update_id" name="update_id" class="w-full p-2 border rounded-md" required>
@@ -85,8 +92,8 @@
             </div>
             
             <div class="mb-4">
-                <label for="update_admin_password" class="block text-sm font-medium text-gray-700">New Password</label>
-                <input type="text" id="update_admin_password" name="update_admin_password" class="w-full p-2 border rounded-md" >
+                <label for="update_user_password" class="block text-sm font-medium text-gray-700">New Password</label>
+                <input type="text" id="update_user_password" name="update_user_password" class="w-full p-2 border rounded-md" >
             </div>
 
             
@@ -101,7 +108,7 @@
 
             <div class="flex justify-end gap-2">
                 <button type="button" class="togglerUpdateUserClose bg-gray-500 hover:bg-gray-600 text-white py-1 px-3 rounded-md">Cancel</button>
-                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-md">Update</button>
+                <button type="submit" id="btnUpdateuser" class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-md">Update</button>
             </div>
         </form>
     </div>

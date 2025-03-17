@@ -33,9 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         // Determine the redirect path based on user_type
                         $redirectPath = '';
-                        if ($user['user_type'] === 'admin') {
+                        if ($user['user_type'] === 'Administrator'||$user['user_type'] === 'General Manager') {
                             $redirectPath = 'admin/dashboard';
-                        } elseif ($user['user_type'] === 'branch_manager') {
+                        } elseif ($user['user_type'] === 'Branch Manager') {
                             $redirectPath = 'branch_manager/';
                         }
 

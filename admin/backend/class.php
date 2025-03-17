@@ -12,21 +12,71 @@ class global_class extends db_connect
     }
 
     public function check_account($id) {
-
         $id = intval($id);
-    
-        $query = "SELECT * FROM user WHERE id = $id";
-    
-        $result = $this->conn->query($query);
+        $query = "SELECT * FROM user WHERE id = ?";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
     
         $items = [];
-        if ($result && $result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $items[] = $row;
+        while ($row = $result->fetch_assoc()) {
+            $items[] = $row;
+        }
+        
+        return $items;
+    }
+    
+    public function Updateuser($user_id, $user_fullname, $user_email, $user_username, $user_password, $user_type) {
+        // Check if the account exists
+        $this->check_account($user_id);
+    
+        // Check if email or username already exists for another user
+        $check_query = $this->conn->prepare(
+            "SELECT user_email, user_username FROM `user` WHERE (user_email = ? OR user_username = ?) AND id != ?"
+        );
+        $check_query->bind_param("ssi", $user_email, $user_username, $user_id);
+        $check_query->execute();
+        $result = $check_query->get_result();
+    
+        if ($row = $result->fetch_assoc()) {
+            if ($row['user_email'] === $user_email && $row['user_username'] === $user_username) {
+                return 'Both Email and Username already exist!';
+            } elseif ($row['user_email'] === $user_email) {
+                return 'Email already exists!';
+            } elseif ($row['user_username'] === $user_username) {
+                return 'Username already exists!';
             }
         }
-        return $items; 
+    
+        // Prepare dynamic update query
+        $update_fields = "user_fullname = ?, user_username = ?, user_email = ?, user_type = ?";
+        $params = [$user_fullname, $user_username, $user_email, $user_type];
+        $types = "ssss"; // String types
+    
+        if (!empty($user_password)) {
+            $update_fields .= ", user_password = ?";
+            $hashed_password = password_hash($user_password, PASSWORD_DEFAULT);
+            $params[] = $hashed_password;
+            $types .= "s";
+        }
+    
+        $update_fields .= " WHERE id = ?";
+        $params[] = $user_id;
+        $types .= "i"; // Integer type for ID
+    
+        $query = $this->conn->prepare("UPDATE `user` SET $update_fields");
+        $query->bind_param($types, ...$params);
+    
+        if ($query->execute()) {
+            return 'success';
+        } else {
+            return 'Error: ' . $query->error;
+        }
     }
+    
+    
 
 
     public function Adduser($user_fullname, $user_email, $user_username, $user_password, $user_type) {
@@ -61,6 +111,11 @@ class global_class extends db_connect
             return 'Error: ' . $query->error;
         }
     }
+    
+
+
+
+    
     
     
     

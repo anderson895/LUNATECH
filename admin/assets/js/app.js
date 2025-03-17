@@ -53,7 +53,6 @@ $('#adduserButton').click(function (e) {
         $('#btnAdduser').prop('disabled', true);
     
         var formData = new FormData(this); // Use FormData for better handling
-        var formData = new FormData(this); // Use FormData for better handling
         formData.append('requestType', 'Adduser'); // Append request type
         $.ajax({
             type: "POST",
@@ -80,6 +79,47 @@ $('#adduserButton').click(function (e) {
             error: function (xhr, status, error) {
                 console.error("AJAX Error:", xhr.responseText); // Log detailed error response
                 alertify.error("Something went wrong. Please try again.");
+            },
+            complete: function () {
+                $("#submitBtn").prop("disabled", false).text("Submit");
+            }
+        });
+    });
+
+
+
+
+
+    $("#updateuserForm").submit(function (e) {
+        e.preventDefault();
+
+
+        $('.spinner').show();
+        $('#btnUpdateuser').prop('disabled', true);
+    
+        var formData = new FormData(this); // Use FormData for better handling
+        formData.append('requestType', 'Updateuser'); // Append request type
+        $.ajax({
+            type: "POST",
+            url: "backend/end-points/controller.php",
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: "json", // Expect JSON response
+            beforeSend: function () {
+                $("#submitBtn").prop("disabled", true).text("Processing...");
+            },
+            success: function (response) {
+                console.log(response); // Debugging
+                
+                if (response.status === 200) {
+                    alertify.success(response.message);
+                    setTimeout(function () { location.reload(); }, 1000);
+                } else {
+                    $('.spinner').hide();
+                    $('#btnUpdateuser').prop('disabled', false);
+                    alertify.error(response.message);
+                }
             },
             complete: function () {
                 $("#submitBtn").prop("disabled", false).text("Submit");
