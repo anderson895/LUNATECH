@@ -78,7 +78,6 @@ include "components/header.php";
                 </div>
             </div>
 
-
     </div>
 
 </div>
@@ -88,7 +87,7 @@ $(document).ready(function () {
     let cartItems = [];
 
     function fetchInventory() {
-        let searchValue = $('#searchInput').val().toLowerCase(); 
+        let searchValue = $('#searchInput').val().toLowerCase();
 
         $.ajax({
             url: 'backend/end-points/pos_list.php',
@@ -104,7 +103,7 @@ $(document).ready(function () {
     }
 
     setInterval(fetchInventory, 3000);
-    fetchInventory(); 
+    fetchInventory();
 
     $('#searchInput').on('keyup', function () {
         let value = $(this).val().toLowerCase();
@@ -124,7 +123,7 @@ $(document).ready(function () {
         // Populate the form fields
         $('#sale_prod_code').val(productCode);
         $('#sale_prod_name').val(productName); 
-        $('#sale_prod_id').val(productId); 
+        $('#sale_prod_id').val(productId);
 
         selectedProduct = {
             id: productId,
@@ -145,49 +144,61 @@ $(document).ready(function () {
             if (existingItemIndex >= 0) {
                 cartItems[existingItemIndex].quantity += selectedProduct.quantity;
             } else {
-                cartItems.push({...selectedProduct}); 
+                cartItems.push({...selectedProduct});
             }
 
-            let totalPrice = 0;
-            let cartItemsHtml = '';
-            cartItems.forEach(item => {
-                let subtotal = item.price * item.quantity;
-                totalPrice += subtotal;
-                cartItemsHtml += `
-                    <p>${item.name} (Code: ${item.id}) - ₱${item.price.toFixed(2)} x ${item.quantity} = ₱${subtotal.toFixed(2)}</p>
-                `;
-            });
-
-            $('#cartItemsList').html(cartItemsHtml); 
-            $('#cartItemCount').text(cartItems.length);
-            $('#cartTotalPrice').text(totalPrice.toFixed(2));
+            updateCart();
         }
     });
 
+    function updateCart() {
+        let totalPrice = 0;
+        let cartItemsHtml = '';
+        cartItems.forEach(item => {
+            let subtotal = item.price * item.quantity;
+            totalPrice += subtotal;
+            cartItemsHtml += `
+                <div class="cart-item flex justify-between items-center" data-id="${item.id}">
+                    <p>${item.name} (Code: ${item.id}) - ₱${item.price.toFixed(2)} x ${item.quantity} = ₱${subtotal.toFixed(2)}</p>
+                    <button class="removeItem text-red-500 hover:text-red-700" data-id="${item.id}">X</button>
+                </div>
+            `;
+        });
 
+        $('#cartItemsList').html(cartItemsHtml); 
+        $('#cartItemCount').text(cartItems.length);
+        $('#cartTotalPrice').text(totalPrice.toFixed(2));
+    }
 
+    // Remove item from cart using event delegation
+    $(document).on('click', '.removeItem', function () {
+        console.log('Remove item clicked');
+        let itemId = $(this).data('id');
+        console.log('Item ID to remove:', itemId); // Check the value of itemId
 
-
-
-
-
+        // Ensure itemId is treated as a string (it may be a number)
+        cartItems = cartItems.filter(item => String(item.id) !== String(itemId));
+        
+        // Update the cart display
+        updateCart();
+    });
 
     $('#btnPurchase').on('click', function () {
-    if (cartItems.length > 0) {
-        // Proceed to purchase logic, e.g., send data to backend or process payment
-        alert("Purchase successful! Total: ₱" + $('#cartTotalPrice').text());
-        // Optionally, clear the cart after purchase
-        cartItems = [];
-        $('#cartItemsList').html('');
-        $('#cartItemCount').text(0);
-        $('#cartTotalPrice').text('0.00');
-    } else {
-        alert("Your cart is empty. Please add items before purchasing.");
-    }
+        if (cartItems.length > 0) {
+            // Proceed to purchase logic, e.g., send data to backend or process payment
+            alert("Purchase successful! Total: ₱" + $('#cartTotalPrice').text());
+            // Optionally, clear the cart after purchase
+            cartItems = [];
+            $('#cartItemsList').html('');
+            $('#cartItemCount').text(0);
+            $('#cartTotalPrice').text('0.00');
+        } else {
+            alert("Your cart is empty. Please add items before purchasing.");
+        }
+    });
 });
 
 
-});
 </script>
 
 <?php include "components/footer.php"; ?>
