@@ -8,7 +8,7 @@ if (isset($_POST['query'])) {
     $query = $db->conn->prepare("
         SELECT prod_code, prod_name ,prod_id
         FROM products 
-        WHERE prod_code LIKE ? 
+        WHERE prod_code LIKE ? AND prod_status = 1
         LIMIT 10
     ");
     $likeSearch = "%" . $search . "%";
