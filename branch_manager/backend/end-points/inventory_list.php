@@ -8,6 +8,7 @@ if ($fetch_all_inventoryRecord->num_rows>0): ?>
     <?php foreach ($fetch_all_inventoryRecord as $inv):
         ?>
        <tr class="border-b hover:bg-gray-50 transition">
+                        <td class="p-4"><?=$inv['prod_code']?></td>
                         <td class="p-4"><?=$inv['prod_name']?></td>
                         <td class="p-4"><?=$inv['total_qty']?></td>
                         <td class="p-4"><?=$inv['total_sold']?></td>

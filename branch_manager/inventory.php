@@ -26,6 +26,7 @@ include "components/header.php";
             <table class="w-full text-left border-collapse shadow-sm rounded-lg" id="inventoryTable">
                 <thead>
                     <tr class="bg-gray-100 text-gray-700 border-b">
+                        <th class="p-3 w-1/4 font-medium">Code</th>
                         <th class="p-3 w-1/4 font-medium">Item</th>
                         <th class="p-3 w-1/4 font-medium">Current Stocks</th>
                         <th class="p-3 w-1/4 font-medium">Sold</th>
