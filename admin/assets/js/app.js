@@ -1,3 +1,114 @@
+
+
+$('.togglerDeleteUserAdmin').click(function (e) { 
+    e.preventDefault();
+    var id = $(this).data('id');
+    console.log(id);
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'You won\'t be able to revert this!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "backend/end-points/controller.php",
+                type: 'POST',
+                data: { user_id: id, requestType: 'DeleteUser' },
+                dataType: 'json',  // Expect a JSON response
+                success: function(response) {
+                    if (response.status === 200) {
+                        Swal.fire(
+                            'Deleted!',
+                            response.message,  // Show the success message from the response
+                            'success'
+                        ).then(() => {
+                            location.reload(); 
+                        });
+                    } else {
+                        Swal.fire(
+                            'Error!',
+                            response.message,  // Show the error message from the response
+                            'error'
+                        );
+                    }
+                },
+                error: function() {
+                    Swal.fire(
+                        'Error!',
+                        'There was a problem with the request.',
+                        'error'
+                    );
+                }
+            });
+        }
+    });
+});
+
+
+
+
+
+
+$('.togglerDeleteBranch').click(function (e) { 
+    e.preventDefault();
+    var branchId = $(this).data('branch_id');
+    console.log(branchId);
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'You won\'t be able to revert this!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "backend/end-points/controller.php",
+                type: 'POST',
+                data: { branch_id: branchId, requestType: 'deletebranch' },
+                dataType: 'json',  // Expect a JSON response
+                success: function(response) {
+                    if (response.status === 200) {
+                        Swal.fire(
+                            'Deleted!',
+                            response.message,  // Show the success message from the response
+                            'success'
+                        ).then(() => {
+                            location.reload(); 
+                        });
+                    } else {
+                        Swal.fire(
+                            'Error!',
+                            response.message,  // Show the error message from the response
+                            'error'
+                        );
+                    }
+                },
+                error: function() {
+                    Swal.fire(
+                        'Error!',
+                        'There was a problem with the request.',
+                        'error'
+                    );
+                }
+            });
+        }
+    });
+});
+
+
+
+
+
+
+
+
+
 $('.togglerUpdateBranch').click(function (e) { 
     var branch_id = $(this).data('branch_id');
     var branch_code = $(this).data('branch_code');
@@ -146,10 +257,6 @@ $(document).ready(function () {
                         $('#btnAddBranches').prop('disabled', false);
                         alertify.error(response.message);
                     }
-                },
-                error: function (xhr, status, error) {
-                    console.error("AJAX Error:", xhr.responseText); // Log detailed error response
-                    alertify.error("Something went wrong. Please try again.");
                 },
                 complete: function () {
                     $("#btnAddBranches").prop("disabled", false).text("Submit");

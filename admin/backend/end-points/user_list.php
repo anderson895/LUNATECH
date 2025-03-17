@@ -2,7 +2,7 @@
 
 $fetch_all_user = $db->fetch_all_user();
 
-if ($fetch_all_user): ?>
+if ($fetch_all_user->num_rows>0): ?>
     <?php foreach ($fetch_all_user as $user):
         ?>
         <tr>
@@ -20,7 +20,7 @@ if ($fetch_all_user): ?>
                 data-user_email="<?=$user['user_email']?>"
                 data-user_type="<?=$user['user_type']?>"
                 >Update</button>
-                <button class="bg-red-500 text-white py-1 px-3 rounded-md togglerDeleteUserAdmin" data-id=<?=$user['id']?>>Delete</button>
+                <button class="bg-red-500 text-white py-1 px-3 rounded-md togglerDeleteUserAdmin" data-id=<?=$user['id']?>>Remove</button>
             </td>
         </tr>
     <?php endforeach; ?>

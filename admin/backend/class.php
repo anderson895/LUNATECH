@@ -133,6 +133,39 @@ class global_class extends db_connect
     }
 
 
+
+    public function deletebranch($branch_id) {
+        $status = 0; 
+        
+        $query = $this->conn->prepare(
+            "UPDATE `branches` SET `branch_status` = ? WHERE `branch_id` = ?"
+        );
+        $query->bind_param("is", $status, $branch_id);
+        
+        if ($query->execute()) {
+            return 'success';
+        } else {
+            return 'Error: ' . $query->error;
+        }
+    }
+    
+    public function DeleteUser($user_id) {
+        $status = 0; 
+        
+        $query = $this->conn->prepare(
+            "UPDATE `user` SET `user_status` = ? WHERE `id` = ?"
+        );
+        $query->bind_param("is", $status, $user_id);
+        
+        if ($query->execute()) {
+            return 'success';
+        } else {
+            return 'Error: ' . $query->error;
+        }
+    }
+    
+
+
     public function updatebranch($branch_id, $branch_code, $branch_name, $branch_address, $branch_started, $branch_manager) {
         $query = $this->conn->prepare(
             "UPDATE `branches` 

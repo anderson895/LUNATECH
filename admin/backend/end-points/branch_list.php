@@ -2,7 +2,9 @@
 
 $fetch_all_branch = $db->fetch_all_branch();
 
-if ($fetch_all_branch): ?>
+
+
+if ($fetch_all_branch->num_rows>0): ?>
     <?php foreach ($fetch_all_branch as $branch):
         ?>
         <tr>
@@ -23,7 +25,7 @@ if ($fetch_all_branch): ?>
                 data-branch_manager_id="<?=$branch['branch_manager_id']?>"
                 data-user_fullname="<?=$branch['user_fullname']?>"
                 >Update</button>
-                <button class="bg-red-500 text-white py-1 px-3 rounded-md togglerDeleteUserAdmin" data-branch_id=<?=$branch['branch_id']?>>Delete</button>
+                <button class="bg-red-500 text-white py-1 px-3 rounded-md togglerDeleteBranch" data-branch_id=<?=$branch['branch_id']?>>Delete</button>
             </td>
         </tr>
     <?php endforeach; ?>
@@ -32,3 +34,8 @@ if ($fetch_all_branch): ?>
         <td colspan="5" class="p-2">No record found.</td>
     </tr>
 <?php endif; ?>
+
+
+
+
+

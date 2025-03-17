@@ -80,6 +80,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(["status" => 400, "message" => $result]);
         }
         
+    }else if($_POST['requestType'] =='deletebranch'){
+
+        $branch_id = $_POST['branch_id'];
+      
+
+        $result = $db->deletebranch($branch_id);
+
+        if ($result == "success") {
+            echo json_encode(["status" => 200, "message" => "Delete Successfully"]);
+        } else {
+            echo json_encode(["status" => 400, "message" => $result]);
+        }
+        
+    }else if($_POST['requestType'] =='DeleteUser'){
+
+        $user_id = $_POST['user_id'];
+      
+
+        $result = $db->DeleteUser($user_id);
+
+        if ($result == "success") {
+            echo json_encode(["status" => 200, "message" => "Delete Successfully"]);
+        } else {
+            echo json_encode(["status" => 400, "message" => $result]);
+        }
+        
     }
 }
 ?>
