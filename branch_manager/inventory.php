@@ -60,29 +60,37 @@ include "components/header.php";
 
 
 <script>
-    $(document).ready(function () {
-        function fetchInventory() {
-            $.ajax({
-                url: 'backend/end-points/inventory_list.php', // Fetch inventory data
-                type: 'GET',
-                success: function (data) {
-                    $('#inventoryTable tbody').html(data); // Update table body
-                }
-            });
-        }
+   $(document).ready(function () {
+    function fetchInventory() {
+        let searchValue = $('#searchInput').val().toLowerCase(); // Preserve search value
 
-        // Fetch inventory every 5 seconds
-        setInterval(fetchInventory, 3000);
-        fetchInventory(); // Initial load
+        $.ajax({
+            url: 'backend/end-points/inventory_list.php', // Fetch inventory data
+            type: 'GET',
+            success: function (data) {
+                $('#inventoryTable tbody').html(data); // Update table body
 
-        // Search functionality
-        $('#searchInput').on('keyup', function () {
-            let value = $(this).val().toLowerCase();
-            $("#inventoryTable tbody tr").filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-            });
+                // Reapply search filter
+                $("#inventoryTable tbody tr").each(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(searchValue) > -1);
+                });
+            }
+        });
+    }
+
+    // Fetch inventory every 3 seconds
+    setInterval(fetchInventory, 3000);
+    fetchInventory(); // Initial load
+
+    // Search functionality
+    $('#searchInput').on('keyup', function () {
+        let value = $(this).val().toLowerCase();
+        $("#inventoryTable tbody tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
         });
     });
+});
+
 </script>
 
 
