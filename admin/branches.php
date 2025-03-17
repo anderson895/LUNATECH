@@ -21,7 +21,7 @@
 <!-- User Table Card -->
 <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
 
-    <button id="adduserButton" class="bg-blue-500 text-white py-2 px-4 text-sm rounded-lg flex items-center hover:bg-blue-600 transition duration-300 mb-4">
+    <button id="addBranchButton" class="bg-blue-500 text-white py-2 px-4 text-sm rounded-lg flex items-center hover:bg-blue-600 transition duration-300 mb-4">
         <span class="material-icons mr-2 text-base">storefront</span>
         New Branch
     </button>
@@ -119,7 +119,7 @@
 
 
 <!-- Modal for Adding Promo -->
-<div id="addUserModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center" style="display:none;">
+<div id="addBranchModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center" style="display:none;">
     <div class="bg-white rounded-lg shadow-lg w-96 p-6">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">Add New Branch</h3>
         <form id="addbranchForm">

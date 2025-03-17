@@ -35,13 +35,37 @@ $('#adduserButton').click(function (e) {
     $('#addUserModal').fadeIn();
   });  
 
-
   $('.addUserModalClose').click(function (e) { 
     e.preventDefault();
     $('#addUserModal').fadeOut();
   });  
 
+   // Close Modal when clicking outside the modal content
+   $("#addUserModal").click(function(event) {
+        if ($(event.target).is("#addUserModal")) {
+            $("#addUserModal").fadeOut();
+        }
+    });
+  
+  
 
+
+  $('#addBranchButton').click(function (e) { 
+    e.preventDefault();
+    $('#addBranchModal').fadeIn();
+  });  
+
+
+  $('.addBranchModalClose').click(function (e) { 
+    e.preventDefault();
+    $('#addBranchModal').fadeOut();
+  });  
+  // Close Modal when clicking outside the modal content
+    $("#addBranchModal").click(function(event) {
+        if ($(event.target).is("#addBranchModal")) {
+            $("#addBranchModal").fadeOut();
+        }
+    });
 
 
   $(document).ready(function () {
