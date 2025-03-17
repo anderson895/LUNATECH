@@ -28,7 +28,8 @@ $('#adduproductButton').click(function (e) {
 
 
 
-    $('.togglerDeleteProduct').click(function (e) { 
+    // $('.togglerDeleteProduct').click(function (e) { 
+    $(document).on('click', '.togglerDeleteProduct', function(e) {
         e.preventDefault();
         var prod_id = $(this).data('prod_id');
         console.log(prod_id);
@@ -54,7 +55,7 @@ $('#adduproductButton').click(function (e) {
                                 response.message,  // Show the success message from the response
                                 'success'
                             ).then(() => {
-                                location.reload(); 
+                                // location.reload(); 
                             });
                         } else {
                             Swal.fire(
@@ -189,7 +190,8 @@ $('.togglerDeleteBranch').click(function (e) {
 
 
 
-$('.togglerUpdateProduct').click(function (e) { 
+// $('.togglerUpdateProduct').click(function (e) { 
+$(document).on('click', '.togglerUpdateProduct', function(e) {
     var prod_id = $(this).data('prod_id');
     var prod_name = $(this).data('prod_name');
 
@@ -337,6 +339,18 @@ $(document).ready(function () {
     $("#addproductForm").submit(function (e) {
         e.preventDefault();
 
+        var new_product_name = $("#new_product_name").val().trim();
+
+        console.log(new_product_name);
+
+        if(new_product_name == ""){
+            alertify.error("Product name is required");
+            $('#BtnaddInventory').prop('disabled', false);
+            return;
+
+        }
+
+
         $('.spinner').show();
         $('#btnAddProduct').prop('disabled', true);
     
@@ -353,11 +367,14 @@ $(document).ready(function () {
                 $("#btnAddProduct").prop("disabled", true).text("Processing...");
             },
             success: function (response) {
-                console.log(response); 
-                
+
+                $('#addproductForm')[0].reset();
+
+
                 if (response.status === 200) {
                     alertify.success(response.message);
-                    setTimeout(function () { location.reload(); }, 1000);
+                    
+                    // setTimeout(function () { location.reload(); }, 1000);
                 } else {
                     $('.spinner').hide();
                     $('#btnAddProduct').prop('disabled', false);
@@ -442,7 +459,7 @@ $(document).ready(function () {
                     
                     if (response.status === 200) {
                         alertify.success(response.message);
-                        setTimeout(function () { location.reload(); }, 1000);
+                        // setTimeout(function () { location.reload(); }, 1000);
                     } else {
                         $('.spinner').hide();
                         $('#btnUpdateroduct').prop('disabled', false);

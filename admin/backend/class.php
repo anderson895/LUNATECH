@@ -313,7 +313,52 @@ class global_class extends db_connect
    
 
 
-
+    public function search_all_product($search = "", $limit = 10, $offset = 0) {
+        $searchQuery = $search ? "AND (products.prod_name LIKE ? OR products.prod_code LIKE ?)" : "";
+        $sql = "
+            SELECT products.*, user.user_fullname
+            FROM products
+            LEFT JOIN user ON products.prod_added_by = user.id
+            WHERE products.prod_status = '1' $searchQuery
+            ORDER BY products.prod_date_added DESC
+            LIMIT ? OFFSET ?
+        ";
+    
+        $stmt = $this->conn->prepare($sql);
+        
+        if ($search) {
+            $searchTerm = "%$search%";
+            $stmt->bind_param("ssii", $searchTerm, $searchTerm, $limit, $offset);
+        } else {
+            $stmt->bind_param("ii", $limit, $offset);
+        }
+    
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+    
+    // Function to count total records for pagination
+    public function count_all_product($search = "") {
+        $searchQuery = $search ? "AND (products.prod_name LIKE ? OR products.prod_code LIKE ?)" : "";
+        $sql = "
+            SELECT COUNT(*) as total
+            FROM products
+            WHERE products.prod_status = '1' $searchQuery
+        ";
+    
+        $stmt = $this->conn->prepare($sql);
+        
+        if ($search) {
+            $searchTerm = "%$search%";
+            $stmt->bind_param("ss", $searchTerm, $searchTerm);
+        }
+    
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return $row['total'];
+    }
+    
 
 
 
