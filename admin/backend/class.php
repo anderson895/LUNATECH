@@ -133,6 +133,23 @@ class global_class extends db_connect
     }
 
 
+    public function updatebranch($branch_id, $branch_code, $branch_name, $branch_address, $branch_started, $branch_manager) {
+        $query = $this->conn->prepare(
+            "UPDATE `branches` 
+             SET `branch_code` = ?, `branch_name` = ?, `branch_address` = ?, `branch_started` = ?, `branch_manager_id` = ? 
+             WHERE `branch_id` = ?"
+        );
+        
+        // Bind the parameters (ssssi = string, string, string, string, int)
+        $query->bind_param("ssssii", $branch_code, $branch_name, $branch_address, $branch_started, $branch_manager, $branch_id);
+        
+        if ($query->execute()) {
+            return 'success';
+        } else {
+            return 'Error: ' . $query->error;
+        }
+    }
+    
     
     public function fetch_all_branch_manager() {
         $query = $this->conn->prepare("

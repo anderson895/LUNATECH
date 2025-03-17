@@ -63,6 +63,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(["status" => 400, "message" => $result]);
         }
         
+    }else if($_POST['requestType'] =='updatebranch'){
+
+        $branch_id = $_POST['branch_id'];
+        $branch_code = htmlspecialchars(trim($_POST['branch_code']));
+        $branch_name = htmlspecialchars(trim($_POST['branch_name']));
+        $branch_address = htmlspecialchars(trim($_POST['branch_address']));
+        $branch_started = htmlspecialchars(trim($_POST['branch_started']));
+        $branch_manager = htmlspecialchars(trim($_POST['branch_manager']));
+
+        $result = $db->updatebranch($branch_id,$branch_code, $branch_name, $branch_address, $branch_started, $branch_manager);
+
+        if ($result == "success") {
+            echo json_encode(["status" => 200, "message" => "Update Successfully"]);
+        } else {
+            echo json_encode(["status" => 400, "message" => $result]);
+        }
+        
     }
 }
 ?>

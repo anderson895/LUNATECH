@@ -63,53 +63,52 @@
 <div id="updateUserModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center" style="display:none;">
     <div class="bg-white rounded-lg shadow-lg w-96 p-6">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">Update Information</h3>
-        <form id="updateuserForm">
+        <form id="updatebranchForm">
             <!-- Spinner -->
             <div class="spinner" id="spinner" style="display:none;">
                 <div class="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center">
                     <div class="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
                 </div>
             </div>
-            
-            <div hidden class="mb-4">
-                <label for="update_id" class="block text-sm font-medium text-gray-700">ID</label>
-                <input type="text" id="update_id" name="update_id" class="w-full p-2 border rounded-md" required>
-            </div>
 
-
-            <div class="mb-4">
-                <label for="update_user_fullname" class="block text-sm font-medium text-gray-700">Fullname</label>
-                <input type="text" id="update_user_fullname" name="update_user_fullname" class="w-full p-2 border rounded-md" required>
+            <div class="mb-4" hidden>
+                <label for="branch_id" class="block text-sm font-medium text-gray-700">User ID</label>
+                <input type="text" id="branch_id" name="branch_id" class="w-full p-2 border rounded-md" required>
             </div>
 
             <div class="mb-4">
-                <label for="update_user_username" class="block text-sm font-medium text-gray-700">User Name</label>
-                <input type="text" id="update_user_username" name="update_user_username" class="w-full p-2 border rounded-md" required>
+                <label for="update_branch_code" class="block text-sm font-medium text-gray-700">Branch Code</label>
+                <input type="text" id="update_branch_code" name="branch_code" class="w-full p-2 border rounded-md" required>
             </div>
 
             <div class="mb-4">
-                <label for="update_user_email" class="block text-sm font-medium text-gray-700">Email</label>
-                <input type="text" id="update_user_email" name="update_user_email" class="w-full p-2 border rounded-md" required>
-            </div>
-            
-            <div class="mb-4">
-                <label for="update_user_password" class="block text-sm font-medium text-gray-700">New Password</label>
-                <input type="text" id="update_user_password" name="update_user_password" class="w-full p-2 border rounded-md" >
+                <label for="update_branch_name" class="block text-sm font-medium text-gray-700">Branch Name</label>
+                <input type="text" id="update_branch_name" name="branch_name" class="w-full p-2 border rounded-md" required>
             </div>
 
+            <div class="mb-4">
+                <label for="update_branch_address" class="block text-sm font-medium text-gray-700">Branch Address</label>
+                <input type="text" id="update_branch_address" name="branch_address" class="w-full p-2 border rounded-md" required>
+            </div>
             
             <div class="mb-4">
-                <label for="update_user_type" class="block text-sm font-medium text-gray-700">Position</label>
-                <select name="update_user_type" id="update_user_type" class="w-full p-2 border rounded-md" required>
-                    <option value="General Manager">General Manager</option>
-                    <option value="Administrator">Administrator</option>
+                <label for="update_branch_started" class="block text-sm font-medium text-gray-700">Branch Started</label>
+                <input type="date" id="update_branch_started" name="branch_started" class="w-full p-2 border rounded-md" required>
+            </div>
+
+
+            <div class="mb-4">
+                <label for="update_branch_manager" class="block text-sm font-medium text-gray-700">Branch Manager</label>
+                <select id="update_branch_manager" name="branch_manager" class="w-full p-2 border rounded-md" required>
+                    <option id="currentValue" value="">Current Value</option>
+                    <?php include "backend/end-points/branch_manager_list.php";?>
                 </select>
             </div>
 
 
             <div class="flex justify-end gap-2">
-                <button type="button" class="togglerUpdateUserClose bg-gray-500 hover:bg-gray-600 text-white py-1 px-3 rounded-md">Cancel</button>
-                <button type="submit" id="btnUpdateuser" class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-md">Update</button>
+                <button type="button" class="addBranchModalClose bg-gray-500 hover:bg-gray-600 text-white py-1 px-3 rounded-md">Cancel</button>
+                <button id="btnUpdateBranches" type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-md">Update Branch</button>
             </div>
         </form>
     </div>

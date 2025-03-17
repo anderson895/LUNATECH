@@ -14,13 +14,14 @@ if ($fetch_all_branch): ?>
             <td class="p-2"><?php echo htmlspecialchars($branch['user_fullname']); ?></td>
            
             <td class="p-2">
-                <button class="bg-blue-500 text-white py-1 px-3 rounded-md togglerUpdateUserAdmin" 
+                <button class="bg-blue-500 text-white py-1 px-3 rounded-md togglerUpdateBranch" 
                 data-branch_id="<?=$branch['branch_id']?>"
                 data-branch_code="<?=$branch['branch_code']?>"
                 data-branch_name="<?=$branch['branch_name']?>"
                 data-branch_address="<?=$branch['branch_address']?>"
                 data-branch_started="<?=$branch['branch_started']?>"
                 data-branch_manager_id="<?=$branch['branch_manager_id']?>"
+                data-user_fullname="<?=$branch['user_fullname']?>"
                 >Update</button>
                 <button class="bg-red-500 text-white py-1 px-3 rounded-md togglerDeleteUserAdmin" data-branch_id=<?=$branch['branch_id']?>>Delete</button>
             </td>

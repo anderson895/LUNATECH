@@ -1,3 +1,45 @@
+$('.togglerUpdateBranch').click(function (e) { 
+    var branch_id = $(this).data('branch_id');
+    var branch_code = $(this).data('branch_code');
+    var branch_name = $(this).data('branch_name');
+    var branch_address = $(this).data('branch_address');
+    var branch_started = $(this).data('branch_started');
+    var branch_manager_id = $(this).data('branch_manager_id');
+    var user_fullname = $(this).data('user_fullname');
+
+    // Populate the form fields
+    $('#branch_id').val(branch_id);
+    $('#update_branch_code').val(branch_code);
+    $('#update_branch_name').val(branch_name);
+    $('#update_branch_address').val(branch_address);
+    $('#update_branch_started').val(branch_started);
+
+    // Set the branch manager
+    $('#currentValue').val(branch_manager_id);
+    $('#currentValue').text(user_fullname);
+    
+    e.preventDefault();
+    $('#updateUserModal').fadeIn();
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 $('.togglerUpdateUserAdmin').click(function (e) { 
     var id =$(this).data('id');
     var user_fullname =$(this).data('user_fullname');
@@ -22,11 +64,12 @@ $('.togglerUpdateUserAdmin').click(function (e) {
     $('#updateUserModal').fadeOut();
   });  
 
-
-
-
-
-
+    // Close Modal when clicking outside the modal content
+    $("#updateUserModal").click(function(event) {
+        if ($(event.target).is("#updateUserModal")) {
+            $("#updateUserModal").fadeOut();
+        }
+    });
 
 
 
@@ -68,57 +111,91 @@ $('#adduserButton').click(function (e) {
     });
 
 
-  $(document).ready(function () {
+$(document).ready(function () {
 
 
 
 
-$("#addbranchForm").submit(function (e) {
-        e.preventDefault();
+    $("#addbranchForm").submit(function (e) {
+            e.preventDefault();
 
 
-        $('.spinner').show();
-        $('#btnAddBranches').prop('disabled', true);
-    
-        var formData = new FormData(this); 
-        formData.append('requestType', 'addbranch');
-        $.ajax({
-            type: "POST",
-            url: "backend/end-points/controller.php",
-            data: formData,
-            contentType: false,
-            processData: false,
-            dataType: "json", // Expect JSON response
-            beforeSend: function () {
-                $("#btnAddBranches").prop("disabled", true).text("Processing...");
-            },
-            success: function (response) {
-                console.log(response); // Debugging
-                
-                if (response.status === 200) {
-                    alertify.success(response.message);
-                    setTimeout(function () { location.reload(); }, 1000);
-                } else {
-                    $('.spinner').hide();
-                    $('#btnAddBranches').prop('disabled', false);
-                    alertify.error(response.message);
+            $('.spinner').show();
+            $('#btnAddBranches').prop('disabled', true);
+        
+            var formData = new FormData(this); 
+            formData.append('requestType', 'addbranch');
+            $.ajax({
+                type: "POST",
+                url: "backend/end-points/controller.php",
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: "json", // Expect JSON response
+                beforeSend: function () {
+                    $("#btnAddBranches").prop("disabled", true).text("Processing...");
+                },
+                success: function (response) {
+                    console.log(response); // Debugging
+                    
+                    if (response.status === 200) {
+                        alertify.success(response.message);
+                        setTimeout(function () { location.reload(); }, 1000);
+                    } else {
+                        $('.spinner').hide();
+                        $('#btnAddBranches').prop('disabled', false);
+                        alertify.error(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error:", xhr.responseText); // Log detailed error response
+                    alertify.error("Something went wrong. Please try again.");
+                },
+                complete: function () {
+                    $("#btnAddBranches").prop("disabled", false).text("Submit");
                 }
-            },
-            error: function (xhr, status, error) {
-                console.error("AJAX Error:", xhr.responseText); // Log detailed error response
-                alertify.error("Something went wrong. Please try again.");
-            },
-            complete: function () {
-                $("#btnAddBranches").prop("disabled", false).text("Submit");
-            }
+            });
         });
-    });
 
 
 
 
 
-
+        $("#updatebranchForm").submit(function (e) {
+            e.preventDefault();
+    
+            $('.spinner').show();
+            $('#btnUpdateBranches').prop('disabled', true);
+        
+            var formData = new FormData(this);
+            formData.append('requestType', 'updatebranch'); 
+            $.ajax({
+                type: "POST",
+                url: "backend/end-points/controller.php",
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: "json", // Expect JSON response
+                beforeSend: function () {
+                    $("#btnUpdateBranches").prop("disabled", true).text("Processing...");
+                },
+                success: function (response) {
+                    console.log(response); // Debugging
+                    
+                    if (response.status === 200) {
+                        alertify.success(response.message);
+                        setTimeout(function () { location.reload(); }, 1000);
+                    } else {
+                        $('.spinner').hide();
+                        $('#btnUpdateBranches').prop('disabled', false);
+                        alertify.error(response.message);
+                    }
+                },
+                complete: function () {
+                    $("#btnUpdateBranches").prop("disabled", false).text("Submit");
+                }
+            });
+        });
 
 
 
