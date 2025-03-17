@@ -40,77 +40,83 @@ include "components/header.php";
     </div>
 
     <!-- Add Record Form (Wider) -->
-    <div class="md:w-1/4 w-full bg-white shadow-lg rounded-lg p-6">
+    <div class="md:w-1/4 w-full bg-white shadow-lg rounded-lg p-6 relative">
         <h2 class="text-xl font-bold mb-4 text-gray-700">Add New Record</h2>
         <form id="product-form" class="flex flex-col gap-3">
-            <select id="stock_in_prod_code" name="stock_in_prod_code" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
-                <option value="">Search Product Code</option>
-            </select>
-
-
-
-            <input hidden type="text" readonly id="stock_in_prod_id" name="stock_in_prod_id"  class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
+            <input type="text" id="stock_in_prod_code" name="stock_in_prod_code" placeholder="Search Product Code" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
+            <div id="productSuggestions" class="absolute bg-white border border-gray-300 rounded-md shadow-md w-full hidden mt-12"></div>
+            <input hidden type="text" readonly id="stock_in_prod_id" name="stock_in_prod_id" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
             <input type="text" readonly id="stock_in_prod_name" name="stock_in_prod_name" placeholder="Product Name" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
             
-            <input type="number" placeholder="Qty" name="stock_in_qty"  class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
+            <input type="number" placeholder="Qty" name="stock_in_qty" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
             <input type="number" placeholder="Sold" name="stock_in_sold" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
             <input type="number" placeholder="Backjob" name="stock_in_backjob" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
             <button type="submit" id="BtnaddInventory" class="bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 transition-all">Add Record</button>
         </form>
-
     </div>
 
 </div>
 
-
 <script>
-    $(document).ready(function() {
-        $("#stock_in_prod_code").select2({
-        placeholder: "Search Product Code",
-        allowClear: true,
-        ajax: {
-            url: "backend/end-points/fetch_products.php",
-            type: "POST",
-            dataType: "json",
-            delay: 250,
-            data: function (params) {
-                return { query: params.term };
-            },
-            processResults: function (data) {
-                return {
-                    results: $.map(data, function(item) {
-                        return {
-                            id: item.prod_id, 
-                            prod_code: item.prod_code,
-                            text: item.prod_code + " - " + item.prod_name 
-                        };
-                    })
-                };
-            }
+   $(document).ready(function() {
+    // Product search input event
+    $("#stock_in_prod_code").on("input", function() {
+        let query = $(this).val();
+        if (query.length >= 1) { // Fetch only if at least 2 characters are entered
+            $.ajax({
+                url: "backend/end-points/fetch_products.php",
+                type: "POST",
+                dataType: "json",
+                data: { query: query },
+                success: function(data) {
+                    let suggestions = "";
+                    data.forEach(item => {
+                        suggestions += `<div class='suggestion-item p-2 hover:bg-gray-200 cursor-pointer' 
+                                        data-id='${item.prod_id}' 
+                                        data-code='${item.prod_code}' 
+                                        data-name='${item.prod_name}'>
+                                        ${item.prod_code} - ${item.prod_name}
+                                      </div>`;
+                    });
+                    $("#productSuggestions").html(suggestions).show();
+                }
+            });
+        } else {
+            $("#productSuggestions").hide();
         }
     });
 
-    // When a product is selected
-    $("#stock_in_prod_code").on("select2:select", function(e) {
-        let selectedData = e.params.data;
-        
+    // Handle product selection
+    $(document).on("click", ".suggestion-item", function() {
+        let selectedCode = $(this).data("code");
+        let selectedName = $(this).data("name");
+        let selectedId = $(this).data("id");
 
-        $("#stock_in_prod_code").val(selectedData.prod_code);  // Product Code
-        $("#stock_in_prod_name").val(selectedData.text.split(" - ")[1]);  // Extract Product Name
-        $("#stock_in_prod_id").val(selectedData.id);  // Extract prod_id
+        $("#stock_in_prod_code").val(selectedCode);
+        $("#stock_in_prod_name").val(selectedName);
+        $("#stock_in_prod_id").val(selectedId);
+        $("#productSuggestions").hide();
+    });
+
+    // Hide suggestions when clicking outside
+    $(document).click(function(e) {
+        if (!$(e.target).closest("#stock_in_prod_code, #productSuggestions").length) {
+            $("#productSuggestions").hide();
+        }
     });
 
     // Form submission with AJAX
     $("#product-form").submit(function (e) { 
         e.preventDefault();
         $('#BtnaddInventory').prop('disabled', true);
-        var stock_in_prod_code = $("#stock_in_prod_code").val();
+
         var branch_id = $("#branch_id").val();
         console.log(stock_in_prod_code);
 
         var formData = new FormData(this); 
         formData.append('requestType', 'addInventoryRecord');
         formData.append('branch_id', branch_id);
+
 
         $.ajax({
             type: "POST",
@@ -123,30 +129,21 @@ include "components/header.php";
                 $("#BtnaddInventory").prop("disabled", true).text("Processing...");
             },
             success: function (response) {
-                console.log(response); // Debugging
-
                 if (response.status === 200) {
                     alertify.success(response.message);
                     setTimeout(function () { location.reload(); }, 1000);
-                    
-                    // Reset form after success
                     $("#product-form")[0].reset();  
-                    $("#stock_in_prod_code").val(null).trigger("change"); // Reset Select2
                 } else {
                     $('#BtnaddInventory').prop('disabled', false);
                     alertify.error(response.message);
                 }
             },
             complete: function () {
-                $("#BtnaddInventory").prop("disabled", false).text("Submit");
+                $("#BtnaddInventory").prop("disabled", false).text("Add Record");
             }
         });
     });
 });
-
 </script>
-
-
-
 
 <?php include "components/footer.php"; ?>
