@@ -1,5 +1,41 @@
 
 
+
+$('#adduproductButton').click(function (e) { 
+    e.preventDefault();
+    $('#addProductModal').fadeIn();
+  });  
+
+  $('.addProductModalClose').click(function (e) { 
+    e.preventDefault();
+    $('#addProductModal').fadeOut();
+  });  
+
+   // Close Modal when clicking outside the modal content
+   $("#addProductModal").click(function(event) {
+        if ($(event.target).is("#addProductModal")) {
+            $("#addProductModal").fadeOut();
+        }
+    });
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 $('.togglerDeleteUserAdmin').click(function (e) { 
     e.preventDefault();
     var id = $(this).data('id');
@@ -104,6 +140,19 @@ $('.togglerDeleteBranch').click(function (e) {
 
 
 
+
+$('.togglerUpdateProduct').click(function (e) { 
+    var prod_id = $(this).data('prod_id');
+    var prod_name = $(this).data('prod_name');
+
+    $('#update_prod_id').val(prod_id);
+    $('#update_prod_name').val(prod_name);
+
+    console.log(prod_name);
+    
+    e.preventDefault();
+    $('#updateProductModal').fadeIn();
+});
 
 
 
@@ -224,6 +273,42 @@ $('#adduserButton').click(function (e) {
 
 $(document).ready(function () {
 
+    $("#addproductForm").submit(function (e) {
+        e.preventDefault();
+
+        $('.spinner').show();
+        $('#btnAddProduct').prop('disabled', true);
+    
+        var formData = new FormData(this); 
+        formData.append('requestType', 'addproduct');
+        $.ajax({
+            type: "POST",
+            url: "backend/end-points/controller.php",
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: "json",
+            beforeSend: function () {
+                $("#btnAddProduct").prop("disabled", true).text("Processing...");
+            },
+            success: function (response) {
+                console.log(response); 
+                
+                if (response.status === 200) {
+                    alertify.success(response.message);
+                    setTimeout(function () { location.reload(); }, 1000);
+                } else {
+                    $('.spinner').hide();
+                    $('#btnAddProduct').prop('disabled', false);
+                    alertify.error(response.message);
+                }
+            },
+            complete: function () {
+                $("#btnAddProduct").prop("disabled", false).text("Submit");
+            }
+        });
+    });
+
 
 
 
@@ -263,6 +348,54 @@ $(document).ready(function () {
                 }
             });
         });
+
+
+
+
+
+
+
+
+
+
+        $("#updateProductForm").submit(function (e) {
+            e.preventDefault();
+    
+            $('.spinner').show();
+            $('#btnUpdateroduct').prop('disabled', true);
+        
+            var formData = new FormData(this);
+            formData.append('requestType', 'updateProduct'); 
+            $.ajax({
+                type: "POST",
+                url: "backend/end-points/controller.php",
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: "json", // Expect JSON response
+                beforeSend: function () {
+                    $("#btnUpdateroduct").prop("disabled", true).text("Processing...");
+                },
+                success: function (response) {
+                    console.log(response); // Debugging
+                    
+                    if (response.status === 200) {
+                        alertify.success(response.message);
+                        setTimeout(function () { location.reload(); }, 1000);
+                    } else {
+                        $('.spinner').hide();
+                        $('#btnUpdateroduct').prop('disabled', false);
+                        alertify.error(response.message);
+                    }
+                },
+                complete: function () {
+                    $("#btnUpdateroduct").prop("disabled", false).text("Submit");
+                }
+            });
+        });
+
+
+
 
 
 

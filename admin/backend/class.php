@@ -134,6 +134,57 @@ class global_class extends db_connect
 
 
 
+
+    public function addproduct($new_product_name, $added_by) {
+        // Generate a unique product code
+        do {
+            $Prod_code = "P" . rand(10000, 99999); // Example: P12345
+            $checkQuery = $this->conn->prepare("SELECT 1 FROM products WHERE prod_code = ?");
+            $checkQuery->bind_param("s", $Prod_code);
+            $checkQuery->execute();
+            $checkQuery->store_result();
+        } while ($checkQuery->num_rows > 0); // Loop until unique code is found
+    
+        // Prepare the INSERT query
+        $query = $this->conn->prepare(
+            "INSERT INTO `products` (`prod_code`, `prod_name`, `prod_added_by`) VALUES (?, ?, ?)"
+        );
+        $query->bind_param("ssi", $Prod_code, $new_product_name, $added_by);
+    
+        if ($query->execute()) {
+            return 'success';
+        } else {
+            return 'Error: ' . $query->error;
+        }
+    }
+
+
+
+
+
+
+
+    public function updateProduct($prod_id, $prod_name) {
+    
+        // Prepare the UPDATE query
+        $query = $this->conn->prepare(
+            "UPDATE `products` 
+             SET `prod_name` = ?
+             WHERE `prod_id` = ?"
+        );
+        $query->bind_param("si", $prod_name, $prod_id);
+    
+        if ($query->execute()) {
+            return 'success';
+        } else {
+            return 'Error: ' . $query->error;
+        }
+    }
+    
+    
+
+
+
     public function deletebranch($branch_id) {
         $status = 0; 
         
@@ -200,6 +251,24 @@ class global_class extends db_connect
             return $result;
         }
     }
+
+
+
+    public function fetch_all_product() {
+        $query = $this->conn->prepare("
+            SELECT products.*,user.user_fullname
+            FROM products
+            LEFT JOIN user 
+            ON products.prod_added_by = user.id
+            WHERE products.prod_status = '1'
+        ");
+    
+        if ($query->execute()) {
+            $result = $query->get_result();
+            return $result;
+        }
+    }
+
 
     
     public function fetch_all_branch(){

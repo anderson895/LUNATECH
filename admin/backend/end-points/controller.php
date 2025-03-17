@@ -106,6 +106,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(["status" => 400, "message" => $result]);
         }
         
+    }else if($_POST['requestType'] =='addproduct'){
+        session_start();
+        $new_product_name = htmlspecialchars(trim($_POST['new_product_name']));
+        $added_by=$_SESSION['id'];
+
+       
+        $result = $db->addproduct($new_product_name, $added_by);
+
+        if ($result == "success") {
+            echo json_encode(["status" => 200, "message" => "User successfully registered"]);
+        } else {
+            echo json_encode(["status" => 400, "message" => $result]);
+        }
+    }else if($_POST['requestType'] =='updateProduct'){
+
+
+        $prod_id = $_POST['prod_id'];
+        $prod_name = htmlspecialchars(trim($_POST['prod_name']));
+
+        $result = $db->updateProduct($prod_id,$prod_name);
+
+        if ($result == "success") {
+            echo json_encode(["status" => 200, "message" => "Update Successfully"]);
+        } else {
+            echo json_encode(["status" => 400, "message" => $result]);
+        }
+        
     }
 }
 ?>
