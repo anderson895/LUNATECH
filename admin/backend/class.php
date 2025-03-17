@@ -324,7 +324,7 @@ class global_class extends db_connect
 
 
     public function search_all_branch($search = "", $limit = 10, $offset = 0) {
-        $searchQuery = $search ? "AND (branches.branch_name LIKE ? OR user.user_fullname LIKE ?)" : "";
+        $searchQuery = $search ? "AND (branches.branch_code LIKE ? OR branches.branch_name LIKE ? OR user.user_fullname LIKE ?)" : "";
         $sql = "
             SELECT branches.*, user.user_fullname 
             FROM branches
@@ -338,7 +338,7 @@ class global_class extends db_connect
         
         if ($search) {
             $searchTerm = "%$search%";
-            $stmt->bind_param("ssii", $searchTerm, $searchTerm, $limit, $offset);
+            $stmt->bind_param("sssii", $searchTerm, $searchTerm, $searchTerm, $limit, $offset);
         } else {
             $stmt->bind_param("ii", $limit, $offset);
         }
