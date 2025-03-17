@@ -100,6 +100,7 @@
             <div class="mb-4">
                 <label for="update_user_type" class="block text-sm font-medium text-gray-700">Position</label>
                 <select name="update_user_type" id="update_user_type" class="w-full p-2 border rounded-md" required>
+                    <option value="Branch Manager">Branch Manager</option>
                     <option value="General Manager">General Manager</option>
                     <option value="Administrator">Administrator</option>
                 </select>
@@ -154,6 +155,7 @@
             <div class="mb-4">
                 <label for="user_type" class="block text-sm font-medium text-gray-700">Position</label>
                 <select name="user_type" id="user_type" class="w-full p-2 border rounded-md" required>
+                    <option value="Branch Manager">Branch Manager</option>
                     <option value="General Manager">General Manager</option>
                     <option value="Administrator">Administrator</option>
                    
