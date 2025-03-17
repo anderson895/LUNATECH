@@ -10,7 +10,9 @@ if (isset($_SESSION['id'])) {
    
     $On_Session = $db->check_account($id);
 
-
+  // echo "<pre>";
+  // print_r($On_Session); 
+  // echo "</pre>";
   
     if (!empty($On_Session)) {
         if($_SESSION['user_type']=="Administrator"||$_SESSION['user_type']=="General Manager"){
@@ -48,6 +50,7 @@ if (isset($_SESSION['id'])) {
 <body class="bg-gray-100 font-sans antialiased">
 
 <input type="text" id="user_id" value="<?=$On_Session[0]['id']?>" hidden>
+<input type="text" id="branch_id" value="<?=$On_Session[0]['branch_id']?>" hidden>
 
 <?php include "../function/PageSpinner.php"; ?>
 
