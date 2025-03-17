@@ -44,6 +44,7 @@
                     </th>
                     <th class="p-3">Code</th>
                     <th class="p-3">Product</th>
+                    <th class="p-3">Price</th>
                     <th class="p-3 hidden md:table-cell">Added By</th>
                     <th class="p-3 hidden md:table-cell">Date Added</th>
                     <th class="p-3 text-center">Action</th>
@@ -88,6 +89,13 @@
                             required>
                     </div>
 
+                    <div>
+                        <label for="update_prod_price" class="block text-sm font-medium text-gray-700">Product Price</label>
+                        <input type="text" id="update_prod_price" name="product_price" 
+                            class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                            >
+                    </div>
+
                     <!-- Buttons -->
                     <div class="flex justify-end space-x-2">
                         <button id="btnUpdateroduct" type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition">Update</button>
@@ -117,6 +125,14 @@
                     <div>
                         <label for="new_product_name" class="block text-sm font-medium text-gray-700">Product Name</label>
                         <input type="text" id="new_product_name" name="new_product_name" 
+                            class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                            >
+                    </div>
+
+                     <!-- Product Price -->
+                     <div>
+                        <label for="new_product_price" class="block text-sm font-medium text-gray-700">Product Price</label>
+                        <input type="text" id="new_product_price" name="new_product_price" 
                             class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
                             >
                     </div>

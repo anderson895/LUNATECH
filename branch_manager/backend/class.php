@@ -17,6 +17,7 @@ class global_class extends db_connect
                 products.prod_id,
                 products.prod_code,
                 products.prod_name,
+                products.prod_price,
                 SUM(stock.stock_in_qty) AS total_qty,
                 SUM(stock.stock_in_sold) AS total_sold,
                 SUM(stock.stock_in_backjob) AS total_backjob

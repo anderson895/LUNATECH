@@ -135,7 +135,7 @@ class global_class extends db_connect
 
 
 
-    public function addproduct($new_product_name, $added_by) {
+    public function addproduct($new_product_name,$new_product_price, $added_by) {
         // Generate a unique product code
         do {
             $Prod_code = "P" . rand(10000, 99999); // Example: P12345
@@ -147,9 +147,9 @@ class global_class extends db_connect
     
         // Prepare the INSERT query
         $query = $this->conn->prepare(
-            "INSERT INTO `products` (`prod_code`, `prod_name`, `prod_added_by`) VALUES (?, ?, ?)"
+            "INSERT INTO `products` (`prod_code`, `prod_name`,`prod_price`, `prod_added_by`) VALUES (?,?, ?, ?)"
         );
-        $query->bind_param("ssi", $Prod_code, $new_product_name, $added_by);
+        $query->bind_param("ssdi", $Prod_code, $new_product_name,$new_product_price,  $added_by);
     
         if ($query->execute()) {
             return 'success';
@@ -164,15 +164,15 @@ class global_class extends db_connect
 
 
 
-    public function updateProduct($prod_id, $prod_name) {
+    public function updateProduct($prod_id,$prod_name,$product_price) {
     
         // Prepare the UPDATE query
         $query = $this->conn->prepare(
             "UPDATE `products` 
-             SET `prod_name` = ?
+             SET `prod_name` = ?,`prod_price` = ?
              WHERE `prod_id` = ?"
         );
-        $query->bind_param("si", $prod_name, $prod_id);
+        $query->bind_param("sdi", $prod_name,$product_price, $prod_id);
     
         if ($query->execute()) {
             return 'success';
