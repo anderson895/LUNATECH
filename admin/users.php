@@ -86,16 +86,15 @@
             
             <div class="mb-4">
                 <label for="update_admin_password" class="block text-sm font-medium text-gray-700">New Password</label>
-                <input type="text" id="update_admin_password" name="update_admin_password" class="w-full p-2 border rounded-md" required>
+                <input type="text" id="update_admin_password" name="update_admin_password" class="w-full p-2 border rounded-md" >
             </div>
 
             
             <div class="mb-4">
                 <label for="update_user_type" class="block text-sm font-medium text-gray-700">Position</label>
                 <select name="update_user_type" id="update_user_type" class="w-full p-2 border rounded-md" required>
-                    <option value="branch Manager">Branch Manager</option>
-                    <option value="general Manager">General Manager</option>
-                    <option value="admin">Administrator</option>
+                    <option value="General Manager">General Manager</option>
+                    <option value="Administrator">Administrator</option>
                 </select>
             </div>
 
@@ -148,9 +147,8 @@
             <div class="mb-4">
                 <label for="user_type" class="block text-sm font-medium text-gray-700">Position</label>
                 <select name="user_type" id="user_type" class="w-full p-2 border rounded-md" required>
-                    <option value="branch Manager">Branch Manager</option>
-                    <option value="general Manager">General Manager</option>
-                    <option value="admin">Administrator</option>
+                    <option value="General Manager">General Manager</option>
+                    <option value="Administrator">Administrator</option>
                    
                 </select>
             </div>
