@@ -48,9 +48,9 @@ include "components/header.php";
             <input hidden type="text" readonly id="stock_in_prod_id" name="stock_in_prod_id" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
             <input type="text" readonly id="stock_in_prod_name" name="stock_in_prod_name" placeholder="Product Name" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
             
-            <input type="number" placeholder="Qty" name="stock_in_qty" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
-            <input type="number" placeholder="Sold" name="stock_in_sold" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
-            <input type="number" placeholder="Backjob" name="stock_in_backjob" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
+            <input type="number" placeholder="Qty" id="stock_in_qty" name="stock_in_qty" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
+            <input type="number" placeholder="Sold" id="stock_in_sold" name="stock_in_sold" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
+            <input type="number" placeholder="Backjob" id="stock_in_backjob" name="stock_in_backjob" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
             <button type="submit" id="BtnaddInventory" class="bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 transition-all">Add Record</button>
         </form>
     </div>
@@ -111,7 +111,27 @@ include "components/header.php";
         $('#BtnaddInventory').prop('disabled', true);
 
         var branch_id = $("#branch_id").val();
-        console.log(stock_in_prod_code);
+        var stock_in_prod_id = $("#stock_in_prod_id").val().trim();
+        var stock_in_qty = $("#stock_in_qty").val().trim();
+        var stock_in_sold = $("#stock_in_sold").val().trim();
+        var stock_in_backjob = $("#stock_in_backjob").val().trim();
+
+
+        
+        console.log(stock_in_prod_id);
+
+        if(stock_in_prod_id == ""){
+            alertify.error("Please select a product");
+            $('#BtnaddInventory').prop('disabled', false);
+            return;
+
+        }
+
+        if(stock_in_qty == "" && stock_in_sold == 0 && stock_in_backjob == 0){
+            alertify.error("Please Select Qty, Sold Or Backjob");
+            $('#BtnaddInventory').prop('disabled', false);
+            return;
+        }
 
         var formData = new FormData(this); 
         formData.append('requestType', 'addInventoryRecord');
