@@ -159,7 +159,7 @@ class global_class extends db_connect
             ON branches.branch_manager_id = user.id
             WHERE user.user_type = 'Branch Manager' 
             AND user.user_status = '1'
-            AND branches.branch_manager_id IS NULL
+            AND (branches.branch_manager_id IS NULL OR branches.branch_status = '0')
         ");
     
         if ($query->execute()) {
@@ -167,7 +167,20 @@ class global_class extends db_connect
             return $result;
         }
     }
+
     
+    public function fetch_all_branch(){
+        $query = $this->conn->prepare("SELECT * FROM `branches` 
+        LEFT JOIN user
+        ON branches.branch_manager_id = user.id
+        where branches.branch_status='1'
+        ");
+
+        if ($query->execute()) {
+            $result = $query->get_result();
+            return $result;
+        }
+    }
     
 
     public function fetch_all_user(){
@@ -180,17 +193,7 @@ class global_class extends db_connect
     }
 
 
-    public function fetch_all_branch(){
-        $query = $this->conn->prepare("SELECT * FROM `branches` 
-        LEFT JOIN user
-        ON branches.branch_manager_id = user.id
-        ");
-
-        if ($query->execute()) {
-            $result = $query->get_result();
-            return $result;
-        }
-    }
+   
 
 
 
