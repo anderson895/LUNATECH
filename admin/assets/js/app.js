@@ -138,7 +138,8 @@ $('.togglerDeleteUserAdmin').click(function (e) {
 
 
 
-$('.togglerDeleteBranch').click(function (e) { 
+// $('.togglerDeleteBranch').click(function (e) { 
+$(document).on('click', '.togglerDeleteBranch', function(e) {
     e.preventDefault();
     var branchId = $(this).data('branch_id');
     console.log(branchId);
@@ -221,7 +222,8 @@ $('.updateProductModalClose').click(function (e) {
 
 
 
-$('.togglerUpdateBranch').click(function (e) { 
+// $('.togglerUpdateBranch').click(function (e) { 
+$(document).on('click', '.togglerUpdateBranch', function(e) {
     var branch_id = $(this).data('branch_id');
     var branch_code = $(this).data('branch_code');
     var branch_name = $(this).data('branch_name');
@@ -282,7 +284,7 @@ $('.togglerUpdateUserAdmin').click(function (e) {
     $('#updateUserModal').fadeIn();
   });  
 
-  $('.togglerUpdateUserClose').click(function (e) { 
+  $('.UpdateBranchModalClose').click(function (e) { 
     e.preventDefault();
     $('#updateUserModal').fadeOut();
   });  
@@ -502,7 +504,10 @@ $(document).ready(function () {
                     
                     if (response.status === 200) {
                         alertify.success(response.message);
-                        setTimeout(function () { location.reload(); }, 1000);
+                        $('.spinner').hide();
+                        $('#btnUpdateBranches').prop('disabled', false);
+                        $('#updateUserModal').fadeOut();
+                        // setTimeout(function () { location.reload(); }, 1000);
                     } else {
                         $('.spinner').hide();
                         $('#btnUpdateBranches').prop('disabled', false);
@@ -514,6 +519,12 @@ $(document).ready(function () {
                 }
             });
         });
+
+
+
+       
+          
+        
 
 
 

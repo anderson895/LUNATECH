@@ -252,20 +252,28 @@ class global_class extends db_connect
     
     public function fetch_all_branch_manager() {
         $query = $this->conn->prepare("
-            SELECT DISTINCT user.* 
+            SELECT DISTINCT user.*
             FROM user
             LEFT JOIN branches 
             ON branches.branch_manager_id = user.id
             WHERE user.user_type = 'Branch Manager' 
             AND user.user_status = '1'
             AND (branches.branch_manager_id IS NULL OR branches.branch_status = '0')
+            AND NOT EXISTS (
+                SELECT 1 FROM branches b
+                WHERE b.branch_manager_id = user.id
+                AND b.branch_status = '1'
+            )
         ");
     
         if ($query->execute()) {
-            $result = $query->get_result();
-            return $result;
+            return $query->get_result();
         }
+        
+        return false; // Return false if execution fails
     }
+    
+    
 
 
 
@@ -311,6 +319,60 @@ class global_class extends db_connect
 
 
    
+
+
+
+
+    public function search_all_branch($search = "", $limit = 10, $offset = 0) {
+        $searchQuery = $search ? "AND (branches.branch_name LIKE ? OR user.user_fullname LIKE ?)" : "";
+        $sql = "
+            SELECT branches.*, user.user_fullname 
+            FROM branches
+            LEFT JOIN user ON branches.branch_manager_id = user.id
+            WHERE branches.branch_status = '1' $searchQuery
+            ORDER BY branches.branch_name ASC
+            LIMIT ? OFFSET ?
+        ";
+    
+        $stmt = $this->conn->prepare($sql);
+        
+        if ($search) {
+            $searchTerm = "%$search%";
+            $stmt->bind_param("ssii", $searchTerm, $searchTerm, $limit, $offset);
+        } else {
+            $stmt->bind_param("ii", $limit, $offset);
+        }
+    
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+    
+    // Function to count total branches
+    public function count_all_branch($search = "") {
+        $searchQuery = $search ? "AND (branches.branch_name LIKE ? OR user.user_fullname LIKE ?)" : "";
+        $sql = "
+            SELECT COUNT(*) as total
+            FROM branches
+            LEFT JOIN user ON branches.branch_manager_id = user.id
+            WHERE branches.branch_status = '1' $searchQuery
+        ";
+    
+        $stmt = $this->conn->prepare($sql);
+        
+        if ($search) {
+            $searchTerm = "%$search%";
+            $stmt->bind_param("ss", $searchTerm, $searchTerm);
+        }
+    
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return $row['total'];
+    }
+    
+
+
+    
 
 
     public function search_all_product($search = "", $limit = 10, $offset = 0) {

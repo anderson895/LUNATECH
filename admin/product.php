@@ -137,4 +137,4 @@
 
 
 <?php include "components/footer.php";?>
-<script src="assets/js/table.js"></script>
+<script src="assets/js/table_product.js"></script>

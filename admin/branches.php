@@ -21,17 +21,34 @@
 <!-- User Table Card -->
 <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
 
-    <button id="addBranchButton" class="bg-blue-500 text-white py-2 px-4 text-sm rounded-lg flex items-center hover:bg-blue-600 transition duration-300 mb-4">
+    <!-- <button id="addBranchButton" class="bg-blue-500 text-white py-2 px-4 text-sm rounded-lg flex items-center hover:bg-blue-600 transition duration-300 mb-4">
         <span class="material-icons mr-2 text-base">storefront</span>
         New Branch
-    </button>
+    </button> -->
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4">
+        <div class="flex gap-2 w-full sm:w-auto">
+            <button id="addBranchButton" class="bg-blue-500 text-white py-2 px-4 text-sm rounded-md flex items-center justify-center hover:bg-blue-600 transition duration-300 w-full sm:w-auto">
+                <span class="material-icons mr-1 text-base">storefront</span>
+                New Branch
+            </button>
+
+            <button id="deleteAllBtn" class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300 w-full sm:w-auto">
+                Delete All
+            </button>
+        </div>
+
+        <input type="text" id="searchInput" placeholder="Search item..." 
+               class="border border-gray-300 p-2 rounded-md w-full sm:w-64 focus:ring-2 focus:ring-blue-400">
+    </div>
 
     <!-- Table Wrapper for Responsiveness -->
     <div class="overflow-x-auto">
-        <table id="userTable" class="table-auto w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <table id="userTable" class="table-auto w-full text-sm text-left text-gray-500">
             <thead class="bg-gray-100 text-gray-700">
                 <tr>
-                    <th class="p-3">#</th>
+                    <th class="p-3 text-center">
+                        <input type="checkbox" id="checkAll">
+                    </th>
                     <th class="p-3">Branch Code</th>
                     <th class="p-3">Branch Name</th>
                     <th class="p-3">Branch Address</th>
@@ -39,16 +56,17 @@
                     <th class="p-3">Branch Manager</th>
                     
                     
-                    <th class="p-3">Action</th>
+                    <th class="p-3 text-center">Action</th>
                 </tr>
             </thead>
             <tbody>
-                <?php include "backend/end-points/branch_list.php"; ?>
-            </tbody>
-        </table>
-    </div>
-</div>
-
+                 
+                 </tbody>
+               
+             </table>
+             <div id="pagination" class="flex justify-center space-x-2 mt-4"></div>
+         </div>
+     </div>
 
 
 
@@ -107,7 +125,7 @@
 
 
             <div class="flex justify-end gap-2">
-                <button type="button" class="addBranchModalClose bg-gray-500 hover:bg-gray-600 text-white py-1 px-3 rounded-md">Cancel</button>
+                <button type="button" class="UpdateBranchModalClose bg-gray-500 hover:bg-gray-600 text-white py-1 px-3 rounded-md">Cancel</button>
                 <button id="btnUpdateBranches" type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-md">Update Branch</button>
             </div>
         </form>
@@ -180,4 +198,4 @@
 
 
 <?php include "components/footer.php";?>
-
+<script src="assets/js/table_branches.js"></script>
