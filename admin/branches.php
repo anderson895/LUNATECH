@@ -145,10 +145,15 @@
                 <input type="text" id="new_branch_address" name="branch_address" class="w-full p-2 border rounded-md" required>
             </div>
             
+            <?php
+            date_default_timezone_set('Asia/Manila');
+            ?>
+
             <div class="mb-4">
                 <label for="new_branch_started" class="block text-sm font-medium text-gray-700">Branch Started</label>
-                <input type="date" id="new_branch_started" name="branch_started" class="w-full p-2 border rounded-md" required>
+                <input type="date" id="new_branch_started" name="branch_started" class="w-full p-2 border rounded-md" value="<?php echo date('Y-m-d'); ?>" required>
             </div>
+
 
 
             <div class="mb-4">
