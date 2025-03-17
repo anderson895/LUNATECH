@@ -134,14 +134,23 @@ class global_class extends db_connect
 
 
     
-    public function fetch_all_branch_manager(){
-        $query = $this->conn->prepare("SELECT * FROM `user` where user_type='Branch Manager' AND user_status='1'");
-
+    public function fetch_all_branch_manager() {
+        $query = $this->conn->prepare("
+            SELECT DISTINCT user.* 
+            FROM user
+            LEFT JOIN branches 
+            ON branches.branch_manager_id = user.id
+            WHERE user.user_type = 'Branch Manager' 
+            AND user.user_status = '1'
+            AND branches.branch_manager_id IS NULL
+        ");
+    
         if ($query->execute()) {
             $result = $query->get_result();
             return $result;
         }
     }
+    
     
 
     public function fetch_all_user(){

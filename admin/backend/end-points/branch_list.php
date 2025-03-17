@@ -11,7 +11,7 @@ if ($fetch_all_branch): ?>
             <td class="p-2"><?php echo htmlspecialchars($branch['branch_name']); ?></td>
             <td class="p-2"><?php echo htmlspecialchars($branch['branch_address']); ?></td>
             <td class="p-2"><?php echo htmlspecialchars($branch['branch_started']); ?></td>
-            <td class="p-2"><?php echo htmlspecialchars($branch['user_username']); ?></td>
+            <td class="p-2"><?php echo htmlspecialchars($branch['user_fullname']); ?></td>
            
             <td class="p-2">
                 <button class="bg-blue-500 text-white py-1 px-3 rounded-md togglerUpdateUserAdmin" 
