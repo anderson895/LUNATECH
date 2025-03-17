@@ -34,7 +34,7 @@ include "components/header.php";
                     </tr>
                 </thead>
                 <tbody class="text-gray-600">
-                    <?php include "backend/end-points/inventory_list.php";?>
+                    
                 </tbody>
             </table>
         </div>
@@ -57,6 +57,34 @@ include "components/header.php";
     </div>
 
 </div>
+
+
+<script>
+    $(document).ready(function () {
+        function fetchInventory() {
+            $.ajax({
+                url: 'backend/end-points/inventory_list.php', // Fetch inventory data
+                type: 'GET',
+                success: function (data) {
+                    $('#inventoryTable tbody').html(data); // Update table body
+                }
+            });
+        }
+
+        // Fetch inventory every 5 seconds
+        setInterval(fetchInventory, 3000);
+        fetchInventory(); // Initial load
+
+        // Search functionality
+        $('#searchInput').on('keyup', function () {
+            let value = $(this).val().toLowerCase();
+            $("#inventoryTable tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            });
+        });
+    });
+</script>
+
 
 <script>
    $(document).ready(function() {
@@ -152,7 +180,7 @@ include "components/header.php";
             success: function (response) {
                 if (response.status === 200) {
                     alertify.success(response.message);
-                    setTimeout(function () { location.reload(); }, 1000);
+                    // setTimeout(function () { location.reload(); }, 1000);
                     $("#product-form")[0].reset();  
                 } else {
                     $('#BtnaddInventory').prop('disabled', false);
