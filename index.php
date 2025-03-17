@@ -13,13 +13,11 @@ if (isset($_SESSION['id'])) {
 
   
     if (isset($On_Session)) {
-        if($_SESSION['user_type']=="admin"){
+        if($_SESSION['user_type']=="Administrator"||$_SESSION['user_type']=="General Manager"){
           header('location: admin/dashboard');
-        }else if($_SESSION['user_type']=="branch_manager"){
-          header('location: index');
+        }else if($_SESSION['user_type']=="Branch Manager"){
+          header('location: branch_manager/home');
         }
-    } else {
-       header('location: branch_manager/');
     }
 } 
 ?>

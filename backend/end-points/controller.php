@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         if ($user['user_type'] === 'Administrator'||$user['user_type'] === 'General Manager') {
                             $redirectPath = 'admin/dashboard';
                         } elseif ($user['user_type'] === 'Branch Manager') {
-                            $redirectPath = 'branch_manager/';
+                            $redirectPath = 'branch_manager/home';
                         }
 
                         echo json_encode([
