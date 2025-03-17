@@ -45,6 +45,64 @@ $('#adduserButton').click(function (e) {
 
 
   $(document).ready(function () {
+
+
+
+
+$("#addbranchForm").submit(function (e) {
+        e.preventDefault();
+
+
+        $('.spinner').show();
+        $('#btnAddBranches').prop('disabled', true);
+    
+        var formData = new FormData(this); 
+        formData.append('requestType', 'addbranch');
+        $.ajax({
+            type: "POST",
+            url: "backend/end-points/controller.php",
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: "json", // Expect JSON response
+            beforeSend: function () {
+                $("#btnAddBranches").prop("disabled", true).text("Processing...");
+            },
+            success: function (response) {
+                console.log(response); // Debugging
+                
+                if (response.status === 200) {
+                    alertify.success(response.message);
+                    setTimeout(function () { location.reload(); }, 1000);
+                } else {
+                    $('.spinner').hide();
+                    $('#btnAddBranches').prop('disabled', false);
+                    alertify.error(response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error:", xhr.responseText); // Log detailed error response
+                alertify.error("Something went wrong. Please try again.");
+            },
+            complete: function () {
+                $("#btnAddBranches").prop("disabled", false).text("Submit");
+            }
+        });
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     $("#adduserForm").submit(function (e) {
         e.preventDefault();
 
@@ -52,8 +110,8 @@ $('#adduserButton').click(function (e) {
         $('.spinner').show();
         $('#btnAdduser').prop('disabled', true);
     
-        var formData = new FormData(this); // Use FormData for better handling
-        formData.append('requestType', 'Adduser'); // Append request type
+        var formData = new FormData(this); 
+        formData.append('requestType', 'Adduser');
         $.ajax({
             type: "POST",
             url: "backend/end-points/controller.php",

@@ -11,6 +11,10 @@ class global_class extends db_connect
         $this->connect();
     }
 
+
+
+    
+
     public function check_account($id) {
         $id = intval($id);
         $query = "SELECT * FROM user WHERE id = ?";
@@ -115,15 +119,46 @@ class global_class extends db_connect
 
 
 
+    public function addbranch($branch_code, $branch_name, $branch_address, $branch_started, $branch_manager) {
+        $query = $this->conn->prepare(
+            "INSERT INTO `branches` (`branch_code`, `branch_name`, `branch_address`, `branch_started`, `branch_manager_id`) VALUES (?, ?, ?, ?, ?)"
+        );
+        $query->bind_param("ssssi", $branch_code, $branch_name, $branch_address, $branch_started, $branch_manager);
     
-    
-    
-    
+        if ($query->execute()) {
+            return 'success';
+        } else {
+            return 'Error: ' . $query->error;
+        }
+    }
 
 
+    
+    public function fetch_all_branch_manager(){
+        $query = $this->conn->prepare("SELECT * FROM `user` where user_type='Branch Manager' AND user_status='1'");
+
+        if ($query->execute()) {
+            $result = $query->get_result();
+            return $result;
+        }
+    }
+    
 
     public function fetch_all_user(){
         $query = $this->conn->prepare("SELECT * FROM `user` where user_status='1'");
+
+        if ($query->execute()) {
+            $result = $query->get_result();
+            return $result;
+        }
+    }
+
+
+    public function fetch_all_branch(){
+        $query = $this->conn->prepare("SELECT * FROM `branches` 
+        LEFT JOIN user
+        ON branches.branch_manager_id = user.id
+        ");
 
         if ($query->execute()) {
             $result = $query->get_result();

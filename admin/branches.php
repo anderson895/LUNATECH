@@ -31,18 +31,19 @@
         <table id="userTable" class="table-auto w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead class="bg-gray-100 text-gray-700">
                 <tr>
-                    <th class="p-3">ID</th>
-                    <th class="p-3">Fullname</th>
-                    <th class="p-3">Email</th>
-                    <th class="p-3">Username</th>
-                    <th class="p-3">Position</th>
+                    <th class="p-3">#</th>
+                    <th class="p-3">Branch Code</th>
+                    <th class="p-3">Branch Name</th>
+                    <th class="p-3">Branch Address</th>
+                    <th class="p-3">Branch Started</th>
+                    <th class="p-3">Branch Manager</th>
                     
                     
                     <th class="p-3">Action</th>
                 </tr>
             </thead>
             <tbody>
-                <?php include "backend/end-points/user_list.php"; ?>
+                <?php include "backend/end-points/branch_list.php"; ?>
             </tbody>
         </table>
     </div>
@@ -120,8 +121,8 @@
 <!-- Modal for Adding Promo -->
 <div id="addUserModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center" style="display:none;">
     <div class="bg-white rounded-lg shadow-lg w-96 p-6">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4">Add New User</h3>
-        <form id="adduserForm">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Add New Branch</h3>
+        <form id="addbranchForm">
             
             <!-- Spinner -->
             <div class="spinner" id="spinner" style="display:none;">
@@ -131,39 +132,38 @@
             </div>
 
             <div class="mb-4">
-                <label for="user_fullname" class="block text-sm font-medium text-gray-700">Fullname</label>
-                <input type="text" id="user_fullname" name="user_fullname" class="w-full p-2 border rounded-md" required>
+                <label for="new_branch_code" class="block text-sm font-medium text-gray-700">Branch Code</label>
+                <input type="text" id="new_branch_code" name="branch_code" class="w-full p-2 border rounded-md" required>
             </div>
 
             <div class="mb-4">
-                <label for="user_email" class="block text-sm font-medium text-gray-700">Email</label>
-                <input type="text" id="user_email" name="user_email" class="w-full p-2 border rounded-md" required>
+                <label for="new_branch_name" class="block text-sm font-medium text-gray-700">Branch Name</label>
+                <input type="text" id="new_branch_name" name="branch_name" class="w-full p-2 border rounded-md" required>
             </div>
 
             <div class="mb-4">
-                <label for="user_username" class="block text-sm font-medium text-gray-700">User Name</label>
-                <input type="text" id="user_username" name="user_username" class="w-full p-2 border rounded-md" required>
+                <label for="new_branch_address" class="block text-sm font-medium text-gray-700">Branch Address</label>
+                <input type="text" id="new_branch_address" name="branch_address" class="w-full p-2 border rounded-md" required>
             </div>
             
             <div class="mb-4">
-                <label for="user_password" class="block text-sm font-medium text-gray-700">Password</label>
-                <input type="password" id="user_password" name="user_password" class="w-full p-2 border rounded-md" required>
+                <label for="new_branch_started" class="block text-sm font-medium text-gray-700">Branch Started</label>
+                <input type="date" id="new_branch_started" name="branch_started" class="w-full p-2 border rounded-md" required>
             </div>
 
 
             <div class="mb-4">
-                <label for="user_type" class="block text-sm font-medium text-gray-700">Position</label>
-                <select name="user_type" id="user_type" class="w-full p-2 border rounded-md" required>
-                    <option value="General Manager">General Manager</option>
-                    <option value="Administrator">Administrator</option>
-                   
+                <label for="new_branch_manager" class="block text-sm font-medium text-gray-700">Branch Manager</label>
+                <select id="new_branch_manager" name="branch_manager" class="w-full p-2 border rounded-md" required>
+                    <option value="">Select Manager</option>
+                    <?php include "backend/end-points/branch_manager_list.php";?>
                 </select>
             </div>
 
 
             <div class="flex justify-end gap-2">
-                <button type="button" class="addUserModalClose bg-gray-500 hover:bg-gray-600 text-white py-1 px-3 rounded-md">Cancel</button>
-                <button id="btnAdduser" type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-md">Add new</button>
+                <button type="button" class="addBranchModalClose bg-gray-500 hover:bg-gray-600 text-white py-1 px-3 rounded-md">Cancel</button>
+                <button id="btnAddBranches" type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-md">Add Branch</button>
             </div>
         </form>
     </div>
