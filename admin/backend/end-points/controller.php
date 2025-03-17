@@ -133,6 +133,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(["status" => 400, "message" => $result]);
         }
         
+    }else if($_POST['requestType'] =='DeleteProduct'){
+
+        $prod_id = $_POST['prod_id'];
+      
+
+        $result = $db->DeleteProduct($prod_id);
+
+        if ($result == "success") {
+            echo json_encode(["status" => 200, "message" => "Delete Successfully"]);
+        } else {
+            echo json_encode(["status" => 400, "message" => $result]);
+        }
+        
     }
 }
 ?>

@@ -87,7 +87,7 @@
                     <!-- Buttons -->
                     <div class="flex justify-end space-x-2">
                         <button id="btnUpdateroduct" type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition">Update</button>
-                        <button type="button" class="addProductModalClose bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-md transition">Cancel</button>
+                        <button type="button" class="updateProductModalClose bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-md transition">Cancel</button>
                     </div>
                 </form>
             </div>

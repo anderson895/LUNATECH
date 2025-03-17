@@ -28,6 +28,54 @@ $('#adduproductButton').click(function (e) {
 
 
 
+    $('.togglerDeleteProduct').click(function (e) { 
+        e.preventDefault();
+        var prod_id = $(this).data('prod_id');
+        console.log(prod_id);
+    
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You won\'t be able to revert this!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "backend/end-points/controller.php",
+                    type: 'POST',
+                    data: { prod_id: prod_id, requestType: 'DeleteProduct' },
+                    dataType: 'json',  // Expect a JSON response
+                    success: function(response) {
+                        if (response.status === 200) {
+                            Swal.fire(
+                                'Deleted!',
+                                response.message,  // Show the success message from the response
+                                'success'
+                            ).then(() => {
+                                location.reload(); 
+                            });
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                response.message,  // Show the error message from the response
+                                'error'
+                            );
+                        }
+                    },
+                    error: function() {
+                        Swal.fire(
+                            'Error!',
+                            'There was a problem with the request.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    });
+
 
 
 
@@ -155,6 +203,19 @@ $('.togglerUpdateProduct').click(function (e) {
 });
 
 
+
+
+$('.updateProductModalClose').click(function (e) { 
+    e.preventDefault();
+    $('#updateProductModal').fadeOut();
+  });  
+
+    // Close Modal when clicking outside the modal content
+    $("#updateProductModal").click(function(event) {
+        if ($(event.target).is("#updateProductModal")) {
+            $("#updateProductModal").fadeOut();
+        }
+    });
 
 
 

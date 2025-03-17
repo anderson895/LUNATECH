@@ -199,6 +199,21 @@ class global_class extends db_connect
             return 'Error: ' . $query->error;
         }
     }
+
+
+    public function DeleteProduct($prod_id) {
+        $status = 0; 
+        $query = $this->conn->prepare(
+            "UPDATE `products` SET `prod_status` = ? WHERE `prod_id` = ?"
+        );
+        $query->bind_param("is", $status, $prod_id);
+        
+        if ($query->execute()) {
+            return 'success';
+        } else {
+            return 'Error: ' . $query->error;
+        }
+    }
     
     public function DeleteUser($user_id) {
         $status = 0; 

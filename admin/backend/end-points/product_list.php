@@ -25,7 +25,7 @@ if ($fetch_all_product->num_rows>0): ?>
                 data-prod_id="<?=$product['prod_id']?>"
                 data-prod_name="<?=$product['prod_name']?>"
                 >Update</button>
-                <button class="bg-red-500 text-white py-1 px-3 rounded-md togglerDeleteBranch" data-prod_id=<?=$product['prod_id']?>>Delete</button>
+                <button class="bg-red-500 text-white py-1 px-3 rounded-md togglerDeleteProduct" data-prod_id=<?=$product['prod_id']?>>Delete</button>
             </td>
         </tr>
     <?php endforeach; ?>
