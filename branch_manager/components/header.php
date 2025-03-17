@@ -13,8 +13,8 @@ if (isset($_SESSION['id'])) {
 
   
     if (!empty($On_Session)) {
-        if($_SESSION['user_type']=="Branch Manager"){
-          header('location: ../branch_manager/home');
+        if($_SESSION['user_type']=="Administrator"||$_SESSION['user_type']=="General Manager"){
+          header('location: ../admin/dashboard');
         }
     } else {
        header('location: ../');
@@ -32,7 +32,7 @@ if (isset($_SESSION['id'])) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ADMIN</title>
+  <title>NDG Company</title>
   <link rel="icon" type="image/png" href="../assets/images/logo/business_logo.jpeg">
   
   <script src="https://cdn.tailwindcss.com"></script>
@@ -47,7 +47,7 @@ if (isset($_SESSION['id'])) {
 </head>
 <body class="bg-gray-100 font-sans antialiased">
 
-
+<input type="text" id="user_id" value="<?=$On_Session[0]['id']?>" hidden>
 
 <?php include "../function/PageSpinner.php"; ?>
 
@@ -62,26 +62,17 @@ if (isset($_SESSION['id'])) {
   <!-- Hide Sidebar Button -->
   <div class="flex items-center space-x-4 p-4 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
   <img src="../assets/images/logo/business_logo.jpeg" alt="Logo" class="w-20 h-20 rounded-full border-2 border-gray-300 shadow-sm transform transition-transform duration-300 hover:scale-105"> <!-- Logo -->
-  <h1 class="text-1xl font-bold text-gray-800 tracking-tight text-left lg:text-left hover:text-indigo-600 transition-colors duration-300">NDG Company</h1>
+  <h1 class="text-1xl font-bold text-gray-800 tracking-tight text-left lg:text-left hover:text-indigo-600 transition-colors duration-300"><?=$On_Session[0]['user_type']?></h1>
 </div>
 
 
   <nav class="space-y-4 text-left lg:text-left">
-      <a href="dashboard" class="flex items-center lg:justify-start space-x-3 text-gray-600 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
-          <span class="material-icons">dashboard</span>
-          <span>Dashboard</span>
+      <a href="home" class="flex items-center lg:justify-start space-x-3 text-gray-600 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
+          <span class="material-icons">home</span>
+          <span>Home</span>
       </a>
 
-      <a href="users" class="flex items-center lg:justify-start space-x-3 text-gray-600 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
-          <span class="material-icons">manage_accounts</span>
-          <span>Manage users</span>
-      </a>
-
-      
-      <a href="branches" class="flex items-center lg:justify-start space-x-3 text-gray-600 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
-          <span class="material-icons">add_business</span>
-          <span>Manage branches</span>
-      </a>
+     
 
 
       <a href="inventory" class="flex items-center lg:justify-start  space-x-3 text-gray-600 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
@@ -90,10 +81,7 @@ if (isset($_SESSION['id'])) {
       </a>
 
 
-      <a href="report" class="flex items-center lg:justify-start  space-x-3 text-gray-600 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
-          <span class="material-icons">description</span>
-          <span>Reports</span>
-      </a>
+      
 
       <a href="sales" class="flex items-center lg:justify-start  space-x-3 text-gray-600 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
             <span class="material-icons">point_of_sale</span>
