@@ -50,6 +50,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }else if ($_POST['requestType'] == 'CompletePurchase') {
             session_start();
             $user_id = $_SESSION['id'];
+
+            // echo "<pre>";
+            // print_r($_POST);
+            // echo "</pre>";
             
             $branch_id = htmlspecialchars(trim($_POST['branch_id']));
             $total = htmlspecialchars(trim($_POST['total']));
@@ -79,9 +83,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $item_qty = $item['quantity'];
                             $cart_id = $item['cart_id'];
                             $prod_price = $item['prod_price'];
+                            $prod_capital = $item['prod_capital'];
             
                             // Pass the valid purchase ID
-                            $db->addpurchase_item($purchase_id,$branch_id, $item_prod_id, $item_qty, $cart_id,$prod_price);
+                            $db->addpurchase_item($purchase_id,$branch_id, $item_prod_id, $item_qty, $cart_id,$prod_price,$prod_capital);
                         }
                     }
                 } else {

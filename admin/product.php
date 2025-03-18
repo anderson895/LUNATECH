@@ -130,9 +130,18 @@
                             >
                     </div>
 
+
+                     <!-- Product Price -->
+                    <div>
+                        <label for="new_product_capital" class="block text-sm font-medium text-gray-700">Capital Price</label>
+                        <input type="text" id="new_product_capital" name="new_product_capital" 
+                            class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                            >
+                    </div>
+
                      <!-- Product Price -->
                      <div>
-                        <label for="new_product_price" class="block text-sm font-medium text-gray-700">Product Price</label>
+                        <label for="new_product_price" class="block text-sm font-medium text-gray-700">Current Price</label>
                         <input type="text" id="new_product_price" name="new_product_price" 
                             class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
                             >

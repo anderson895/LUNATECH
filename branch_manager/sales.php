@@ -248,7 +248,7 @@ $(document).ready(function () {
                 totalPrice += subtotal;
 
                 cartItemsHtml += `
-                    <div class="cart-item flex justify-between items-center border-b py-2" data-prod_price="${item.prod_price}" data-cart_id="${item.cart_id}" data-cart_prod_id="${item.cart_prod_id}">
+                    <div class="cart-item flex justify-between items-center border-b py-2" data-prod_capital="${item.prod_capital}" data-prod_price="${item.prod_price}" data-cart_id="${item.cart_id}" data-cart_prod_id="${item.cart_prod_id}">
                         <p>${item.prod_name} - ₱${parseFloat(item.prod_price).toFixed(2)} x ${item.cart_qty} = <strong>₱${subtotal.toFixed(2)}</strong></p>
                         <button class="removeItem text-red-500 hover:text-red-700" data-cart_prod_id="${item.cart_prod_id}">X</button>
                     </div>
@@ -345,6 +345,7 @@ $(document).ready(function () {
                 cart_id: $(this).data("cart_id"),
                 cart_prod_id: $(this).data("cart_prod_id"),
                 prod_price: $(this).data("prod_price"),
+                prod_capital: $(this).data("prod_capital"),
                 quantity: parseInt($(this).find("p").text().split(" x ")[1]),
             };
             cartItems.push(item);

@@ -135,7 +135,7 @@ class global_class extends db_connect
 
 
 
-    public function addproduct($new_product_name,$new_product_price, $added_by) {
+    public function addproduct($new_product_name,$new_product_capital,$new_product_price, $added_by) {
         // Generate a unique product code
         do {
             $Prod_code = "P" . rand(10000, 99999); 
@@ -147,9 +147,9 @@ class global_class extends db_connect
     
         // Prepare the INSERT query
         $query = $this->conn->prepare(
-            "INSERT INTO `products` (`prod_code`, `prod_name`,`prod_price`, `prod_added_by`) VALUES (?,?, ?, ?)"
+            "INSERT INTO `products` (`prod_code`, `prod_name`,`prod_capital`,`prod_price`, `prod_added_by`) VALUES (?,?, ?,?, ?)"
         );
-        $query->bind_param("ssdi", $Prod_code, $new_product_name,$new_product_price,  $added_by);
+        $query->bind_param("ssddi", $Prod_code, $new_product_name,$new_product_capital,$new_product_price,  $added_by);
     
         if ($query->execute()) {
             return 'success';

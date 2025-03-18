@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 18, 2025 at 04:24 PM
+-- Generation Time: Mar 18, 2025 at 06:02 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -73,6 +73,7 @@ CREATE TABLE `products` (
   `prod_id` int(11) NOT NULL,
   `prod_code` varchar(60) NOT NULL,
   `prod_name` varchar(60) NOT NULL,
+  `prod_capital` decimal(10,2) NOT NULL,
   `prod_price` decimal(10,2) NOT NULL,
   `prod_added_by` int(11) NOT NULL,
   `prod_date_added` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -83,13 +84,11 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`prod_id`, `prod_code`, `prod_name`, `prod_price`, `prod_added_by`, `prod_date_added`, `prod_status`) VALUES
-(42, 'P65190', 'IP 11 128 MINT GREEN', 14000.00, 1, '2025-03-18 01:03:10', 1),
-(43, 'P30338', 'IP 11 256 WHITE', 15500.00, 1, '2025-03-18 01:04:23', 1),
-(44, 'P28880', 'IP 11 PRO 256 WHITE', 17500.00, 1, '2025-03-18 01:05:45', 1),
-(45, 'P89924', 'IP 12 256 PINK', 19000.00, 1, '2025-03-18 01:06:00', 1),
-(46, 'P28235', 'IP 11 PRO 256', 17500.00, 1, '2025-03-18 01:23:46', 1),
-(47, 'P70948', 'IP 11 256 WHITE', 15500.00, 1, '2025-03-18 01:24:02', 1);
+INSERT INTO `products` (`prod_id`, `prod_code`, `prod_name`, `prod_capital`, `prod_price`, `prod_added_by`, `prod_date_added`, `prod_status`) VALUES
+(42, 'P65190', 'IP 11 128 MINT GREEN', 200.00, 14000.00, 1, '2025-03-18 16:48:45', 1),
+(44, 'P28880', 'IP 11 PRO 256 WHITE', 100.00, 17500.00, 1, '2025-03-18 16:48:41', 1),
+(48, 'P94368', 'fesf', 33.00, 4.00, 1, '2025-03-18 16:45:03', 1),
+(49, 'P39631', 'awdawd', 3.00, 4.00, 1, '2025-03-18 16:48:12', 1);
 
 -- --------------------------------------------------------
 
@@ -101,17 +100,18 @@ CREATE TABLE `purchase_item` (
   `item_id` int(11) NOT NULL,
   `item_purchase_id` int(11) NOT NULL,
   `item_prod_id` int(11) NOT NULL,
-  `item_qty` int(11) NOT NULL
+  `item_qty` int(11) NOT NULL,
+  `item_price_sold` decimal(10,2) NOT NULL,
+  `item_price_capital` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `purchase_item`
 --
 
-INSERT INTO `purchase_item` (`item_id`, `item_purchase_id`, `item_prod_id`, `item_qty`) VALUES
-(38, 30, 42, 6),
-(39, 30, 44, 1),
-(40, 31, 42, 2);
+INSERT INTO `purchase_item` (`item_id`, `item_purchase_id`, `item_prod_id`, `item_qty`, `item_price_sold`, `item_price_capital`) VALUES
+(48, 41, 42, 6, 14000.00, 200.00),
+(49, 42, 42, 1, 14000.00, 200.00);
 
 -- --------------------------------------------------------
 
@@ -136,8 +136,8 @@ CREATE TABLE `purchase_record` (
 --
 
 INSERT INTO `purchase_record` (`purchase_id`, `purchase_invoice`, `purchase_mode_of_payment`, `purchase_total_payment`, `purchase_payment`, `purchased_change`, `purchase_branch_id`, `purchase_user_id`, `purchase_date`) VALUES
-(30, 'INV-17423098283916', 'cash', 101500, 102000.00, 500.00, 18, 10, '2025-03-18 14:57:08'),
-(31, 'INV-17423113729527', 'cash', 28000, 28000.00, 0.00, 18, 10, '2025-03-18 15:22:52');
+(41, 'INV-17423172511264', 'cash', 84000, 100000.00, 16000.00, 18, 10, '2025-03-18 17:00:51'),
+(42, 'INV-17423172933747', 'cash', 14000, 15000.00, 1000.00, 18, 10, '2025-03-18 17:01:33');
 
 -- --------------------------------------------------------
 
@@ -161,9 +161,9 @@ CREATE TABLE `stock` (
 --
 
 INSERT INTO `stock` (`stock_in_id`, `stock_in_branch_id`, `stock_in_prod_id`, `stock_in_qty`, `stock_in_sold`, `stock_in_backjob`, `stock_in_date`, `stock_in_status`) VALUES
-(43, 18, 42, 0, 20, 0, '2025-03-18 14:47:42', 1),
-(44, 18, 44, 14, 0, 0, '2025-03-18 14:47:49', 1),
-(45, 18, 42, 17, 20, 0, '2025-03-18 15:22:42', 1);
+(43, 18, 42, 0, 20, 0, '2025-03-18 16:16:01', 1),
+(44, 18, 44, 14, 0, 0, '2025-03-18 15:55:09', 0),
+(45, 18, 42, 2, 20, 0, '2025-03-18 17:01:24', 1);
 
 -- --------------------------------------------------------
 
@@ -261,25 +261,25 @@ ALTER TABLE `branches`
 -- AUTO_INCREMENT for table `pos_cart`
 --
 ALTER TABLE `pos_cart`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=130;
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=151;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `prod_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `prod_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT for table `purchase_item`
 --
 ALTER TABLE `purchase_item`
-  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT for table `purchase_record`
 --
 ALTER TABLE `purchase_record`
-  MODIFY `purchase_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `purchase_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `stock`

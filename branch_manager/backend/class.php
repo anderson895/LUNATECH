@@ -139,7 +139,8 @@ class global_class extends db_connect
                 SUM(c.cart_qty) AS cart_qty, 
                 c.cart_branch_id, 
                 p.prod_name, 
-                p.prod_price 
+                p.prod_price,
+                p.prod_capital
             FROM pos_cart c 
             JOIN products p ON c.cart_prod_id = p.prod_id
             WHERE c.cart_branch_id = ?
@@ -158,6 +159,7 @@ class global_class extends db_connect
                 'cart_prod_id' => $row['cart_prod_id'],
                 'prod_name' => $row['prod_name'],
                 'prod_price' => $row['prod_price'],
+                'prod_capital' => $row['prod_capital'],
                 'cart_qty' => $row['cart_qty'] // Summed quantity of the product in the cart
             ];
         }
@@ -256,13 +258,13 @@ class global_class extends db_connect
 
 
 
-    public function addpurchase_item($item_purchase_id,$branch_id, $item_prod_id, $item_qty, $cart_id,$prod_price) {
+    public function addpurchase_item($item_purchase_id,$branch_id, $item_prod_id, $item_qty, $cart_id,$prod_price,$prod_capital) {
         // Insert purchase item
         $query = $this->conn->prepare("
-            INSERT INTO `purchase_item` (`item_purchase_id`, `item_prod_id`, `item_qty`,`item_price_sold`) 
-            VALUES (?, ?, ?,?)
+            INSERT INTO `purchase_item` (`item_purchase_id`, `item_prod_id`, `item_qty`,`item_price_sold`,`item_price_capital`) 
+            VALUES (?, ?, ?,?,?)
         ");
-        $query->bind_param("iiid", $item_purchase_id, $item_prod_id, $item_qty,$prod_price);
+        $query->bind_param("iiidd", $item_purchase_id, $item_prod_id, $item_qty,$prod_price,$prod_capital);
     
         if (!$query->execute()) {
             return 'Error: ' . $query->error;

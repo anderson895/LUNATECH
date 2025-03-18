@@ -112,6 +112,8 @@ $(document).ready(function () {
         e.preventDefault();
 
         var new_product_name = $("#new_product_name").val().trim();
+        var new_product_capital = $("#new_product_capital").val().trim();
+        var new_product_price = $("#new_product_price").val().trim();
 
         console.log(new_product_name);
 
@@ -119,9 +121,29 @@ $(document).ready(function () {
             alertify.error("Product name is required");
             $('#BtnaddInventory').prop('disabled', false);
             return;
-
         }
-
+        if (new_product_capital == "") {
+            alertify.error("Capital Price is required");
+            $('#BtnaddInventory').prop('disabled', false);
+            return;
+        }
+        if (isNaN(new_product_capital) || new_product_capital <= 0) {
+            alertify.error("Capital Price must be a valid number greater than 0");
+            $('#BtnaddInventory').prop('disabled', false);
+            return;
+        }
+        
+        if (new_product_price == "") {
+            alertify.error("Current Price is required");
+            $('#BtnaddInventory').prop('disabled', false);
+            return;
+        }
+        if (isNaN(new_product_price) || new_product_price <= 0) {
+            alertify.error("Current Price must be a valid number greater than 0");
+            $('#BtnaddInventory').prop('disabled', false);
+            return;
+        }
+        
 
         $('.spinner').show();
         $('#btnAddProduct').prop('disabled', true);

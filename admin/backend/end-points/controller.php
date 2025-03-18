@@ -127,10 +127,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }else if($_POST['requestType'] =='addproduct'){
         session_start();
         $new_product_name = htmlspecialchars(trim($_POST['new_product_name']));
+        $new_product_capital = htmlspecialchars(trim($_POST['new_product_capital']));
         $new_product_price = htmlspecialchars(trim($_POST['new_product_price']));
         $added_by = $_SESSION['id'];
         
-        $result = $db->addproduct($new_product_name, $new_product_price, $added_by);
+        $result = $db->addproduct($new_product_name,$new_product_capital, $new_product_price, $added_by);
         
         if ($result == "success") {
             // Kunin ang latest product code (assuming auto-increment ID o last inserted code)
