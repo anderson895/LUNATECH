@@ -44,9 +44,9 @@ include "components/header.php";
     <!-- Add Record Form (Card Style) -->
     <div class="md:w-1/4 w-full bg-white shadow-lg rounded-lg p-6 relative flex flex-col items-center">
         <div class="w-full flex justify-between items-center mb-4">
-            <h2 class="text-xl font-bold text-gray-700"> Cart</h2>
+            <!-- <h2 class="text-xl font-bold text-gray-700"> ....</h2> -->
         </div>
-        <div class="w-full p-4 rounded-lg mb-4">
+        <div class="w-full rounded-lg mb-4">
             <form id="product-form" class="flex flex-col gap-4">
                 <input type="hidden" id="sale_prod_code" name="sale_prod_code" placeholder="Search Product Code" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
                 <input type="hidden" id="sale_prod_id" name="sale_prod_id" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
