@@ -66,8 +66,8 @@ include "components/header.php";
                     <!-- Cart item list will go here -->
                 </div>
                 <div class="overflow-x-auto">
-                    <p class="text-sm text-gray-600">Total Items: <span id="cartItemCount">0</span></p>
-                    <p class="text-sm text-gray-600">Grand Total: ₱ <span id="cartTotalPrice">0.00</span></p>
+                    <!-- <p class="text-sm text-gray-600">Total Items: <span id="cartItemCount">0</span></p> -->
+                    <b class="text-sm text-gray-600">Total: ₱ <span id="cartTotalPrice">0.00</span></b>
                 </div>
 
                 <!-- Purchase Button -->
@@ -94,7 +94,7 @@ $(document).ready(function () {
             type: 'GET',
             success: function (data) {
                 $('#inventoryTable tbody').html(data);
-
+                $("#inventoryTable tbody tr").addClass("cursor-pointer");
                 $("#inventoryTable tbody tr").each(function () {
                     $(this).toggle($(this).text().toLowerCase().indexOf(searchValue) > -1);
                 });
@@ -127,75 +127,100 @@ $(document).ready(function () {
 
         selectedProduct = {
             id: productId,
+            code: productCode,
             name: productName,
             price: parseFloat(productPrice.replace('₱', '').trim()), 
             quantity: 0 
         };
     });
 
-    $('#BtnaddInventory').on('click', function (e) {
+    
+    $('#product-form').on('submit', function (e) {
         e.preventDefault();
 
-        let qty = $('#sale_qty').val();
-        if (qty > 0 && selectedProduct) {
-            selectedProduct.quantity = parseInt(qty);
+        var branch_id = $("#branch_id").val();
+        var formData = new FormData(this);
+        formData.append('requestType', 'AddToCart'); 
+        formData.append('branch_id', branch_id); 
 
-            let existingItemIndex = cartItems.findIndex(item => item.id === selectedProduct.id);
-            if (existingItemIndex >= 0) {
-                cartItems[existingItemIndex].quantity += selectedProduct.quantity;
-            } else {
-                cartItems.push({...selectedProduct});
-            }
 
-            updateCart();
+        console.log(formData);
+
+        $.ajax({
+                type: "POST",
+                url: "backend/end-points/controller.php",
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: "json", 
+                success: function (response) {
+                    console.log(response); 
+                    
+                    fetch_cart();
+                },
+            });
+    });
+
+    
+
+    function fetch_cart() {
+    $.ajax({
+        url: 'backend/end-points/fetch_cart.php',
+        type: 'GET',
+        success: function (data) {
+            let cartItems = JSON.parse(data); 
+            let cartItemsHtml = "";
+            let totalItems = 0;
+            let totalPrice = 0;
+
+            console.log(cartItems); 
+
+            cartItems.forEach(item => {
+                let subtotal = item.prod_price * item.cart_qty;
+                totalItems += item.cart_qty;
+                totalPrice += subtotal;
+
+                cartItemsHtml += `
+                    <div class="cart-item flex justify-between items-center border-b py-2" data-id="${item.cart_id}">
+                        <p>${item.prod_name} - ₱${parseFloat(item.prod_price).toFixed(2)} x ${item.cart_qty} = <strong>₱${subtotal.toFixed(2)}</strong></p>
+                        <button class="removeItem text-red-500 hover:text-red-700" data-cart_id="${item.cart_id}">X</button>
+                    </div>
+                `;
+            });
+
+            $("#cartItemsList").html(cartItemsHtml);
+            $("#cartItemCount").text(totalItems);
+            $("#cartTotalPrice").text(totalPrice.toFixed(2));
+        },
+        error: function (xhr, status, error) {
+            console.error("Error fetching cart:", error);
         }
     });
+}
 
-    function updateCart() {
-        let totalPrice = 0;
-        let cartItemsHtml = '';
-        cartItems.forEach(item => {
-            let subtotal = item.price * item.quantity;
-            totalPrice += subtotal;
-            cartItemsHtml += `
-                <div class="cart-item flex justify-between items-center" data-id="${item.id}">
-                    <p>${item.name} (Code: ${item.id}) - ₱${item.price.toFixed(2)} x ${item.quantity} = ₱${subtotal.toFixed(2)}</p>
-                    <button class="removeItem text-red-500 hover:text-red-700" data-id="${item.id}">X</button>
-                </div>
-            `;
-        });
-
-        $('#cartItemsList').html(cartItemsHtml); 
-        $('#cartItemCount').text(cartItems.length);
-        $('#cartTotalPrice').text(totalPrice.toFixed(2));
-    }
-
-    // Remove item from cart using event delegation
-    $(document).on('click', '.removeItem', function () {
-        console.log('Remove item clicked');
-        let itemId = $(this).data('id');
-        console.log('Item ID to remove:', itemId); // Check the value of itemId
-
-        // Ensure itemId is treated as a string (it may be a number)
-        cartItems = cartItems.filter(item => String(item.id) !== String(itemId));
-        
-        // Update the cart display
-        updateCart();
-    });
-
-    $('#btnPurchase').on('click', function () {
-        if (cartItems.length > 0) {
-            // Proceed to purchase logic, e.g., send data to backend or process payment
-            alert("Purchase successful! Total: ₱" + $('#cartTotalPrice').text());
-            // Optionally, clear the cart after purchase
-            cartItems = [];
-            $('#cartItemsList').html('');
-            $('#cartItemCount').text(0);
-            $('#cartTotalPrice').text('0.00');
-        } else {
-            alert("Your cart is empty. Please add items before purchasing.");
+$(document).on('click', '.removeItem', function () {
+    let cart_id = $(this).data('cart_id');
+    
+    $.ajax({
+        url: "backend/end-points/controller.php",
+        type: 'POST',
+        data: { cart_id: cart_id , requestType: 'RemoveCartItem' },
+        success: function (response) {
+            console.log(response);
+            fetch_cart(); 
+        },
+        error: function (xhr, status, error) {
+            console.error("Error removing item:", error);
         }
     });
+});
+
+// Fetch cart every 3 seconds
+$(document).ready(function () {
+    setInterval(fetch_cart, 3000);
+    fetch_cart();
+});
+
 });
 
 

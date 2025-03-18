@@ -62,15 +62,14 @@ include "components/header.php";
 <script>
    $(document).ready(function () {
     function fetchInventory() {
-        let searchValue = $('#searchInput').val().toLowerCase(); // Preserve search value
+        let searchValue = $('#searchInput').val().toLowerCase(); 
 
         $.ajax({
-            url: 'backend/end-points/inventory_list.php', // Fetch inventory data
+            url: 'backend/end-points/inventory_list.php', 
             type: 'GET',
             success: function (data) {
-                $('#inventoryTable tbody').html(data); // Update table body
+                $('#inventoryTable tbody').html(data); 
 
-                // Reapply search filter
                 $("#inventoryTable tbody tr").each(function () {
                     $(this).toggle($(this).text().toLowerCase().indexOf(searchValue) > -1);
                 });
@@ -78,28 +77,20 @@ include "components/header.php";
         });
     }
 
-    // Fetch inventory every 3 seconds
     setInterval(fetchInventory, 3000);
-    fetchInventory(); // Initial load
+    fetchInventory(); 
 
-    // Search functionality
     $('#searchInput').on('keyup', function () {
         let value = $(this).val().toLowerCase();
         $("#inventoryTable tbody tr").filter(function () {
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
         });
     });
-});
-
-</script>
 
 
-<script>
-   $(document).ready(function() {
-    // Product search input event
     $("#stock_in_prod_code").on("input", function() {
         let query = $(this).val();
-        if (query.length >= 1) { // Fetch only if at least 2 characters are entered
+        if (query.length >= 1) { 
             $.ajax({
                 url: "backend/end-points/fetch_products.php",
                 type: "POST",
@@ -190,6 +181,7 @@ include "components/header.php";
                     alertify.success(response.message);
                     // setTimeout(function () { location.reload(); }, 1000);
                     $("#product-form")[0].reset();  
+                    fetchInventory();
                 } else {
                     $('#BtnaddInventory').prop('disabled', false);
                     alertify.error(response.message);

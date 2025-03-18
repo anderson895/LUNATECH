@@ -25,6 +25,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 echo json_encode(["status" => 400, "message" => $result]);
             }
+        }else if ($_POST['requestType'] == 'AddToCart') {
+            $branch_id = htmlspecialchars(trim($_POST['branch_id']));
+            $qty = htmlspecialchars(trim($_POST['sale_qty']));
+            $prod_id = htmlspecialchars(trim($_POST['sale_prod_id']));
+            
+            $result = $db->AddToCart($branch_id,$qty, $prod_id);
+            
+            if ($result == "success") {
+                echo json_encode(["status" => 200, "message" => "Cart record successfully added"]);
+            } else {
+                echo json_encode(["status" => 400, "message" => $result]);
+            }
+        }else if($_POST['requestType'] == 'RemoveCartItem'){
+            echo "<pre>";
+            print_r($_POST);
+            echo "</pre>";
+            $cart_id = htmlspecialchars(trim($_POST['cart_id']));
+            
+            $result = $db->RemoveCartItem( $cart_id);
+            
+            if ($result == "success") {
+                echo json_encode(["status" => 200, "message" => "Cart record successfully removed"]);
+            } else {
+                echo json_encode(["status" => 400, "message" => $result]);
+            }
         }
     }
 }
