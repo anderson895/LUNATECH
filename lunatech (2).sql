@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 17, 2025 at 05:49 PM
+-- Generation Time: Mar 18, 2025 at 02:30 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -51,6 +51,26 @@ INSERT INTO `branches` (`branch_id`, `branch_code`, `branch_name`, `branch_addre
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `pos_cart`
+--
+
+CREATE TABLE `pos_cart` (
+  `cart_id` int(11) NOT NULL,
+  `cart_prod_id` int(11) NOT NULL,
+  `cart_qty` int(11) NOT NULL,
+  `cart_branch_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `pos_cart`
+--
+
+INSERT INTO `pos_cart` (`cart_id`, `cart_prod_id`, `cart_qty`, `cart_branch_id`) VALUES
+(13, 42, 2, 18);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `products`
 --
 
@@ -58,6 +78,7 @@ CREATE TABLE `products` (
   `prod_id` int(11) NOT NULL,
   `prod_code` varchar(60) NOT NULL,
   `prod_name` varchar(60) NOT NULL,
+  `prod_price` decimal(19,4) NOT NULL,
   `prod_added_by` int(11) NOT NULL,
   `prod_date_added` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `prod_status` int(11) NOT NULL DEFAULT 1 COMMENT '0=deleted, 1=existing'
@@ -67,33 +88,13 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`prod_id`, `prod_code`, `prod_name`, `prod_added_by`, `prod_date_added`, `prod_status`) VALUES
-(1, 'P29720', 'IP 11 128 MINT GREEN', 1, '2025-03-17 06:19:30', 1),
-(2, 'P10494', 'product', 1, '2025-03-17 15:42:41', 1),
-(10, 'P67372', '7p 128', 1, '2025-03-17 15:16:08', 1),
-(11, 'P40542', 'x 64', 1, '2025-03-17 15:20:46', 1),
-(12, 'P66303', 'x 256', 1, '2025-03-17 15:20:52', 1),
-(13, 'P37997', 'xsm 256/512', 1, '2025-03-17 15:20:58', 1),
-(14, 'P58578', 'xr 64', 1, '2025-03-17 15:42:41', 1),
-(15, 'P85645', 'xr 128', 1, '2025-03-17 15:42:41', 1),
-(16, 'P83412', 'xr 256', 1, '2025-03-17 15:42:41', 1),
-(17, 'P15253', '11 256', 1, '2025-03-17 15:42:41', 1),
-(18, 'P62417', '11 pro 256/512', 1, '2025-03-17 15:42:41', 1),
-(19, 'P54043', '11 pm 256/512', 1, '2025-03-17 15:42:34', 1),
-(20, 'P33029', '12 64', 1, '2025-03-17 15:42:41', 1),
-(21, 'P80247', '12 128', 1, '2025-03-17 15:42:41', 1),
-(22, 'P61830', '12 256', 1, '2025-03-17 15:42:41', 1),
-(23, 'P50490', '15 mini', 1, '2025-03-17 15:43:11', 1),
-(24, 'P78403', '12 pro 128', 1, '2025-03-17 15:42:41', 1),
-(25, 'P90821', '12 pro 256', 1, '2025-03-17 15:42:41', 1),
-(26, 'P36416', '12 PM 256', 1, '2025-03-17 15:42:41', 1),
-(27, 'P58530', '12pm 512', 1, '2025-03-17 15:42:41', 1),
-(28, 'P56808', '13 mini', 1, '2025-03-17 15:42:41', 1),
-(29, 'P46828', '13 128', 1, '2025-03-17 15:42:41', 1),
-(30, 'P58942', '13 256', 1, '2025-03-17 15:42:41', 1),
-(31, 'P78499', '13 pro 128', 1, '2025-03-17 15:42:41', 1),
-(32, 'P76090', '13pm 256', 1, '2025-03-17 15:42:41', 1),
-(37, 'P93320', 'r', 1, '2025-03-17 15:42:41', 1);
+INSERT INTO `products` (`prod_id`, `prod_code`, `prod_name`, `prod_price`, `prod_added_by`, `prod_date_added`, `prod_status`) VALUES
+(42, 'P65190', 'IP 11 128 MINT GREEN', 14000.0000, 1, '2025-03-18 01:03:10', 1),
+(43, 'P30338', 'IP 11 256 WHITE', 15500.0000, 1, '2025-03-18 01:04:23', 1),
+(44, 'P28880', 'IP 11 PRO 256 WHITE', 17500.0000, 1, '2025-03-18 01:05:45', 1),
+(45, 'P89924', 'IP 12 256 PINK', 19000.0000, 1, '2025-03-18 01:06:00', 1),
+(46, 'P28235', 'IP 11 PRO 256', 17500.0000, 1, '2025-03-18 01:23:46', 1),
+(47, 'P70948', 'IP 11 256 WHITE', 15500.0000, 1, '2025-03-18 01:24:02', 1);
 
 -- --------------------------------------------------------
 
@@ -117,20 +118,7 @@ CREATE TABLE `stock` (
 --
 
 INSERT INTO `stock` (`stock_in_id`, `stock_in_branch_id`, `stock_in_prod_id`, `stock_in_qty`, `stock_in_sold`, `stock_in_backjob`, `stock_in_date`, `stock_in_status`) VALUES
-(1, 6, 2, 5, 0, 0, '2025-03-17 09:43:04', 1),
-(2, 6, 2, 0, 2, 0, '2025-03-17 09:43:35', 1),
-(3, 6, 1, 5, 0, 0, '2025-03-17 09:44:20', 1),
-(4, 6, 2, 0, 0, 2, '2025-03-17 09:44:41', 1),
-(5, 6, 2, 2, 0, 0, '2025-03-17 09:55:24', 1),
-(6, 6, 2, 1, 0, 0, '2025-03-17 09:55:36', 1),
-(9, 0, 2, 0, 0, 0, '2025-03-17 14:41:16', 1),
-(10, 0, 2, 0, 0, 0, '2025-03-17 14:41:18', 1),
-(11, 0, 2, 5, 0, 0, '2025-03-17 14:41:21', 1),
-(12, 0, 2, 5, 0, 0, '2025-03-17 14:41:21', 1),
-(13, 0, 0, 0, 0, 0, '2025-03-17 14:41:24', 1),
-(14, 0, 2, 5, 0, 0, '2025-03-17 14:41:48', 1),
-(15, 6, 1, 0, 7, 0, '2025-03-17 14:42:32', 1),
-(16, 6, 1, 0, 0, 1, '2025-03-17 14:52:03', 1);
+(30, 18, 42, 7, 0, 0, '2025-03-18 01:13:49', 1);
 
 -- --------------------------------------------------------
 
@@ -173,6 +161,12 @@ ALTER TABLE `branches`
   ADD KEY `branch_manager_id` (`branch_manager_id`);
 
 --
+-- Indexes for table `pos_cart`
+--
+ALTER TABLE `pos_cart`
+  ADD PRIMARY KEY (`cart_id`);
+
+--
 -- Indexes for table `products`
 --
 ALTER TABLE `products`
@@ -201,16 +195,22 @@ ALTER TABLE `branches`
   MODIFY `branch_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
+-- AUTO_INCREMENT for table `pos_cart`
+--
+ALTER TABLE `pos_cart`
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `prod_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `prod_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT for table `stock`
 --
 ALTER TABLE `stock`
-  MODIFY `stock_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `stock_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `user`
