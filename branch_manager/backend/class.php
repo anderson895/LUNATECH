@@ -184,6 +184,65 @@ class global_class extends db_connect
     }
     
 
+
+    public function addpurchase_record($paymentMethod, $total, $changeAmount, $branch_id, $user_id) {
+        // Generate a unique invoice number
+        do {
+            $purchase_invoice = 'INV-' . time() . rand(1000, 9999);
+            $checkQuery = $this->conn->prepare("SELECT COUNT(*) FROM `purchase_record` WHERE `purchase_invoice` = ?");
+            $checkQuery->bind_param("s", $purchase_invoice);
+            $checkQuery->execute();
+            $checkQuery->bind_result($count);
+            $checkQuery->fetch();
+            $checkQuery->close();
+        } while ($count > 0); // Repeat until a unique invoice is found
+    
+        // Prepare the insert query
+        $query = $this->conn->prepare(
+            "INSERT INTO `purchase_record` (`purchase_mode_of_payment`, `purchase_total_payment`, `purchased_change`, `purchase_branch_id`, `purchase_user_id`, `purchase_invoice`) 
+            VALUES (?, ?, ?, ?, ?, ?)"
+        );
+        $query->bind_param("sddiis", $paymentMethod, $total, $changeAmount, $branch_id, $user_id, $purchase_invoice);
+    
+        if ($query->execute()) {
+            return [
+                'id' => $this->conn->insert_id, 
+                'invoice' => $purchase_invoice
+            ]; // Return both the inserted ID and the invoice number
+        } else {
+            return ['error' => 'Error: ' . $query->error];
+        }
+    }
+    
+    
+    
+
+
+
+    public function addpurchase_item($item_purchase_id, $item_prod_id, $item_qty, $cart_id) {
+        // Insert purchase item
+        $query = $this->conn->prepare(
+            "INSERT INTO `purchase_item` (`item_purchase_id`, `item_prod_id`, `item_qty`) VALUES (?, ?, ?)"
+        );
+        $query->bind_param("iii", $item_purchase_id, $item_prod_id, $item_qty);
+    
+        if (!$query->execute()) {
+            return 'Error: ' . $query->error;
+        }
+    
+        // Delete cart item
+        $query = $this->conn->prepare(
+            "DELETE FROM `pos_cart` WHERE `cart_id` = ?"
+        );
+        $query->bind_param("i", $cart_id);
+    
+        if (!$query->execute()) {
+            return 'Error: ' . $query->error;
+        }
+    
+        return 'success'; // Only return success if both queries execute properly
+    }
+    
     
     
     
@@ -201,7 +260,27 @@ class global_class extends db_connect
     }
 
 
+     public function purchase_record($invoice) {
+        $id = intval($invoice);
+        $query = "SELECT * FROM purchase_item 
+                  LEFT JOIN products ON products.prod_id = purchase_item.item_prod_id  
+                  LEFT JOIN purchase_record ON purchase_record.purchase_id  = purchase_item.item_purchase_id  
+                  LEFT JOIN user ON user.id   = purchase_record.purchase_user_id  
+                  LEFT JOIN branches ON branches.branch_id  = purchase_record.purchase_branch_id   
+                  WHERE purchase_record.purchase_invoice = ?";
     
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $invoice);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        $items = [];
+        while ($row = $result->fetch_assoc()) {
+            $items[] = $row;
+        }
+        
+        return $items;
+    }
     
   
 

@@ -65,7 +65,7 @@ include "components/header.php";
                     <!-- Cart item list will go here -->
                 </div>
                 <div class="overflow-x-auto">
-                    <b class="text-sm text-gray-600">Total: <span id="cartTotalPrice">0.00</span></b>
+                    <b class="text-sm text-gray-600">Total: <span id="cartTotalPrice"> 0.00</span></b>
                 </div>
 
                 <!-- Purchase Button -->
@@ -245,7 +245,7 @@ $(document).ready(function () {
                 totalPrice += subtotal;
 
                 cartItemsHtml += `
-                    <div class="cart-item flex justify-between items-center border-b py-2" data-id="${item.cart_id}">
+                    <div class="cart-item flex justify-between items-center border-b py-2" data-cart_id="${item.cart_id}" data-cart_prod_id="${item.cart_prod_id}">
                         <p>${item.prod_name} - ₱${parseFloat(item.prod_price).toFixed(2)} x ${item.cart_qty} = <strong>₱${subtotal.toFixed(2)}</strong></p>
                         <button class="removeItem text-red-500 hover:text-red-700" data-cart_id="${item.cart_id}">X</button>
                     </div>
@@ -295,7 +295,7 @@ $(document).ready(function () {
         let totalBill = parseFloat($("#cartTotalPrice").text().replace(/[^\d.]/g, '')) || 0;
 
         if (totalBill === 0) {
-            alert("Your cart is empty!");
+            alertify.error("Your cart is empty!");
             return;
         }
 
@@ -320,6 +320,7 @@ $(document).ready(function () {
 
     $("#confirmPurchase").click(function () {
         let totalBill = parseFloat($("#totalBill").val());
+        let branch_id = parseFloat($("#branch_id").val());
         let payment = parseFloat($("#paymentAmount").val());
         let changeAmount = parseFloat($("#changeAmount").val());
         let paymentMethod = $("#paymentMethod").val();
@@ -334,9 +335,8 @@ $(document).ready(function () {
         let cartItems = [];
         $("#cartItemsList .cart-item").each(function () {
             let item = {
-                cart_id: $(this).data("id"),
-                product_name: $(this).find("p").text().split(" - ")[0].trim(),
-                product_price: parseFloat($(this).find("strong").text().replace(/[^\d.]/g, '')),
+                cart_id: $(this).data("cart_id"),
+                cart_prod_id: $(this).data("cart_prod_id"),
                 quantity: parseInt($(this).find("p").text().split(" x ")[1]),
             };
             cartItems.push(item);
@@ -357,15 +357,20 @@ $(document).ready(function () {
                 requestType: "CompletePurchase",
                 total: totalBill,
                 payment: payment,
+                branch_id: branch_id,
                 changeAmount: changeAmount,
                 paymentMethod: paymentMethod,
                 cartItems: cartItems
             },
+            dataType: "json", 
             success: function (response) {
                 console.log(response);
-                // alert("Purchase successful!");
-                // $("#purchaseModal").addClass("hidden");
-                // fetch_cart(); // Refresh cart after purchase
+
+                alertify.success("Purchase successful!");
+                $("#purchaseModal").addClass("hidden");
+                setTimeout(function () {
+                    window.location.href = "branch_receipt?invoice="+response.invoice;
+                }, 1500); 
             },
             error: function (xhr, status, error) {
                 console.error("Error processing purchase:", error);

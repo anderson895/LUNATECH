@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 18, 2025 at 02:30 AM
+-- Generation Time: Mar 18, 2025 at 06:32 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -61,13 +61,6 @@ CREATE TABLE `pos_cart` (
   `cart_branch_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `pos_cart`
---
-
-INSERT INTO `pos_cart` (`cart_id`, `cart_prod_id`, `cart_qty`, `cart_branch_id`) VALUES
-(13, 42, 2, 18);
-
 -- --------------------------------------------------------
 
 --
@@ -78,7 +71,7 @@ CREATE TABLE `products` (
   `prod_id` int(11) NOT NULL,
   `prod_code` varchar(60) NOT NULL,
   `prod_name` varchar(60) NOT NULL,
-  `prod_price` decimal(19,4) NOT NULL,
+  `prod_price` decimal(10,2) NOT NULL,
   `prod_added_by` int(11) NOT NULL,
   `prod_date_added` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `prod_status` int(11) NOT NULL DEFAULT 1 COMMENT '0=deleted, 1=existing'
@@ -89,12 +82,57 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`prod_id`, `prod_code`, `prod_name`, `prod_price`, `prod_added_by`, `prod_date_added`, `prod_status`) VALUES
-(42, 'P65190', 'IP 11 128 MINT GREEN', 14000.0000, 1, '2025-03-18 01:03:10', 1),
-(43, 'P30338', 'IP 11 256 WHITE', 15500.0000, 1, '2025-03-18 01:04:23', 1),
-(44, 'P28880', 'IP 11 PRO 256 WHITE', 17500.0000, 1, '2025-03-18 01:05:45', 1),
-(45, 'P89924', 'IP 12 256 PINK', 19000.0000, 1, '2025-03-18 01:06:00', 1),
-(46, 'P28235', 'IP 11 PRO 256', 17500.0000, 1, '2025-03-18 01:23:46', 1),
-(47, 'P70948', 'IP 11 256 WHITE', 15500.0000, 1, '2025-03-18 01:24:02', 1);
+(42, 'P65190', 'IP 11 128 MINT GREEN', 14000.00, 1, '2025-03-18 01:03:10', 1),
+(43, 'P30338', 'IP 11 256 WHITE', 15500.00, 1, '2025-03-18 01:04:23', 1),
+(44, 'P28880', 'IP 11 PRO 256 WHITE', 17500.00, 1, '2025-03-18 01:05:45', 1),
+(45, 'P89924', 'IP 12 256 PINK', 19000.00, 1, '2025-03-18 01:06:00', 1),
+(46, 'P28235', 'IP 11 PRO 256', 17500.00, 1, '2025-03-18 01:23:46', 1),
+(47, 'P70948', 'IP 11 256 WHITE', 15500.00, 1, '2025-03-18 01:24:02', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `purchase_item`
+--
+
+CREATE TABLE `purchase_item` (
+  `item_id` int(11) NOT NULL,
+  `item_purchase_id` int(11) NOT NULL,
+  `item_prod_id` int(11) NOT NULL,
+  `item_qty` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `purchase_item`
+--
+
+INSERT INTO `purchase_item` (`item_id`, `item_purchase_id`, `item_prod_id`, `item_qty`) VALUES
+(32, 27, 46, 1),
+(33, 27, 45, 3);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `purchase_record`
+--
+
+CREATE TABLE `purchase_record` (
+  `purchase_id` int(11) NOT NULL,
+  `purchase_invoice` varchar(60) NOT NULL,
+  `purchase_mode_of_payment` varchar(60) NOT NULL,
+  `purchase_total_payment` int(11) NOT NULL,
+  `purchased_change` decimal(10,2) DEFAULT NULL,
+  `purchase_branch_id` int(11) NOT NULL,
+  `purchase_user_id` int(11) NOT NULL,
+  `pruchase_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `purchase_record`
+--
+
+INSERT INTO `purchase_record` (`purchase_id`, `purchase_invoice`, `purchase_mode_of_payment`, `purchase_total_payment`, `purchased_change`, `purchase_branch_id`, `purchase_user_id`, `pruchase_date`) VALUES
+(27, 'INV-17422741446946', 'cash', 74500, 25500.00, 19, 6, '2025-03-18 05:02:24');
 
 -- --------------------------------------------------------
 
@@ -118,7 +156,12 @@ CREATE TABLE `stock` (
 --
 
 INSERT INTO `stock` (`stock_in_id`, `stock_in_branch_id`, `stock_in_prod_id`, `stock_in_qty`, `stock_in_sold`, `stock_in_backjob`, `stock_in_date`, `stock_in_status`) VALUES
-(30, 18, 42, 7, 0, 0, '2025-03-18 01:13:49', 1);
+(37, 18, 42, 6, 0, 0, '2025-03-18 04:23:08', 1),
+(38, 18, 46, 0, 0, 0, '2025-03-18 04:20:36', 1),
+(39, 18, 42, 6, 0, 0, '2025-03-18 04:23:08', 1),
+(40, 19, 46, 0, 0, 0, '2025-03-18 05:02:12', 1),
+(41, 19, 47, 0, 0, 0, '2025-03-18 04:52:29', 1),
+(42, 19, 45, 5, 0, 0, '2025-03-18 05:02:17', 1);
 
 -- --------------------------------------------------------
 
@@ -173,6 +216,22 @@ ALTER TABLE `products`
   ADD PRIMARY KEY (`prod_id`);
 
 --
+-- Indexes for table `purchase_item`
+--
+ALTER TABLE `purchase_item`
+  ADD PRIMARY KEY (`item_id`),
+  ADD KEY `item_prod_id` (`item_prod_id`),
+  ADD KEY `item_purchase_id` (`item_purchase_id`);
+
+--
+-- Indexes for table `purchase_record`
+--
+ALTER TABLE `purchase_record`
+  ADD PRIMARY KEY (`purchase_id`),
+  ADD KEY `purchase_user_id` (`purchase_user_id`),
+  ADD KEY `purchase_branch_id` (`purchase_branch_id`);
+
+--
 -- Indexes for table `stock`
 --
 ALTER TABLE `stock`
@@ -198,7 +257,7 @@ ALTER TABLE `branches`
 -- AUTO_INCREMENT for table `pos_cart`
 --
 ALTER TABLE `pos_cart`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -207,10 +266,22 @@ ALTER TABLE `products`
   MODIFY `prod_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
+-- AUTO_INCREMENT for table `purchase_item`
+--
+ALTER TABLE `purchase_item`
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+
+--
+-- AUTO_INCREMENT for table `purchase_record`
+--
+ALTER TABLE `purchase_record`
+  MODIFY `purchase_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+
+--
 -- AUTO_INCREMENT for table `stock`
 --
 ALTER TABLE `stock`
-  MODIFY `stock_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `stock_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `user`
@@ -227,6 +298,20 @@ ALTER TABLE `user`
 --
 ALTER TABLE `branches`
   ADD CONSTRAINT `branches_ibfk_1` FOREIGN KEY (`branch_manager_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `purchase_item`
+--
+ALTER TABLE `purchase_item`
+  ADD CONSTRAINT `purchase_item_ibfk_1` FOREIGN KEY (`item_prod_id`) REFERENCES `products` (`prod_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `purchase_item_ibfk_2` FOREIGN KEY (`item_purchase_id`) REFERENCES `purchase_record` (`purchase_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `purchase_record`
+--
+ALTER TABLE `purchase_record`
+  ADD CONSTRAINT `purchase_record_ibfk_1` FOREIGN KEY (`purchase_user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `purchase_record_ibfk_2` FOREIGN KEY (`purchase_branch_id`) REFERENCES `branches` (`branch_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
