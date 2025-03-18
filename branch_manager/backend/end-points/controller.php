@@ -78,9 +78,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $item_prod_id = $item['cart_prod_id'];
                             $item_qty = $item['quantity'];
                             $cart_id = $item['cart_id'];
+                            $prod_price = $item['prod_price'];
             
                             // Pass the valid purchase ID
-                            $db->addpurchase_item($purchase_id,$branch_id, $item_prod_id, $item_qty, $cart_id);
+                            $db->addpurchase_item($purchase_id,$branch_id, $item_prod_id, $item_qty, $cart_id,$prod_price);
                         }
                     }
                 } else {

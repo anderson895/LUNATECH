@@ -2,7 +2,12 @@
 include "components/header.php";
 
 $invoice = $_GET['invoice'];
-$purchase_record = $db->purchase_record($invoice);
+$purchase_id = $_GET['purchase_id'];
+$purchase_record = $db->purchase_record($invoice,$purchase_id);
+
+// echo "<pre>";
+// print_r($purchase_record);
+// echo "</pre>";
 ?>
 
 <div class="bg-white p-6 max-w-sm mx-auto border border-dashed border-gray-400 text-sm font-mono" id="receipt">
@@ -46,12 +51,29 @@ $purchase_record = $db->purchase_record($invoice);
         <span>₱<?= number_format($purchase_record[0]['purchase_total_payment'], 2) ?></span>
     </div>
 
+    <!-- Payment Details -->
+    <div class="border-t border-dashed border-gray-400 mt-2 pt-2 text-md">
+        <div class="flex justify-between">
+            <span>Mode of Payment:</span>
+            <span><?= ucfirst($purchase_record[0]['purchase_mode_of_payment']) ?></span>
+        </div>
+        <div class="flex justify-between">
+            <span>Payment Received :</span>
+            <span>₱<?= number_format($purchase_record[0]['purchase_payment'], 2) ?></span>
+        </div>
+        <div class="flex justify-between font-bold">
+            <span>Change:</span>
+            <span>₱<?= number_format($purchase_record[0]['purchased_change'], 2) ?></span>
+        </div>
+    </div>
+
     <!-- Footer -->
     <div class="text-center text-gray-700 mt-4">
         <div>Thank you for your purchase!</div>
         <!-- <div class="text-xs">No refunds after 7 days.</div> -->
     </div>
 </div>
+
 
 <!-- Print Button -->
 <div class="text-center mt-4">

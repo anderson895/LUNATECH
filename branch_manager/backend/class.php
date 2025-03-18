@@ -256,13 +256,13 @@ class global_class extends db_connect
 
 
 
-    public function addpurchase_item($item_purchase_id, $branch_id, $item_prod_id, $item_qty) {
+    public function addpurchase_item($item_purchase_id,$branch_id, $item_prod_id, $item_qty, $cart_id,$prod_price) {
         // Insert purchase item
         $query = $this->conn->prepare("
-            INSERT INTO `purchase_item` (`item_purchase_id`, `item_prod_id`, `item_qty`) 
-            VALUES (?, ?, ?)
+            INSERT INTO `purchase_item` (`item_purchase_id`, `item_prod_id`, `item_qty`,`item_price_sold`) 
+            VALUES (?, ?, ?,?)
         ");
-        $query->bind_param("iii", $item_purchase_id, $item_prod_id, $item_qty);
+        $query->bind_param("iiid", $item_purchase_id, $item_prod_id, $item_qty,$prod_price);
     
         if (!$query->execute()) {
             return 'Error: ' . $query->error;
@@ -310,8 +310,9 @@ class global_class extends db_connect
     }
 
 
-     public function purchase_record($invoice) {
+     public function purchase_record($invoice,$purchase_id) {
         $id = intval($invoice);
+        $purchase_id = intval($purchase_id);
         $query = "SELECT purchase_record.*, user.*, branches.*, 
        purchase_item.*, products.*
         FROM purchase_item  
@@ -319,12 +320,12 @@ class global_class extends db_connect
         LEFT JOIN purchase_record ON purchase_record.purchase_id = purchase_item.item_purchase_id  
         LEFT JOIN user ON user.id = purchase_record.purchase_user_id  
         LEFT JOIN branches ON branches.branch_id = purchase_record.purchase_branch_id   
-        WHERE purchase_record.purchase_invoice = ?
+        WHERE purchase_record.purchase_invoice = ? AND item_purchase_id=?
         GROUP BY purchase_item.item_id
         ";
     
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("i", $invoice);
+        $stmt->bind_param("ii", $invoice,$purchase_id);
         $stmt->execute();
         $result = $stmt->get_result();
     
