@@ -67,7 +67,7 @@ include "components/header.php";
                 </div>
                 <div class="overflow-x-auto">
                     <!-- <p class="text-sm text-gray-600">Total Items: <span id="cartItemCount">0</span></p> -->
-                    <b class="text-sm text-gray-600">Total: ₱ <span id="cartTotalPrice">0.00</span></b>
+                    <b class="text-sm text-gray-600">Total: <span id="cartTotalPrice">0.00</span></b>
                 </div>
 
                 <!-- Purchase Button -->
@@ -190,7 +190,8 @@ $(document).ready(function () {
 
             $("#cartItemsList").html(cartItemsHtml);
             $("#cartItemCount").text(totalItems);
-            $("#cartTotalPrice").text(totalPrice.toFixed(2));
+            $("#cartTotalPrice").text(totalPrice.toLocaleString('en-PH', { style: 'currency', currency: 'PHP' }));
+
         },
         error: function (xhr, status, error) {
             console.error("Error fetching cart:", error);
