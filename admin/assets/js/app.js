@@ -233,6 +233,7 @@ $(document).on('click', '.togglerUpdateBranch', function(e) {
     var branch_started = $(this).data('branch_started');
     var branch_manager_id = $(this).data('branch_manager_id');
     var user_fullname = $(this).data('user_fullname');
+    var branch_tel = $(this).data('branch_tel');
 
     // Populate the form fields
     $('#branch_id').val(branch_id);
@@ -240,6 +241,7 @@ $(document).on('click', '.togglerUpdateBranch', function(e) {
     $('#update_branch_name').val(branch_name);
     $('#update_branch_address').val(branch_address);
     $('#update_branch_started').val(branch_started);
+    $('#branch_tel').val(branch_tel);
 
     // Set the branch manager
     $('#currentValue').val(branch_manager_id);

@@ -303,7 +303,7 @@ $(document).ready(function () {
             return;
         }
 
-        $("#totalBill").val(totalBill.toFixed(2));
+        $("#totalBill").val(`₱${totalBill.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`);
         $("#paymentAmount").val('');
         $("#changeAmount").val('');
         $("#purchaseModal").removeClass("hidden");
@@ -314,22 +314,25 @@ $(document).ready(function () {
     });
 
     $("#paymentAmount").on("input", function () {
-        let totalBill = parseFloat($("#totalBill").val()) || 0;
+        let totalBill = parseFloat($("#totalBill").val().replace(/[^\d.]/g, '')) || 0;
         let payment = parseFloat($(this).val()) || 0;
         
         let change = payment - totalBill;
 
-        $("#changeAmount").val(change >= 0 ? change.toFixed(2) : "Insufficient Payment");
+        $("#changeAmount").val(
+            change >= 0 
+                ? `₱${change.toLocaleString('en-PH', { minimumFractionDigits: 2 })}` 
+                : "Insufficient Payment"
+        );
     });
 
     $("#confirmPurchase").click(function () {
-        let totalBill = parseFloat($("#totalBill").val());
+        let totalBill = parseFloat($("#totalBill").val().replace(/[^\d.]/g, ''));
         let branch_id = $("#branch_id").val();
         let payment = parseFloat($("#paymentAmount").val());
-        let changeAmount = parseFloat($("#changeAmount").val());
+        let changeAmount = parseFloat($("#changeAmount").val().replace(/[^\d.]/g, ''));
         let paymentMethod = $("#paymentMethod").val();
       
-
         if (isNaN(payment) || payment < totalBill) {
             alert("Insufficient payment!");
             return;
@@ -351,8 +354,6 @@ $(document).ready(function () {
             return;
         }
 
-        // console.log(cartItems);
-
         // Send data to the backend
         $.ajax({
             url: "backend/end-points/controller.php",
@@ -369,12 +370,11 @@ $(document).ready(function () {
             dataType: "json", 
             success: function (response) {
                 console.log(response);
-
                 alertify.success("Purchase successful!");
                 $("#purchaseModal").addClass("hidden");
                 setTimeout(function () {
-                    window.location.href = "branch_receipt?invoice="+response.invoice;
-                }, 1500); 
+                    window.location.href = "branch_receipt?invoice=" + response.invoice;
+                }, 1500);
             },
             error: function (xhr, status, error) {
                 console.error("Error processing purchase:", error);
@@ -382,6 +382,7 @@ $(document).ready(function () {
         });
     });
 });
+
 
 
 

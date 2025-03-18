@@ -1,75 +1,74 @@
 <?php 
 include "components/header.php";
 
-$invoice=$_GET['invoice'];
+$invoice = $_GET['invoice'];
 $purchase_record = $db->purchase_record($invoice);
-
-
-echo "<pre>";
-print_r($purchase_record);
-echo "</pre>";
 ?>
 
-<div class="bg-white rounded-lg shadow-lg px-8 py-10 max-w-xl mx-auto">
-    <div class="flex items-center justify-between mb-8">
-        <div class="flex items-center">
-            <img class="h-32 w-32 rounder-full" src="../assets/images/logo/business_logo.jpeg"
-                alt="Logo" />
-            <div class="text-gray-700 font-semibold text-lg">NDG Company</div>
-        </div>
-        <div class="text-gray-700">
-            <div class="font-bold text-xl mb-2">INVOICE</div>
-            <div class="text-sm">Date: <?=$purchase_record[0]['pruchase_date']?></div>
-            <div class="text-sm">Invoice #: <?=$invoice?></div>
-        </div>
+<div class="bg-white p-6 max-w-sm mx-auto border border-dashed border-gray-400 text-sm font-mono" id="receipt">
+    <!-- Header Section -->
+    <div class="text-center mb-4">
+        <img class="h-12 mx-auto mb-2" src="../assets/images/logo/business_logo.jpeg" alt="Logo" />
+        <div class="font-bold">NDG COMPANY</div>
+        <div class="text-gray-700"><?= $purchase_record[0]['branch_address'] ?></div>
+        <div class="text-gray-700">Tel: <?=$purchase_record[0]['branch_tel']?></div>
     </div>
-    <div class="border-b-2 border-gray-300 pb-8 mb-8">
-        <h2 class="text-2xl font-bold mb-4"></h2>
-        <div class="text-gray-700 mb-2"><strong>Branch Manager:</strong> <?=ucfirst($purchase_record[0]['user_fullname'])?></div>
-        <div class="text-gray-700 mb-2"><?=ucfirst($purchase_record[0]['branch_name'])?></div>
-        <div class="text-gray-700 mb-2"><?=ucfirst($purchase_record[0]['branch_address'])?></div>
-        <div class="text-gray-700 mb-2"><?=ucfirst($purchase_record[0]['user_email'])?></div>
-    </div>
-    <table class="w-full text-left mb-8">
-        <thead>
-            <tr>
-                <th class="text-gray-700 font-bold uppercase py-2">Description</th>
-                <th class="text-gray-700 font-bold uppercase py-2">Quantity</th>
-                <th class="text-gray-700 font-bold uppercase py-2">Price</th>
-                <th class="text-gray-700 font-bold uppercase py-2">Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($purchase_record as $item):?>
-                <tr>
-                    <td class="py-4 text-gray-700"><?=$item['prod_name']?></td>
-                    <td class="py-4 text-gray-700"><?=$item['item_qty']?></td>
-                    <td class="py-4 text-gray-700"><?=number_format($item['prod_price'],2)?></td>
-                    <td class="py-4 text-gray-700"><?=number_format($item['prod_price']*$item['item_qty'])?></td>
-                </tr>
-            <?php endforeach; ?>
-           
-          
-        </tbody>
-    </table>
-    <div class="flex justify-end mb-8">
-        <div class="text-gray-700 mr-2">Subtotal:</div>
-        <div class="text-gray-700">$425.00</div>
-    </div>
-    <div class="text-right mb-8">
-        <div class="text-gray-700 mr-2">Tax:</div>
-        <div class="text-gray-700">$25.50</div>
 
+    <!-- Invoice Details -->
+    <div class="border-t border-dashed border-gray-400 py-2">
+        <div class="flex justify-between">
+            <span>Invoice #:</span>
+            <span><?= $invoice ?></span>
+        </div>
+        <div class="flex justify-between">
+            <span>Date:</span>
+            <span><?= $purchase_record[0]['purchase_date'] ?></span>
+        </div>
+        <div class="flex justify-between">
+            <span>Branch Manager:</span>
+            <span><?= ucfirst($purchase_record[0]['user_fullname']) ?></span>
+        </div>
     </div>
-    <div class="flex justify-end mb-8">
-        <div class="text-gray-700 mr-2">Total:</div>
-        <div class="text-gray-700 font-bold text-xl">$450.50</div>
+
+    <!-- Items Table -->
+    <div class="border-t border-dashed border-gray-400 mt-2 pt-2">
+        <?php foreach ($purchase_record as $item): ?>
+            <div class="flex justify-between">
+                <span><?= $item['prod_name'] ?> x<?= $item['item_qty'] ?></span>
+                <span>₱<?= number_format($item['prod_price'] * $item['item_qty'], 2) ?></span>
+            </div>
+        <?php endforeach; ?>
     </div>
-    <div class="border-t-2 border-gray-300 pt-8 mb-8">
-        <div class="text-gray-700 mb-2">Payment is due within 30 days. Late payments are subject to fees.</div>
-        <div class="text-gray-700 mb-2">Please make checks payable to Your Company Name and mail to:</div>
-        <div class="text-gray-700">123 Main St., Anytown, USA 12345</div>
+
+    <!-- Total Amount -->
+    <div class="border-t border-dashed border-gray-400 mt-2 pt-2 text-lg font-bold flex justify-between">
+        <span>Total:</span>
+        <span>₱<?= number_format($purchase_record[0]['purchase_total_payment'], 2) ?></span>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center text-gray-700 mt-4">
+        <div>Thank you for your purchase!</div>
+        <!-- <div class="text-xs">No refunds after 7 days.</div> -->
     </div>
 </div>
+
+<!-- Print Button -->
+<div class="text-center mt-4">
+    <button id="printReceipt" class="bg-blue-500 text-white px-4 py-2 rounded">Print Receipt</button>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#printReceipt').click(function() {
+            var printContent = document.getElementById('receipt').outerHTML;
+            var originalContent = document.body.innerHTML;
+            document.body.innerHTML = printContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+        });
+    });
+</script>
 
 <?php include "components/footer.php"; ?>

@@ -60,17 +60,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $changeAmount = htmlspecialchars(trim($_POST['changeAmount']));
             $paymentMethod = htmlspecialchars(trim($_POST['paymentMethod']));
             
-            $purchase_result = $db->addpurchase_record($paymentMethod, $total, $changeAmount, $branch_id, $user_id);
+            $purchase_result = $db->addpurchase_record($paymentMethod, $total,$payment, $changeAmount, $branch_id, $user_id);
             
             if (isset($purchase_result['id']) && isset($purchase_result['invoice'])) { 
                 $purchase_id = $purchase_result['id'];
                 $purchase_invoice = $purchase_result['invoice'];
+                $branch_id = $purchase_result['branch_id'];
             
                 echo json_encode([
                     "status" => 200, 
                     "message" => "Inventory record successfully added",
                     "purchase_id" => $purchase_id,
-                    "invoice" => $purchase_invoice
+                    "invoice" => $purchase_invoice,
                 ]);
             
                 // Process cart items only if purchase record was successfully inserted
@@ -82,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $cart_id = $item['cart_id'];
             
                             // Pass the valid purchase ID
-                            $db->addpurchase_item($purchase_id, $item_prod_id, $item_qty, $cart_id);
+                            $db->addpurchase_item($purchase_id,$branch_id, $item_prod_id, $item_qty, $cart_id);
                         }
                     }
                 } else {

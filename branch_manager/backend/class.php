@@ -197,7 +197,7 @@ class global_class extends db_connect
     
 
 
-    public function addpurchase_record($paymentMethod, $total, $changeAmount, $branch_id, $user_id) {
+    public function addpurchase_record($paymentMethod, $total,$payment, $changeAmount, $branch_id, $user_id) {
         // Generate a unique invoice number
         do {
             $purchase_invoice = 'INV-' . time() . rand(1000, 9999);
@@ -211,15 +211,16 @@ class global_class extends db_connect
     
         // Prepare the insert query
         $query = $this->conn->prepare(
-            "INSERT INTO `purchase_record` (`purchase_mode_of_payment`, `purchase_total_payment`, `purchased_change`, `purchase_branch_id`, `purchase_user_id`, `purchase_invoice`) 
-            VALUES (?, ?, ?, ?, ?, ?)"
+            "INSERT INTO `purchase_record` (`purchase_mode_of_payment`, `purchase_total_payment`,`purchase_payment`, `purchased_change`, `purchase_branch_id`, `purchase_user_id`, `purchase_invoice`) 
+            VALUES (?, ?, ?,?, ?, ?, ?)"
         );
-        $query->bind_param("sddiis", $paymentMethod, $total, $changeAmount, $branch_id, $user_id, $purchase_invoice);
+        $query->bind_param("sdddiis", $paymentMethod, $total,$payment, $changeAmount, $branch_id, $user_id, $purchase_invoice);
     
         if ($query->execute()) {
             return [
                 'id' => $this->conn->insert_id, 
-                'invoice' => $purchase_invoice
+                'invoice' => $purchase_invoice,
+                'branch_id' => $branch_id,
             ]; // Return both the inserted ID and the invoice number
         } else {
             return ['error' => 'Error: ' . $query->error];
@@ -231,29 +232,42 @@ class global_class extends db_connect
 
 
 
-    public function addpurchase_item($item_purchase_id, $item_prod_id, $item_qty, $cart_id) {
+    public function addpurchase_item($item_purchase_id, $branch_id, $item_prod_id, $item_qty) {
         // Insert purchase item
-        $query = $this->conn->prepare(
-            "INSERT INTO `purchase_item` (`item_purchase_id`, `item_prod_id`, `item_qty`) VALUES (?, ?, ?)"
-        );
+        $query = $this->conn->prepare("
+            INSERT INTO `purchase_item` (`item_purchase_id`, `item_prod_id`, `item_qty`) 
+            VALUES (?, ?, ?)
+        ");
         $query->bind_param("iii", $item_purchase_id, $item_prod_id, $item_qty);
     
         if (!$query->execute()) {
             return 'Error: ' . $query->error;
         }
     
-        // Delete cart item
-        $query = $this->conn->prepare(
-            "DELETE FROM `pos_cart` WHERE `cart_id` = ?"
-        );
-        $query->bind_param("i", $cart_id);
+        // Fetch all cart items for the given product and branch
+        $cartQuery = $this->conn->prepare("
+            SELECT cart_id 
+            FROM pos_cart 
+            WHERE cart_prod_id = ? AND cart_branch_id = ?
+        ");
+        $cartQuery->bind_param("ii", $item_prod_id, $branch_id);
+        $cartQuery->execute();
+        $result = $cartQuery->get_result();
     
-        if (!$query->execute()) {
-            return 'Error: ' . $query->error;
+        if ($result->num_rows > 0) {
+            // Loop through and delete each cart entry
+            while ($row = $result->fetch_assoc()) {
+                $deleteQuery = $this->conn->prepare("
+                    DELETE FROM pos_cart WHERE cart_id = ?
+                ");
+                $deleteQuery->bind_param("i", $row['cart_id']);
+                $deleteQuery->execute();
+            }
         }
     
-        return 'success'; // Only return success if both queries execute properly
+        return 'success';
     }
+    
     
     
     
@@ -274,12 +288,16 @@ class global_class extends db_connect
 
      public function purchase_record($invoice) {
         $id = intval($invoice);
-        $query = "SELECT * FROM purchase_item 
-                  LEFT JOIN products ON products.prod_id = purchase_item.item_prod_id  
-                  LEFT JOIN purchase_record ON purchase_record.purchase_id  = purchase_item.item_purchase_id  
-                  LEFT JOIN user ON user.id   = purchase_record.purchase_user_id  
-                  LEFT JOIN branches ON branches.branch_id  = purchase_record.purchase_branch_id   
-                  WHERE purchase_record.purchase_invoice = ?";
+        $query = "SELECT purchase_record.*, user.*, branches.*, 
+       purchase_item.*, products.*
+        FROM purchase_item  
+        LEFT JOIN products ON products.prod_id = purchase_item.item_prod_id  
+        LEFT JOIN purchase_record ON purchase_record.purchase_id = purchase_item.item_purchase_id  
+        LEFT JOIN user ON user.id = purchase_record.purchase_user_id  
+        LEFT JOIN branches ON branches.branch_id = purchase_record.purchase_branch_id   
+        WHERE purchase_record.purchase_invoice = ?
+        GROUP BY purchase_item.item_id
+        ";
     
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("i", $invoice);

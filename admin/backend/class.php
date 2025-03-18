@@ -119,11 +119,11 @@ class global_class extends db_connect
 
 
 
-    public function addbranch($branch_code, $branch_name, $branch_address, $branch_started, $branch_manager) {
+    public function addbranch($branch_code, $branch_name, $branch_address, $branch_started, $branch_manager,$branch_tel) {
         $query = $this->conn->prepare(
-            "INSERT INTO `branches` (`branch_code`, `branch_name`, `branch_address`, `branch_started`, `branch_manager_id`) VALUES (?, ?, ?, ?, ?)"
+            "INSERT INTO `branches` (`branch_code`, `branch_name`, `branch_address`,`branch_tel`, `branch_started`, `branch_manager_id`) VALUES (?,?, ?, ?, ?, ?)"
         );
-        $query->bind_param("ssssi", $branch_code, $branch_name, $branch_address, $branch_started, $branch_manager);
+        $query->bind_param("sssssi", $branch_code, $branch_name, $branch_address,$branch_tel, $branch_started, $branch_manager);
     
         if ($query->execute()) {
             return 'success';
@@ -232,15 +232,15 @@ class global_class extends db_connect
     
 
 
-    public function updatebranch($branch_id, $branch_code, $branch_name, $branch_address, $branch_started, $branch_manager) {
+    public function updatebranch($branch_id, $branch_code, $branch_name, $branch_address,$branch_tel, $branch_started, $branch_manager) {
         $query = $this->conn->prepare(
             "UPDATE `branches` 
-             SET `branch_code` = ?, `branch_name` = ?, `branch_address` = ?, `branch_started` = ?, `branch_manager_id` = ? 
+             SET `branch_code` = ?, `branch_name` = ?, `branch_address` = ?, `branch_tel` = ?, `branch_started` = ?, `branch_manager_id` = ? 
              WHERE `branch_id` = ?"
         );
         
         // Bind the parameters (ssssi = string, string, string, string, int)
-        $query->bind_param("ssssii", $branch_code, $branch_name, $branch_address, $branch_started, $branch_manager, $branch_id);
+        $query->bind_param("sssssii", $branch_code, $branch_name, $branch_address,$branch_tel, $branch_started, $branch_manager, $branch_id);
         
         if ($query->execute()) {
             return 'success';
