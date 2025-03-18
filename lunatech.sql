@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 18, 2025 at 03:33 PM
+-- Generation Time: Mar 18, 2025 at 04:24 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -32,6 +32,7 @@ CREATE TABLE `branches` (
   `branch_code` varchar(60) NOT NULL,
   `branch_name` varchar(60) NOT NULL,
   `branch_address` text NOT NULL,
+  `branch_tel` varchar(16) NOT NULL,
   `branch_started` date NOT NULL,
   `branch_manager_id` int(11) NOT NULL,
   `branch_status` int(11) NOT NULL DEFAULT 1 COMMENT '0=deleted,1=existing'
@@ -41,12 +42,12 @@ CREATE TABLE `branches` (
 -- Dumping data for table `branches`
 --
 
-INSERT INTO `branches` (`branch_id`, `branch_code`, `branch_name`, `branch_address`, `branch_started`, `branch_manager_id`, `branch_status`) VALUES
-(15, 'fsef', 'trh', 'ftfhft', '2025-03-18', 10, 0),
-(16, 'dsg', 'drgdr', 'fth', '2025-03-18', 6, 0),
-(17, 'j', 'ljil', 'k;ok', '2025-03-18', 10, 0),
-(18, 'M0001', 'marilao branch', 'sta.rosa 2 marilao bulacan', '2025-03-18', 10, 1),
-(19, 'M0002', 'prenza branch', 'prenza 1 marilao bulacan', '2025-03-18', 6, 1);
+INSERT INTO `branches` (`branch_id`, `branch_code`, `branch_name`, `branch_address`, `branch_tel`, `branch_started`, `branch_manager_id`, `branch_status`) VALUES
+(15, 'fsef', 'trh', 'ftfhft', '', '2025-03-18', 10, 0),
+(16, 'dsg', 'drgdr', 'fth', '', '2025-03-18', 6, 0),
+(17, 'j', 'ljil', 'k;ok', '', '2025-03-18', 10, 0),
+(18, 'M0001', 'marilao branch', 'sta.rosa 2 marilao bulacan', '(123) 456-7890', '2025-03-18', 10, 1),
+(19, 'M0002', 'prenza branch', 'prenza 1 marilao bulacan', '(123) 456-7777', '2025-03-18', 6, 1);
 
 -- --------------------------------------------------------
 
@@ -108,8 +109,9 @@ CREATE TABLE `purchase_item` (
 --
 
 INSERT INTO `purchase_item` (`item_id`, `item_purchase_id`, `item_prod_id`, `item_qty`) VALUES
-(32, 27, 46, 1),
-(33, 27, 45, 3);
+(38, 30, 42, 6),
+(39, 30, 44, 1),
+(40, 31, 42, 2);
 
 -- --------------------------------------------------------
 
@@ -121,20 +123,21 @@ CREATE TABLE `purchase_record` (
   `purchase_id` int(11) NOT NULL,
   `purchase_invoice` varchar(60) NOT NULL,
   `purchase_mode_of_payment` varchar(60) NOT NULL,
-  `purchased_tax` decimal(10,2) NOT NULL,
   `purchase_total_payment` int(11) NOT NULL,
+  `purchase_payment` decimal(10,2) NOT NULL,
   `purchased_change` decimal(10,2) DEFAULT NULL,
   `purchase_branch_id` int(11) NOT NULL,
   `purchase_user_id` int(11) NOT NULL,
-  `pruchase_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `purchase_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `purchase_record`
 --
 
-INSERT INTO `purchase_record` (`purchase_id`, `purchase_invoice`, `purchase_mode_of_payment`, `purchased_tax`, `purchase_total_payment`, `purchased_change`, `purchase_branch_id`, `purchase_user_id`, `pruchase_date`) VALUES
-(27, 'INV-17422741446946', 'cash', 0.00, 74500, 25500.00, 19, 6, '2025-03-18 05:02:24');
+INSERT INTO `purchase_record` (`purchase_id`, `purchase_invoice`, `purchase_mode_of_payment`, `purchase_total_payment`, `purchase_payment`, `purchased_change`, `purchase_branch_id`, `purchase_user_id`, `purchase_date`) VALUES
+(30, 'INV-17423098283916', 'cash', 101500, 102000.00, 500.00, 18, 10, '2025-03-18 14:57:08'),
+(31, 'INV-17423113729527', 'cash', 28000, 28000.00, 0.00, 18, 10, '2025-03-18 15:22:52');
 
 -- --------------------------------------------------------
 
@@ -158,9 +161,9 @@ CREATE TABLE `stock` (
 --
 
 INSERT INTO `stock` (`stock_in_id`, `stock_in_branch_id`, `stock_in_prod_id`, `stock_in_qty`, `stock_in_sold`, `stock_in_backjob`, `stock_in_date`, `stock_in_status`) VALUES
-(43, 18, 42, 5, 20, 0, '2025-03-18 14:30:48', 1),
-(44, 18, 44, 20, 0, 0, '2025-03-18 12:53:09', 1),
-(45, 18, 42, 20, 20, 0, '2025-03-18 14:30:48', 1);
+(43, 18, 42, 0, 20, 0, '2025-03-18 14:47:42', 1),
+(44, 18, 44, 14, 0, 0, '2025-03-18 14:47:49', 1),
+(45, 18, 42, 17, 20, 0, '2025-03-18 15:22:42', 1);
 
 -- --------------------------------------------------------
 
@@ -258,7 +261,7 @@ ALTER TABLE `branches`
 -- AUTO_INCREMENT for table `pos_cart`
 --
 ALTER TABLE `pos_cart`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=116;
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=130;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -270,13 +273,13 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `purchase_item`
 --
 ALTER TABLE `purchase_item`
-  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `purchase_record`
 --
 ALTER TABLE `purchase_record`
-  MODIFY `purchase_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `purchase_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `stock`
