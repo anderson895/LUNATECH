@@ -138,7 +138,7 @@ class global_class extends db_connect
     public function addproduct($new_product_name,$new_product_price, $added_by) {
         // Generate a unique product code
         do {
-            $Prod_code = "P" . rand(10000, 99999); // Example: P12345
+            $Prod_code = "P" . rand(10000, 99999); 
             $checkQuery = $this->conn->prepare("SELECT 1 FROM products WHERE prod_code = ?");
             $checkQuery->bind_param("s", $Prod_code);
             $checkQuery->execute();

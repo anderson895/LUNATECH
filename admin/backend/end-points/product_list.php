@@ -18,26 +18,27 @@ $output = "";
 if ($fetch_all_product->num_rows > 0) {
     foreach ($fetch_all_product as $product) {
         $output .= "<tr class='border-b'>
-            <td class='p-2 text-center'><input type='checkbox' class='rowCheckbox' name='rowCheckbox[]'></td>
-            <td class='p-2'>" . htmlspecialchars($product['prod_code']) . "</td>
-            <td class='p-2'>" . htmlspecialchars($product['prod_name']) . "</td>
-            <td class='p-2'>₱ " . htmlspecialchars(number_format($product['prod_price'], 2, '.', ',')) . "</td>
+        <td class='p-2 text-center'><input type='checkbox' class='rowCheckbox' name='rowCheckbox[]'></td>
+        <td class='p-2'><img src='../barcodes/" . htmlspecialchars($product['prod_code']) . ".png'></td>
+        <td class='p-2'>" . htmlspecialchars($product['prod_code']) . "</td>
+        <td class='p-2'>" . htmlspecialchars($product['prod_name']) . "</td>
+        <td class='p-2'>₱ " . htmlspecialchars(number_format($product['prod_price'], 2, '.', ',')) . "</td>
+        <td class='p-2 hidden md:table-cell'>" . htmlspecialchars(ucfirst($product['user_fullname'])) . "</td>
+        <td class='p-2 hidden md:table-cell'>" . htmlspecialchars(date("F d, Y h:i A", strtotime($product['prod_date_added']))) . "</td>
+        <td class='p-2 flex flex-col sm:flex-row gap-2 items-center justify-center'>
+            <button class='bg-blue-500 text-white py-1 px-3 rounded-md text-xs sm:text-sm togglerUpdateProduct w-full sm:w-auto'
+                data-prod_id='" . htmlspecialchars($product['prod_id']) . "'
+                data-prod_name='" . htmlspecialchars($product['prod_name']) . "'
+                data-prod_price='" . htmlspecialchars($product['prod_price']) . "'>
+                Update
+            </button>
+            <button class='bg-red-500 text-white py-1 px-3 rounded-md text-xs sm:text-sm togglerDeleteProduct w-full sm:w-auto'
+                data-prod_id='" . htmlspecialchars($product['prod_id']) . "'>
+                Delete
+            </button>
+        </td>
+    </tr>";
 
-            <td class='p-2 hidden md:table-cell'>" . htmlspecialchars(ucfirst($product['user_fullname'])) . "</td>
-            <td class='p-2 hidden md:table-cell'>" . htmlspecialchars(date("F d, Y h:i A", strtotime($product['prod_date_added']))) . "</td>
-            <td class='p-2 flex flex-col sm:flex-row gap-2 items-center justify-center'>
-                <button class='bg-blue-500 text-white py-1 px-3 rounded-md text-xs sm:text-sm togglerUpdateProduct w-full sm:w-auto'
-                    data-prod_id='{$product['prod_id']}'
-                    data-prod_name='{$product['prod_name']}'
-                    data-prod_price='{$product['prod_price']}'>
-                    Update
-                </button>
-                <button class='bg-red-500 text-white py-1 px-3 rounded-md text-xs sm:text-sm togglerDeleteProduct w-full sm:w-auto'
-                    data-prod_id='{$product['prod_id']}'>
-                    Delete
-                </button>
-            </td>
-        </tr>";
     }
 } else {
     $output .= "<tr><td colspan='6' class='p-2 text-center'>No record found.</td></tr>";

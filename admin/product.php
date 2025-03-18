@@ -42,6 +42,7 @@
                     <th class="p-3 text-center">
                         <input type="checkbox" id="checkAll">
                     </th>
+                    <th class="p-3">Barcode</th>
                     <th class="p-3">Code</th>
                     <th class="p-3">Product</th>
                     <th class="p-3">Price</th>

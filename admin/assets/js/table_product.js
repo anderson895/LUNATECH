@@ -97,4 +97,66 @@ $(document).ready(function () {
     
     // Initial fetch
     fetchProducts();
+
+
+
+
+
+
+
+
+
+
+
+    $("#addproductForm").submit(function (e) {
+        e.preventDefault();
+
+        var new_product_name = $("#new_product_name").val().trim();
+
+        console.log(new_product_name);
+
+        if(new_product_name == ""){
+            alertify.error("Product name is required");
+            $('#BtnaddInventory').prop('disabled', false);
+            return;
+
+        }
+
+
+        $('.spinner').show();
+        $('#btnAddProduct').prop('disabled', true);
+    
+        var formData = new FormData(this); 
+        formData.append('requestType', 'addproduct');
+        $.ajax({
+            type: "POST",
+            url: "backend/end-points/controller.php",
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: "json",
+            beforeSend: function () {
+                $("#btnAddProduct").prop("disabled", true).text("Processing...");
+            },
+            success: function (response) {
+
+                $('#addproductForm')[0].reset();
+
+                fetchProducts();
+                
+                if (response.status === 200) {
+                    alertify.success(response.message);
+                    
+                    // setTimeout(function () { location.reload(); }, 1000);
+                } else {
+                    $('.spinner').hide();
+                    $('#btnAddProduct').prop('disabled', false);
+                    alertify.error(response.message);
+                }
+            },
+            complete: function () {
+                $("#btnAddProduct").prop("disabled", false).text("Submit");
+            }
+        });
+    });
 });

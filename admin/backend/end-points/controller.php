@@ -1,5 +1,21 @@
 <?php 
+
+require '../../../vendor/autoload.php'; 
+use Picqer\Barcode\BarcodeGeneratorPNG;
+
+
 include('../class.php');
+
+
+
+
+
+
+
+
+
+
+
 
 $db = new global_class();
 
@@ -110,16 +126,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         session_start();
         $new_product_name = htmlspecialchars(trim($_POST['new_product_name']));
         $new_product_price = htmlspecialchars(trim($_POST['new_product_price']));
-        $added_by=$_SESSION['id'];
-
-       
-        $result = $db->addproduct($new_product_name,$new_product_price, $added_by);
-
+        $added_by = $_SESSION['id'];
+        
+        $result = $db->addproduct($new_product_name, $new_product_price, $added_by);
+        
         if ($result == "success") {
-            echo json_encode(["status" => 200, "message" => "User successfully registered"]);
+            // Kunin ang latest product code (assuming auto-increment ID o last inserted code)
+            $lastProdQuery = $db->conn->query("SELECT prod_code FROM products ORDER BY prod_id DESC LIMIT 1");
+            $lastProd = $lastProdQuery->fetch_assoc();
+            $Prod_code = $lastProd['prod_code'];
+        
+            // Generate barcode
+            $generator = new BarcodeGeneratorPNG();
+            $barcode = $generator->getBarcode($Prod_code, $generator::TYPE_CODE_128);
+        
+            // Save barcode image
+            $barcodePath = "../../../barcodes/{$Prod_code}.png";
+            file_put_contents($barcodePath, $barcode);
+        
+            echo json_encode([
+                "status" => 200,
+                "message" => "Product successfully added",
+                "barcode_path" => $barcodePath
+            ]);
         } else {
             echo json_encode(["status" => 400, "message" => $result]);
         }
+
+
     }else if($_POST['requestType'] =='updateProduct'){
 
 
