@@ -158,6 +158,10 @@ include "components/header.php";
         });
     });
 
+
+
+    
+
     // Form submission
     $("#product-form").submit(function (e) { 
         e.preventDefault();

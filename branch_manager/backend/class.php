@@ -11,6 +11,72 @@ class global_class extends db_connect
         $this->connect();
     }
 
+
+    public function search_all_history($branch_id, $search = "", $limit = 10, $offset = 0) {
+        $searchQuery = $search ? "AND (purchase_record.purchase_invoice LIKE ? OR purchase_record.purchase_date LIKE ?)" : "";
+        $sql = "
+            SELECT purchase_record.*, user.user_fullname 
+            FROM purchase_record
+            LEFT JOIN user ON purchase_record.purchase_user_id = user.id
+            LEFT JOIN branches ON branches.branch_id = purchase_record.purchase_branch_id 
+            WHERE purchase_record.purchase_branch_id = ? $searchQuery
+            ORDER BY branches.branch_name ASC
+            LIMIT ? OFFSET ?
+        ";
+    
+        $stmt = $this->conn->prepare($sql);
+        
+        if ($search) {
+            $searchTerm = "%$search%";
+            $stmt->bind_param("issii", $branch_id, $searchTerm, $searchTerm, $limit, $offset);
+        } else {
+            $stmt->bind_param("iii", $branch_id, $limit, $offset);
+        }
+    
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+    
+    // Function to count total history records
+    public function count_all_history($branch_id, $search = "") {
+        $searchQuery = $search ? "AND (purchase_record.purchase_invoice LIKE ? OR purchase_record.purchase_date LIKE ?)" : "";
+        $sql = "
+            SELECT COUNT(*) as total
+            FROM purchase_record
+            LEFT JOIN user ON purchase_record.purchase_user_id = user.id
+            LEFT JOIN branches ON branches.branch_id = purchase_record.purchase_branch_id 
+            WHERE purchase_record.purchase_branch_id = ? $searchQuery
+        ";
+    
+        $stmt = $this->conn->prepare($sql);
+        
+        if ($search) {
+            $searchTerm = "%$search%";
+            $stmt->bind_param("iss", $branch_id, $searchTerm, $searchTerm);
+        } else {
+            $stmt->bind_param("i", $branch_id);
+        }
+    
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return $row['total'] ?? 0;
+    }
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function AddToCart($branch_id, $qty, $prod_id) {
         // Get current stock quantities (FIFO order)
         $stockQuery = $this->conn->prepare(

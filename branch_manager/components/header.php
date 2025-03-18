@@ -6,10 +6,8 @@ $db = new global_class();
 
 if (isset($_SESSION['id'])) {
     $id = intval($_SESSION['id']);
-
-   
     $On_Session = $db->check_account($id);
-
+    // $On_Session[0]['branch_id'];
   // echo "<pre>";
   // print_r($On_Session); 
   // echo "</pre>";

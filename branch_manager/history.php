@@ -26,16 +26,18 @@ include "components/header.php";
 
     <!-- Table Wrapper for Responsiveness -->
     <div class="overflow-x-auto">
-        <table id="userTable" class="table-auto w-full text-sm text-left text-gray-500">
+        <table id="historyTable" class="table-auto w-full text-sm text-left text-gray-500">
             <thead class="bg-gray-100 text-gray-700">
                 <tr>
+                    <th class="p-3">#</th>
                     <th class="p-3">Date</th>
-                    <th class="p-3 hidden md:table-cell">Remitted</th>
-                    <th class="p-3 text-center">Action</th>
+                    <th class="p-3 hidden md:table-cell">Invoice #</th>
+                    <th class="p-3 hidden md:table-cell">Total Sold</th>
+                    <th class="p-3 hidden md:table-cell">Action</th>
                 </tr>
             </thead>
             <tbody>
-                 
+            
             </tbody>
           
         </table>
@@ -46,5 +48,6 @@ include "components/header.php";
 
 
 
-
 <?php include "components/footer.php"; ?>
+
+<script src="assets/js/table_history.js"></script>
