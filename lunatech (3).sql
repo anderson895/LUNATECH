@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 18, 2025 at 06:32 AM
+-- Generation Time: Mar 18, 2025 at 03:33 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -58,7 +58,8 @@ CREATE TABLE `pos_cart` (
   `cart_id` int(11) NOT NULL,
   `cart_prod_id` int(11) NOT NULL,
   `cart_qty` int(11) NOT NULL,
-  `cart_branch_id` int(11) NOT NULL
+  `cart_branch_id` int(11) NOT NULL,
+  `cart_stock_in_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -120,6 +121,7 @@ CREATE TABLE `purchase_record` (
   `purchase_id` int(11) NOT NULL,
   `purchase_invoice` varchar(60) NOT NULL,
   `purchase_mode_of_payment` varchar(60) NOT NULL,
+  `purchased_tax` decimal(10,2) NOT NULL,
   `purchase_total_payment` int(11) NOT NULL,
   `purchased_change` decimal(10,2) DEFAULT NULL,
   `purchase_branch_id` int(11) NOT NULL,
@@ -131,8 +133,8 @@ CREATE TABLE `purchase_record` (
 -- Dumping data for table `purchase_record`
 --
 
-INSERT INTO `purchase_record` (`purchase_id`, `purchase_invoice`, `purchase_mode_of_payment`, `purchase_total_payment`, `purchased_change`, `purchase_branch_id`, `purchase_user_id`, `pruchase_date`) VALUES
-(27, 'INV-17422741446946', 'cash', 74500, 25500.00, 19, 6, '2025-03-18 05:02:24');
+INSERT INTO `purchase_record` (`purchase_id`, `purchase_invoice`, `purchase_mode_of_payment`, `purchased_tax`, `purchase_total_payment`, `purchased_change`, `purchase_branch_id`, `purchase_user_id`, `pruchase_date`) VALUES
+(27, 'INV-17422741446946', 'cash', 0.00, 74500, 25500.00, 19, 6, '2025-03-18 05:02:24');
 
 -- --------------------------------------------------------
 
@@ -156,12 +158,9 @@ CREATE TABLE `stock` (
 --
 
 INSERT INTO `stock` (`stock_in_id`, `stock_in_branch_id`, `stock_in_prod_id`, `stock_in_qty`, `stock_in_sold`, `stock_in_backjob`, `stock_in_date`, `stock_in_status`) VALUES
-(37, 18, 42, 6, 0, 0, '2025-03-18 04:23:08', 1),
-(38, 18, 46, 0, 0, 0, '2025-03-18 04:20:36', 1),
-(39, 18, 42, 6, 0, 0, '2025-03-18 04:23:08', 1),
-(40, 19, 46, 0, 0, 0, '2025-03-18 05:02:12', 1),
-(41, 19, 47, 0, 0, 0, '2025-03-18 04:52:29', 1),
-(42, 19, 45, 5, 0, 0, '2025-03-18 05:02:17', 1);
+(43, 18, 42, 5, 20, 0, '2025-03-18 14:30:48', 1),
+(44, 18, 44, 20, 0, 0, '2025-03-18 12:53:09', 1),
+(45, 18, 42, 20, 20, 0, '2025-03-18 14:30:48', 1);
 
 -- --------------------------------------------------------
 
@@ -235,7 +234,9 @@ ALTER TABLE `purchase_record`
 -- Indexes for table `stock`
 --
 ALTER TABLE `stock`
-  ADD PRIMARY KEY (`stock_in_id`);
+  ADD PRIMARY KEY (`stock_in_id`),
+  ADD KEY `stock_in_branch_id` (`stock_in_branch_id`),
+  ADD KEY `stock_in_prod_id` (`stock_in_prod_id`);
 
 --
 -- Indexes for table `user`
@@ -257,7 +258,7 @@ ALTER TABLE `branches`
 -- AUTO_INCREMENT for table `pos_cart`
 --
 ALTER TABLE `pos_cart`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=116;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -281,7 +282,7 @@ ALTER TABLE `purchase_record`
 -- AUTO_INCREMENT for table `stock`
 --
 ALTER TABLE `stock`
-  MODIFY `stock_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `stock_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT for table `user`
@@ -312,6 +313,13 @@ ALTER TABLE `purchase_item`
 ALTER TABLE `purchase_record`
   ADD CONSTRAINT `purchase_record_ibfk_1` FOREIGN KEY (`purchase_user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `purchase_record_ibfk_2` FOREIGN KEY (`purchase_branch_id`) REFERENCES `branches` (`branch_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `stock`
+--
+ALTER TABLE `stock`
+  ADD CONSTRAINT `stock_ibfk_1` FOREIGN KEY (`stock_in_branch_id`) REFERENCES `branches` (`branch_id`),
+  ADD CONSTRAINT `stock_ibfk_2` FOREIGN KEY (`stock_in_prod_id`) REFERENCES `products` (`prod_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
