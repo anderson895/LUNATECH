@@ -159,7 +159,7 @@ $(document).ready(function () {
         formData.append('branch_id', branch_id); 
 
 
-        console.log(formData);
+        // console.log(formData);
 
         $.ajax({
                 type: "POST",
@@ -169,9 +169,10 @@ $(document).ready(function () {
                 processData: false,
                 dataType: "json", 
                 success: function (response) {
-                    console.log(response); 
+                    // console.log(response); 
                     
                     fetch_cart();
+                    fetchInventory();
                 },
             });
     });
@@ -224,6 +225,7 @@ $(document).on('click', '.removeItem', function () {
         success: function (response) {
             console.log(response);
             fetch_cart(); 
+            fetchInventory();
         },
         error: function (xhr, status, error) {
             console.error("Error removing item:", error);

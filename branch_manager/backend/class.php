@@ -14,15 +14,44 @@ class global_class extends db_connect
 
 
     public function RemoveCartItem($cart_id) {
-        $query = $this->conn->prepare("DELETE FROM `pos_cart` WHERE cart_id = ?");
-        $query->bind_param("i", $cart_id); 
+        // Get the product ID, quantity, and branch ID from the cart
+        $cartQuery = $this->conn->prepare(
+            "SELECT cart_prod_id, cart_qty, cart_branch_id FROM pos_cart WHERE cart_id = ?"
+        );
+        $cartQuery->bind_param("i", $cart_id);
+        $cartQuery->execute();
+        $result = $cartQuery->get_result();
+        
+        if ($result->num_rows > 0) {
+            $cartRow = $result->fetch_assoc();
+            $prod_id = $cartRow['cart_prod_id'];
+            $qty = $cartRow['cart_qty'];
+            $branch_id = $cartRow['cart_branch_id'];
     
-        if ($query->execute()) {
-            return 'success';
+            // Return stock to inventory
+            $returnStockQuery = $this->conn->prepare(
+                "UPDATE stock SET stock_in_qty = stock_in_qty + ? 
+                 WHERE stock_in_prod_id = ? AND stock_in_branch_id = ? AND stock_in_status = '1'"
+            );
+            $returnStockQuery->bind_param("iii", $qty, $prod_id, $branch_id);
+            $returnStockQuery->execute();
+    
+            // Delete the item from the cart
+            $deleteQuery = $this->conn->prepare(
+                "DELETE FROM pos_cart WHERE cart_id = ?"
+            );
+            $deleteQuery->bind_param("i", $cart_id);
+            
+            if ($deleteQuery->execute()) {
+                return 'success';
+            } else {
+                return 'Error: ' . $deleteQuery->error;
+            }
         } else {
-            return 'Error: ' . $query->error;
+            return 'Error: Item not found in cart';
         }
     }
+    
     
 
 
@@ -82,6 +111,79 @@ class global_class extends db_connect
         
         return false; 
     }
+
+
+    public function AddToCart($branch_id, $qty, $prod_id) {
+        // Get current stock quantity
+        $stockQuery = $this->conn->prepare(
+            "SELECT SUM(stock_in_qty) - SUM(stock_in_sold) AS available_stock 
+             FROM stock 
+             WHERE stock_in_prod_id = ? AND stock_in_branch_id = ? AND stock_in_status = '1'"
+        );
+        $stockQuery->bind_param("ii", $prod_id, $branch_id);
+        $stockQuery->execute();
+        $stockResult = $stockQuery->get_result();
+        $stockRow = $stockResult->fetch_assoc();
+    
+        $availableStock = $stockRow['available_stock'] ?? 0;
+    
+        // Check if enough stock is available
+        if ($availableStock < $qty) {
+            return 'Error: Insufficient stock';
+        }
+    
+        // Check if product already exists in the cart
+        $checkQuery = $this->conn->prepare(
+            "SELECT cart_qty FROM pos_cart WHERE cart_prod_id = ? AND cart_branch_id = ?"
+        );
+        $checkQuery->bind_param("ii", $prod_id, $branch_id);
+        $checkQuery->execute();
+        $result = $checkQuery->get_result();
+    
+        if ($result->num_rows > 0) {
+            // Update existing quantity
+            $updateQuery = $this->conn->prepare(
+                "UPDATE pos_cart SET cart_qty = cart_qty + ? WHERE cart_prod_id = ? AND cart_branch_id = ?"
+            );
+            $updateQuery->bind_param("iii", $qty, $prod_id, $branch_id);
+    
+            if ($updateQuery->execute()) {
+                // Deduct stock from inventory
+                $deductQuery = $this->conn->prepare(
+                    "UPDATE stock SET stock_in_qty = stock_in_qty - ? 
+                     WHERE stock_in_prod_id = ? AND stock_in_branch_id = ? AND stock_in_status = '1'"
+                );
+                $deductQuery->bind_param("iii", $qty, $prod_id, $branch_id);
+                $deductQuery->execute();
+    
+                return 'success';
+            } else {
+                return 'Error: ' . $updateQuery->error;
+            }
+        } else {
+            // Insert new record
+            $insertQuery = $this->conn->prepare(
+                "INSERT INTO pos_cart (cart_prod_id, cart_qty, cart_branch_id) VALUES (?, ?, ?)"
+            );
+            $insertQuery->bind_param("iii", $prod_id, $qty, $branch_id);
+    
+            if ($insertQuery->execute()) {
+                // Deduct stock from inventory
+                $deductQuery = $this->conn->prepare(
+                    "UPDATE stock SET stock_in_qty = stock_in_qty - ? 
+                     WHERE stock_in_prod_id = ? AND stock_in_branch_id = ? AND stock_in_status = '1'"
+                );
+                $deductQuery->bind_param("iii", $qty, $prod_id, $branch_id);
+                $deductQuery->execute();
+    
+                return 'success';
+            } else {
+                return 'Error: ' . $insertQuery->error;
+            }
+        }
+    }
+    
+
     
     
     
@@ -99,41 +201,7 @@ class global_class extends db_connect
     }
 
 
-    public function AddToCart($branch_id, $qty, $prod_id) {
-        // Check if product already exists in the cart
-        $checkQuery = $this->conn->prepare(
-            "SELECT cart_qty FROM pos_cart WHERE cart_prod_id = ? AND cart_branch_id = ?"
-        );
-        $checkQuery->bind_param("ii", $prod_id, $branch_id);
-        $checkQuery->execute();
-        $result = $checkQuery->get_result();
     
-        if ($result->num_rows > 0) {
-            // Update existing quantity
-            $updateQuery = $this->conn->prepare(
-                "UPDATE pos_cart SET cart_qty = cart_qty + ? WHERE cart_prod_id = ? AND cart_branch_id = ?"
-            );
-            $updateQuery->bind_param("iii", $qty, $prod_id, $branch_id);
-    
-            if ($updateQuery->execute()) {
-                return 'success';
-            } else {
-                return 'Error: ' . $updateQuery->error;
-            }
-        } else {
-            // Insert new record
-            $insertQuery = $this->conn->prepare(
-                "INSERT INTO pos_cart (cart_prod_id, cart_qty, cart_branch_id) VALUES (?, ?, ?)"
-            );
-            $insertQuery->bind_param("iii", $prod_id, $qty, $branch_id);
-    
-            if ($insertQuery->execute()) {
-                return 'success';
-            } else {
-                return 'Error: ' . $insertQuery->error;
-            }
-        }
-    }
     
   
 
