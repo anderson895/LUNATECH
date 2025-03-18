@@ -52,7 +52,7 @@ include "components/header.php";
             <input type="number" placeholder="Qty" id="stock_in_qty" name="stock_in_qty" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
             <input type="number" placeholder="Sold" id="stock_in_sold" name="stock_in_sold" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
             <input type="number" placeholder="Backjob" id="stock_in_backjob" name="stock_in_backjob" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
-            <button type="submit" id="BtnaddInventory" class="bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 transition-all">Add Record</button>
+            <button type="submit" id="BtnaddInventory" class="bg-green-500 text-white p-3 rounded-md hover:bg-green-600 transition-all">Add Record</button>
         </form>
     </div>
 
