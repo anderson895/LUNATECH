@@ -124,6 +124,7 @@ $(document).ready(function () {
         $('#sale_prod_code').val(productCode);
         $('#sale_prod_name').val(productName); 
         $('#sale_prod_id').val(productId);
+        $('#sale_qty').val(1);
 
         selectedProduct = {
             id: productId,
@@ -133,6 +134,19 @@ $(document).ready(function () {
             quantity: 0 
         };
     });
+
+    $(document).on('click', function (event) {
+        if (!$(event.target).closest('#inventoryTable, #sale_prod_code, #sale_prod_name, #sale_prod_id, #sale_qty').length) {
+            // Reset input fields
+            $('#sale_prod_code').val('');
+            $('#sale_prod_name').val('');
+            $('#sale_prod_id').val('');
+            $('#sale_qty').val('');
+
+            selectedProduct = null; // Reset din ang selected product
+        }
+    });
+
 
     
     $('#product-form').on('submit', function (e) {
@@ -170,6 +184,10 @@ $(document).ready(function () {
                 dataType: "json", 
                 success: function (response) {
                     // console.log(response); 
+
+                    if (response.status === 400) {
+                        alertify.error(response.message);
+                    } 
                     
                     fetch_cart();
                     fetchInventory();

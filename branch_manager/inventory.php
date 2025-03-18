@@ -62,35 +62,24 @@ include "components/header.php";
 
 <script>
    $(document).ready(function () {
-    function fetchInventory() {
-        let searchValue = $('#searchInput').val().toLowerCase(); 
 
-        $.ajax({
-            url: 'backend/end-points/inventory_list.php', 
-            type: 'GET',
-            success: function (data) {
-                $('#inventoryTable tbody').html(data); 
+    let selectedProduct = null;
 
-                $("#inventoryTable tbody tr").each(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(searchValue) > -1);
-                });
-            }
-        });
-    }
+    // Kapag kinlick ang isang row sa inventoryTable
+    $('#inventoryTable').on('click', 'tr', function () {
+        let productCode = $(this).find('td').eq(1).text().trim(); 
 
-    setInterval(fetchInventory, 3000);
-    fetchInventory(); 
+        $('#stock_in_prod_code').val(productCode);
+        selectedProduct = { code: productCode };
 
-    $('#searchInput').on('keyup', function () {
-        let value = $(this).val().toLowerCase();
-        $("#inventoryTable tbody tr").filter(function () {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-        });
+        console.log(selectedProduct);
+
+        // Tawagin ang function para mag-fetch ng suggestions batay sa productCode
+        fetchProductSuggestions(productCode);
     });
 
-
-    $("#stock_in_prod_code").on("input", function() {
-        let query = $(this).val();
+    // Function para kumuha ng suggestions
+    function fetchProductSuggestions(query) {
         if (query.length >= 1) { 
             $.ajax({
                 url: "backend/end-points/fetch_products.php",
@@ -113,9 +102,15 @@ include "components/header.php";
         } else {
             $("#productSuggestions").hide();
         }
+    }
+
+    // Kapag nag-type sa stock_in_prod_code, mag-fetch ng suggestions
+    $("#stock_in_prod_code").on("input", function() {
+        let query = $(this).val();
+        fetchProductSuggestions(query);
     });
 
-    // Handle product selection
+    // Kapag pinili ang isang suggestion
     $(document).on("click", ".suggestion-item", function() {
         let selectedCode = $(this).data("code");
         let selectedName = $(this).data("name");
@@ -127,14 +122,42 @@ include "components/header.php";
         $("#productSuggestions").hide();
     });
 
-    // Hide suggestions when clicking outside
+    // Mag-hide ng suggestion kapag nag-click sa labas
     $(document).click(function(e) {
         if (!$(e.target).closest("#stock_in_prod_code, #productSuggestions").length) {
             $("#productSuggestions").hide();
         }
     });
 
-    // Form submission with AJAX
+    // Fetch inventory data tuwing 3 segundo
+    function fetchInventory() {
+        let searchValue = $('#searchInput').val().toLowerCase(); 
+
+        $.ajax({
+            url: 'backend/end-points/inventory_list.php', 
+            type: 'GET',
+            success: function (data) {
+                $('#inventoryTable tbody').html(data); 
+
+                $("#inventoryTable tbody tr").each(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(searchValue) > -1);
+                });
+            }
+        });
+    }
+
+    setInterval(fetchInventory, 3000);
+    fetchInventory();
+
+    // Live search function
+    $('#searchInput').on('keyup', function () {
+        let value = $(this).val().toLowerCase();
+        $("#inventoryTable tbody tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        });
+    });
+
+    // Form submission
     $("#product-form").submit(function (e) { 
         e.preventDefault();
         $('#BtnaddInventory').prop('disabled', true);
@@ -145,18 +168,13 @@ include "components/header.php";
         var stock_in_sold = $("#stock_in_sold").val().trim();
         var stock_in_backjob = $("#stock_in_backjob").val().trim();
 
-
-        
-        console.log(stock_in_prod_id);
-
-        if(stock_in_prod_id == ""){
+        if (stock_in_prod_id == "") {
             alertify.error("Please select a product");
             $('#BtnaddInventory').prop('disabled', false);
             return;
-
         }
 
-        if(stock_in_qty == "" && stock_in_sold == 0 && stock_in_backjob == 0){
+        if (stock_in_qty == "" && stock_in_sold == 0 && stock_in_backjob == 0) {
             alertify.error("Please Select Qty, Sold Or Backjob");
             $('#BtnaddInventory').prop('disabled', false);
             return;
@@ -165,7 +183,6 @@ include "components/header.php";
         var formData = new FormData(this); 
         formData.append('requestType', 'addInventoryRecord');
         formData.append('branch_id', branch_id);
-
 
         $.ajax({
             type: "POST",
@@ -180,7 +197,6 @@ include "components/header.php";
             success: function (response) {
                 if (response.status === 200) {
                     alertify.success(response.message);
-                    // setTimeout(function () { location.reload(); }, 1000);
                     $("#product-form")[0].reset();  
                     fetchInventory();
                 } else {
@@ -193,7 +209,9 @@ include "components/header.php";
             }
         });
     });
+
 });
+
 </script>
 
 <?php include "components/footer.php"; ?>

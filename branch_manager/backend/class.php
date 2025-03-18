@@ -129,7 +129,7 @@ class global_class extends db_connect
     
         // Check if enough stock is available
         if ($availableStock < $qty) {
-            return 'Error: Insufficient stock';
+            return 'Insufficient stock';
         }
     
         // Check if product already exists in the cart
