@@ -50,7 +50,7 @@ include "components/header.php";
             <form id="product-form" class="flex flex-col gap-4">
                 <input type="hidden" id="sale_prod_code" name="sale_prod_code" placeholder="Search Product Code" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
                 <input type="hidden" id="sale_prod_id" name="sale_prod_id" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
-                <input type="text" id="sale_prod_name" name="sale_prod_name" placeholder="Product Name" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
+                <input type="text" readonly id="sale_prod_name" name="sale_prod_name" placeholder="Product Name" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
                 <input type="number" placeholder="Qty" id="sale_qty" name="sale_qty" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
                 
                 <button type="submit" id="BtnaddInventory" class="bg-gray-500 text-white p-3 rounded-md hover:bg-gray-600 transition-all mt-4 w-full">
@@ -137,8 +137,23 @@ $(document).ready(function () {
     
     $('#product-form').on('submit', function (e) {
         e.preventDefault();
+        
+        var prod_id = $("#sale_prod_id").val().trim();
+        var sale_qty = $("#sale_qty").val().trim();
+
+        if (prod_id === "") {
+            alertify.error("Please select a product first.");
+            return;
+        }
+
+        if (sale_qty === "" || isNaN(sale_qty) || sale_qty < 1) {
+            alertify.error("Please enter a valid quantity.");
+            return;
+        }
+
 
         var branch_id = $("#branch_id").val();
+
         var formData = new FormData(this);
         formData.append('requestType', 'AddToCart'); 
         formData.append('branch_id', branch_id); 
