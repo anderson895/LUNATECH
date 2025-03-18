@@ -32,6 +32,7 @@ include "components/header.php";
                         <th class="p-3 w-1/4 font-medium">Current Stocks</th>
                         <th class="p-3 w-1/4 font-medium">Sold</th>
                         <th class="p-3 w-1/4 font-medium">Backjob</th>
+                        <th class="p-3 w-1/4 font-medium">Action</th>
                     </tr>
                 </thead>
                 <tbody class="text-gray-600">

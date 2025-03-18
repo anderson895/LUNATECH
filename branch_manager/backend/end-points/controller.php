@@ -23,9 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }else if ($_POST['requestType'] == 'AddToCart') {
 
-            // echo "<pre>";
-            // print_r($_POST);
-            // echo "</pre>";
 
             $branch_id = htmlspecialchars(trim($_POST['branch_id']));
             $qty = htmlspecialchars(trim($_POST['sale_qty']));
@@ -94,6 +91,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             
             
+            
+        }else if($_POST['requestType'] =='GenericDelete'){
+
+            // echo "<pre>";
+            // print_r($_POST);
+            // echo "</pre>";
+            $id = $_POST['id'];
+            $table = $_POST['table'];
+            $id_name = $_POST['id_name'];
+          
+    
+            $result = $db->GenericDelete($id,$table,$id_name);
+    
+            if ($result == "success") {
+                echo json_encode(["status" => 200, "message" => "Delete Successfully"]);
+            } else {
+                echo json_encode(["status" => 400, "message" => $result]);
+            }
             
         }
     }

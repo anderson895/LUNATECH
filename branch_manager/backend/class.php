@@ -167,6 +167,29 @@ class global_class extends db_connect
     
     
 
+
+    public function GenericDelete($id,$table,$id_name) {
+        $status = 0; 
+        
+        $query = $this->conn->prepare(
+            "UPDATE `$table` SET `stock_in_status` = ? WHERE $id_name = ?"
+        );
+        $query->bind_param("ii", $status, $id);
+        
+        if ($query->execute()) {
+            return 'success';
+        } else {
+            return 'Error: ' . $query->error;
+        }
+    }
+
+
+
+
+
+
+
+
     public function fetch_all_inventoryRecord($branch_id) {
         $query = $this->conn->prepare("
             SELECT 
@@ -174,6 +197,7 @@ class global_class extends db_connect
                 products.prod_code,
                 products.prod_name,
                 products.prod_price,
+                stock.stock_in_id,
                 SUM(stock.stock_in_qty) AS total_qty,
                 SUM(stock.stock_in_sold) AS total_sold,
                 SUM(stock.stock_in_backjob) AS total_backjob

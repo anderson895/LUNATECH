@@ -19,10 +19,20 @@ if ($fetch_all_inventoryRecord->num_rows > 0): ?>
             <td class="p-4"><?= htmlspecialchars($inv['total_qty']) ?></td>
             <td class="p-4"><?= htmlspecialchars($inv['total_sold']) ?></td>
             <td class="p-4"><?= htmlspecialchars($inv['total_backjob']) ?></td>
+            <td class="p-4">
+                <button class="remove-stock-inv bg-red-500 text-white px-3 py-1 rounded" 
+                        data-id="<?= htmlspecialchars($inv['stock_in_id']) ?>"
+                        data-table="stock"
+                        data-id_name="stock_in_id "
+                        
+                        >
+                    Remove
+                </button>
+            </td>
         </tr>
     <?php endforeach; ?>
 <?php else: ?>
     <tr>
-        <td colspan="6" class="p-2">No record found.</td>
+        <td colspan="7" class="p-2">No record found.</td>
     </tr>
 <?php endif; ?>
