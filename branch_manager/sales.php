@@ -12,7 +12,6 @@ include "components/header.php";
 
 <!-- Main Content -->
 <div class="max-w-12xl mx-auto flex flex-col md:flex-row gap-8 items-start">
-
     <!-- Inventory Table (Wider) -->
     <div class="md:w-3/4 w-full bg-white shadow-lg rounded-lg p-6">
         <div class="flex justify-between items-center mb-4">
@@ -62,11 +61,10 @@ include "components/header.php";
            <!-- Cart Summary (for visual appeal) -->
             <div class="w-full bg-gray-50 p-4 rounded-lg mt-4">
                 <h3 class="font-bold text-gray-700 mb-2">Cart Summary</h3>
-                <div id="cartItemsList" class="text-sm text-gray-600 mb-2 overflow-x-auto max-h-40 md:max-h-60"> <!-- Allow scrolling for item list -->
+                <div id="cartItemsList" class="text-sm text-gray-600 mb-2 overflow-x-auto max-h-40 md:max-h-60"> 
                     <!-- Cart item list will go here -->
                 </div>
                 <div class="overflow-x-auto">
-                    <!-- <p class="text-sm text-gray-600">Total Items: <span id="cartItemCount">0</span></p> -->
                     <b class="text-sm text-gray-600">Total: <span id="cartTotalPrice">0.00</span></b>
                 </div>
 
@@ -77,10 +75,62 @@ include "components/header.php";
                     </button>
                 </div>
             </div>
-
     </div>
-
 </div>
+
+
+
+
+
+
+
+
+<!-- MODAL SECION -->
+<div id="purchaseModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg p-6 shadow-lg w-96">
+        <h2 class="text-xl font-bold text-gray-700 mb-4">Payment Details</h2>
+
+        <div class="mb-3">
+            <label class="block text-gray-600 text-sm font-medium">Total Bill:</label>
+            <input type="text" id="totalBill" class="border border-gray-300 p-2 w-full rounded-md bg-gray-100" readonly>
+        </div>
+
+        <div class="mb-3">
+            <label class="block text-gray-600 text-sm font-medium">Mode of Payment:</label>
+            <select id="paymentMethod" name="paymentMethod" class="border border-gray-300 p-2 w-full rounded-md">
+                <option value="cash">Cash</option>
+                <option value="credit_card">Credit Card</option>
+                <option value="gcash">GCash</option>
+                <option value="bank_transfer">Bank Transfer</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="block text-gray-600 text-sm font-medium">Payment:</label>
+            <input type="number" id="paymentAmount" class="border border-gray-300 p-2 w-full rounded-md">
+        </div>
+
+        <div class="mb-3">
+            <label class="block text-gray-600 text-sm font-medium">Change (Sukli):</label>
+            <input type="text" id="changeAmount" class="border border-gray-300 p-2 w-full rounded-md bg-gray-100" readonly>
+        </div>
+
+        <div class="flex justify-end space-x-2">
+            <button id="confirmPurchase" class="bg-green-500 text-white p-2 rounded-md">Confirm</button>
+            <button id="closeModal" class="bg-gray-500 text-white p-2 rounded-md">Cancel</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
 
 <script>
 $(document).ready(function () {
@@ -113,7 +163,6 @@ $(document).ready(function () {
     });
 
     let selectedProduct = null;
-
     $('#inventoryTable').on('click', 'tr', function () {
         let productCode = $(this).find('td').eq(0).text().trim(); 
         let productName = $(this).find('td').eq(1).text().trim(); 
@@ -135,19 +184,6 @@ $(document).ready(function () {
         };
     });
 
-    $(document).on('click', function (event) {
-        if (!$(event.target).closest('#inventoryTable, #sale_prod_code, #sale_prod_name, #sale_prod_id, #sale_qty').length) {
-            // Reset input fields
-            $('#sale_prod_code').val('');
-            $('#sale_prod_name').val('');
-            $('#sale_prod_id').val('');
-            $('#sale_qty').val('');
-
-            selectedProduct = null; // Reset din ang selected product
-        }
-    });
-
-
     
     $('#product-form').on('submit', function (e) {
         e.preventDefault();
@@ -165,15 +201,10 @@ $(document).ready(function () {
             return;
         }
 
-
         var branch_id = $("#branch_id").val();
-
         var formData = new FormData(this);
         formData.append('requestType', 'AddToCart'); 
         formData.append('branch_id', branch_id); 
-
-
-        // console.log(formData);
 
         $.ajax({
                 type: "POST",
@@ -183,7 +214,6 @@ $(document).ready(function () {
                 processData: false,
                 dataType: "json", 
                 success: function (response) {
-                    // console.log(response); 
 
                     if (response.status === 400) {
                         alertify.error(response.message);
@@ -207,7 +237,7 @@ $(document).ready(function () {
             let totalItems = 0;
             let totalPrice = 0;
 
-            console.log(cartItems); 
+            // console.log(cartItems); 
 
             cartItems.forEach(item => {
                 let subtotal = item.prod_price * item.cart_qty;
@@ -251,7 +281,6 @@ $(document).on('click', '.removeItem', function () {
     });
 });
 
-// Fetch cart every 3 seconds
 $(document).ready(function () {
     setInterval(fetch_cart, 3000);
     fetch_cart();
@@ -260,6 +289,116 @@ $(document).ready(function () {
 });
 
 
+
+$(document).ready(function () {
+    $("#btnPurchase").click(function () {
+        let totalBill = parseFloat($("#cartTotalPrice").text().replace(/[^\d.]/g, '')) || 0;
+
+        if (totalBill === 0) {
+            alert("Your cart is empty!");
+            return;
+        }
+
+        $("#totalBill").val(totalBill.toFixed(2));
+        $("#paymentAmount").val('');
+        $("#changeAmount").val('');
+        $("#purchaseModal").removeClass("hidden");
+    });
+
+    $("#closeModal").click(function () {
+        $("#purchaseModal").addClass("hidden");
+    });
+
+    $("#paymentAmount").on("input", function () {
+        let totalBill = parseFloat($("#totalBill").val()) || 0;
+        let payment = parseFloat($(this).val()) || 0;
+        
+        let change = payment - totalBill;
+
+        $("#changeAmount").val(change >= 0 ? change.toFixed(2) : "Insufficient Payment");
+    });
+
+    $("#confirmPurchase").click(function () {
+        let totalBill = parseFloat($("#totalBill").val());
+        let payment = parseFloat($("#paymentAmount").val());
+        let changeAmount = parseFloat($("#changeAmount").val());
+        let paymentMethod = $("#paymentMethod").val();
+      
+
+        if (isNaN(payment) || payment < totalBill) {
+            alert("Insufficient payment!");
+            return;
+        }
+
+        // Collect cart items
+        let cartItems = [];
+        $("#cartItemsList .cart-item").each(function () {
+            let item = {
+                cart_id: $(this).data("id"),
+                product_name: $(this).find("p").text().split(" - ")[0].trim(),
+                product_price: parseFloat($(this).find("strong").text().replace(/[^\d.]/g, '')),
+                quantity: parseInt($(this).find("p").text().split(" x ")[1]),
+            };
+            cartItems.push(item);
+        });
+
+        if (cartItems.length === 0) {
+            alert("No items in cart.");
+            return;
+        }
+
+        console.log(cartItems);
+
+        // Send data to the backend
+        $.ajax({
+            url: "backend/end-points/controller.php",
+            type: "POST",
+            data: {
+                requestType: "CompletePurchase",
+                total: totalBill,
+                payment: payment,
+                changeAmount: changeAmount,
+                paymentMethod: paymentMethod,
+                cartItems: cartItems
+            },
+            success: function (response) {
+                console.log(response);
+                // alert("Purchase successful!");
+                // $("#purchaseModal").addClass("hidden");
+                // fetch_cart(); // Refresh cart after purchase
+            },
+            error: function (xhr, status, error) {
+                console.error("Error processing purchase:", error);
+            }
+        });
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <?php include "components/footer.php"; ?>
