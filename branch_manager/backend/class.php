@@ -11,46 +11,118 @@ class global_class extends db_connect
         $this->connect();
     }
 
-
-
-    public function RemoveCartItem($cart_id) {
-        // Get the product ID, quantity, and branch ID from the cart
-        $cartQuery = $this->conn->prepare(
-            "SELECT cart_prod_id, cart_qty, cart_branch_id FROM pos_cart WHERE cart_id = ?"
+    public function AddToCart($branch_id, $qty, $prod_id) {
+        // Get current stock quantities (FIFO order)
+        $stockQuery = $this->conn->prepare(
+            "SELECT stock_in_id, stock_in_qty 
+             FROM stock 
+             WHERE stock_in_prod_id = ? AND stock_in_branch_id = ? AND stock_in_status = '1' 
+             ORDER BY stock_in_id"
         );
-        $cartQuery->bind_param("i", $cart_id);
+        $stockQuery->bind_param("ii", $prod_id, $branch_id);
+        $stockQuery->execute();
+        $stockResult = $stockQuery->get_result();
+        
+        // Fetch all stock entries for the product
+        $stockEntries = [];
+        while ($row = $stockResult->fetch_assoc()) {
+            $stockEntries[] = $row;
+        }
+        
+        // Check if there's enough stock
+        $totalStock = array_sum(array_column($stockEntries, 'stock_in_qty'));
+        if ($totalStock < $qty) {
+            return 'Insufficient stock';
+        }
+    
+        // Deduct stock from inventory and insert multiple entries in pos_cart
+        foreach ($stockEntries as $stock) {
+            if ($qty <= 0) break; // Stop if all quantity is allocated
+    
+            $deductQty = min($qty, $stock['stock_in_qty']);
+    
+            // Deduct from stock table
+            $deductQuery = $this->conn->prepare(
+                "UPDATE stock SET stock_in_qty = stock_in_qty - ? WHERE stock_in_id = ?"
+            );
+            $deductQuery->bind_param("ii", $deductQty, $stock['stock_in_id']);
+            $deductQuery->execute();
+    
+            // Check if an entry with the same stock_in_id already exists in pos_cart
+            $checkCartQuery = $this->conn->prepare(
+                "SELECT cart_qty FROM pos_cart WHERE cart_prod_id = ? AND cart_branch_id = ? AND cart_stock_in_id = ?"
+            );
+            $checkCartQuery->bind_param("iii", $prod_id, $branch_id, $stock['stock_in_id']);
+            $checkCartQuery->execute();
+            $cartResult = $checkCartQuery->get_result();
+    
+            if ($cartResult->num_rows > 0) {
+                // If exists, update the quantity
+                $updateCartQuery = $this->conn->prepare(
+                    "UPDATE pos_cart SET cart_qty = cart_qty + ? WHERE cart_prod_id = ? AND cart_branch_id = ? AND cart_stock_in_id = ?"
+                );
+                $updateCartQuery->bind_param("iiii", $deductQty, $prod_id, $branch_id, $stock['stock_in_id']);
+                $updateCartQuery->execute();
+            } else {
+                // If not exists, insert a new row
+                $insertCartQuery = $this->conn->prepare(
+                    "INSERT INTO pos_cart (cart_prod_id, cart_qty, cart_branch_id, cart_stock_in_id) VALUES (?, ?, ?, ?)"
+                );
+                $insertCartQuery->bind_param("iiii", $prod_id, $deductQty, $branch_id, $stock['stock_in_id']);
+                $insertCartQuery->execute();
+            }
+    
+            $qty -= $deductQty; // Reduce remaining quantity
+        }
+    
+        return 'success';
+    }
+    
+    
+
+    public function RemoveCartItem($cart_prod_id, $branch_id) {
+        // Get all cart entries for the given product and branch
+        $cartQuery = $this->conn->prepare("
+            SELECT cart_id, cart_qty, cart_stock_in_id 
+            FROM pos_cart 
+            WHERE cart_prod_id = ? AND cart_branch_id = ?
+        ");
+        $cartQuery->bind_param("ii", $cart_prod_id, $branch_id);
         $cartQuery->execute();
         $result = $cartQuery->get_result();
         
         if ($result->num_rows > 0) {
-            $cartRow = $result->fetch_assoc();
-            $prod_id = $cartRow['cart_prod_id'];
-            $qty = $cartRow['cart_qty'];
-            $branch_id = $cartRow['cart_branch_id'];
-    
-            // Return stock to inventory
-            $returnStockQuery = $this->conn->prepare(
-                "UPDATE stock SET stock_in_qty = stock_in_qty + ? 
-                 WHERE stock_in_prod_id = ? AND stock_in_branch_id = ? AND stock_in_status = '1'"
-            );
-            $returnStockQuery->bind_param("iii", $qty, $prod_id, $branch_id);
-            $returnStockQuery->execute();
-    
-            // Delete the item from the cart
-            $deleteQuery = $this->conn->prepare(
-                "DELETE FROM pos_cart WHERE cart_id = ?"
-            );
-            $deleteQuery->bind_param("i", $cart_id);
-            
-            if ($deleteQuery->execute()) {
-                return 'success';
-            } else {
-                return 'Error: ' . $deleteQuery->error;
+            // Process each cart entry
+            while ($cartRow = $result->fetch_assoc()) {
+                $cart_id = $cartRow['cart_id'];
+                $qty = $cartRow['cart_qty'];
+                $stock_in_id = $cartRow['cart_stock_in_id']; // Track original stock source
+                
+                // Return stock to its original stock_in_id
+                $returnStockQuery = $this->conn->prepare("
+                    UPDATE stock 
+                    SET stock_in_qty = stock_in_qty + ? 
+                    WHERE stock_in_id = ?
+                ");
+                $returnStockQuery->bind_param("ii", $qty, $stock_in_id);
+                $returnStockQuery->execute();
+                
+                // Delete the cart entry after restoring stock
+                $deleteQuery = $this->conn->prepare("
+                    DELETE FROM pos_cart 
+                    WHERE cart_id = ?
+                ");
+                $deleteQuery->bind_param("i", $cart_id);
+                $deleteQuery->execute();
             }
+    
+            return 'success';
         } else {
-            return 'Error: Item not found in cart';
+            return 'Error: No matching items found in cart';
         }
     }
+    
+    
     
     
 
@@ -61,10 +133,17 @@ class global_class extends db_connect
 
     public function fetch_all_cart($branch_id) {
         $query = $this->conn->prepare("
-            SELECT c.cart_id, c.cart_prod_id, c.cart_qty, c.cart_branch_id, p.prod_name, p.prod_price 
+            SELECT 
+                MIN(c.cart_id) AS cart_id, 
+                c.cart_prod_id, 
+                SUM(c.cart_qty) AS cart_qty, 
+                c.cart_branch_id, 
+                p.prod_name, 
+                p.prod_price 
             FROM pos_cart c 
             JOIN products p ON c.cart_prod_id = p.prod_id
             WHERE c.cart_branch_id = ?
+            GROUP BY c.cart_prod_id, c.cart_branch_id, p.prod_name, p.prod_price
         ");
         
         $query->bind_param("i", $branch_id);
@@ -75,16 +154,17 @@ class global_class extends db_connect
     
         while ($row = $result->fetch_assoc()) {
             $cartItems[] = [
-                'cart_id' => $row['cart_id'],
+                'cart_id' => $row['cart_id'], // Only for reference, not meaningful in grouped data
                 'cart_prod_id' => $row['cart_prod_id'],
                 'prod_name' => $row['prod_name'],
                 'prod_price' => $row['prod_price'],
-                'cart_qty' => $row['cart_qty']
+                'cart_qty' => $row['cart_qty'] // Summed quantity of the product in the cart
             ];
         }
     
-        return $cartItems; 
+        return $cartItems;
     }
+    
     
 
     public function fetch_all_inventoryRecord($branch_id) {
@@ -113,75 +193,7 @@ class global_class extends db_connect
     }
 
 
-    public function AddToCart($branch_id, $qty, $prod_id) {
-        // Get current stock quantity
-        $stockQuery = $this->conn->prepare(
-            "SELECT SUM(stock_in_qty) - SUM(stock_in_sold) AS available_stock 
-             FROM stock 
-             WHERE stock_in_prod_id = ? AND stock_in_branch_id = ? AND stock_in_status = '1'"
-        );
-        $stockQuery->bind_param("ii", $prod_id, $branch_id);
-        $stockQuery->execute();
-        $stockResult = $stockQuery->get_result();
-        $stockRow = $stockResult->fetch_assoc();
     
-        $availableStock = $stockRow['available_stock'] ?? 0;
-    
-        // Check if enough stock is available
-        if ($availableStock < $qty) {
-            return 'Insufficient stock';
-        }
-    
-        // Check if product already exists in the cart
-        $checkQuery = $this->conn->prepare(
-            "SELECT cart_qty FROM pos_cart WHERE cart_prod_id = ? AND cart_branch_id = ?"
-        );
-        $checkQuery->bind_param("ii", $prod_id, $branch_id);
-        $checkQuery->execute();
-        $result = $checkQuery->get_result();
-    
-        if ($result->num_rows > 0) {
-            // Update existing quantity
-            $updateQuery = $this->conn->prepare(
-                "UPDATE pos_cart SET cart_qty = cart_qty + ? WHERE cart_prod_id = ? AND cart_branch_id = ?"
-            );
-            $updateQuery->bind_param("iii", $qty, $prod_id, $branch_id);
-    
-            if ($updateQuery->execute()) {
-                // Deduct stock from inventory
-                $deductQuery = $this->conn->prepare(
-                    "UPDATE stock SET stock_in_qty = stock_in_qty - ? 
-                     WHERE stock_in_prod_id = ? AND stock_in_branch_id = ? AND stock_in_status = '1'"
-                );
-                $deductQuery->bind_param("iii", $qty, $prod_id, $branch_id);
-                $deductQuery->execute();
-    
-                return 'success';
-            } else {
-                return 'Error: ' . $updateQuery->error;
-            }
-        } else {
-            // Insert new record
-            $insertQuery = $this->conn->prepare(
-                "INSERT INTO pos_cart (cart_prod_id, cart_qty, cart_branch_id) VALUES (?, ?, ?)"
-            );
-            $insertQuery->bind_param("iii", $prod_id, $qty, $branch_id);
-    
-            if ($insertQuery->execute()) {
-                // Deduct stock from inventory
-                $deductQuery = $this->conn->prepare(
-                    "UPDATE stock SET stock_in_qty = stock_in_qty - ? 
-                     WHERE stock_in_prod_id = ? AND stock_in_branch_id = ? AND stock_in_status = '1'"
-                );
-                $deductQuery->bind_param("iii", $qty, $prod_id, $branch_id);
-                $deductQuery->execute();
-    
-                return 'success';
-            } else {
-                return 'Error: ' . $insertQuery->error;
-            }
-        }
-    }
     
 
 

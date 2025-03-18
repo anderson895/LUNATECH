@@ -191,6 +191,9 @@ $(document).ready(function () {
         var prod_id = $("#sale_prod_id").val().trim();
         var sale_qty = $("#sale_qty").val().trim();
 
+
+        console.log(sale_qty);
+
         if (prod_id === "") {
             alertify.error("Please select a product first.");
             return;
@@ -214,7 +217,7 @@ $(document).ready(function () {
                 processData: false,
                 dataType: "json", 
                 success: function (response) {
-
+                    console.log(response);
                     if (response.status === 400) {
                         alertify.error(response.message);
                     } 
@@ -247,7 +250,7 @@ $(document).ready(function () {
                 cartItemsHtml += `
                     <div class="cart-item flex justify-between items-center border-b py-2" data-cart_id="${item.cart_id}" data-cart_prod_id="${item.cart_prod_id}">
                         <p>${item.prod_name} - ₱${parseFloat(item.prod_price).toFixed(2)} x ${item.cart_qty} = <strong>₱${subtotal.toFixed(2)}</strong></p>
-                        <button class="removeItem text-red-500 hover:text-red-700" data-cart_id="${item.cart_id}">X</button>
+                        <button class="removeItem text-red-500 hover:text-red-700" data-cart_prod_id="${item.cart_prod_id}">X</button>
                     </div>
                 `;
             });
@@ -264,12 +267,13 @@ $(document).ready(function () {
 }
 
 $(document).on('click', '.removeItem', function () {
-    let cart_id = $(this).data('cart_id');
+    let cart_prod_id = $(this).data('cart_prod_id');
+    let branch_id = $("#branch_id").val();
     
     $.ajax({
         url: "backend/end-points/controller.php",
         type: 'POST',
-        data: { cart_id: cart_id , requestType: 'RemoveCartItem' },
+        data: { cart_prod_id: cart_prod_id,branch_id: branch_id, requestType: 'RemoveCartItem' },
         success: function (response) {
             console.log(response);
             fetch_cart(); 
@@ -320,7 +324,7 @@ $(document).ready(function () {
 
     $("#confirmPurchase").click(function () {
         let totalBill = parseFloat($("#totalBill").val());
-        let branch_id = parseFloat($("#branch_id").val());
+        let branch_id = $("#branch_id").val();
         let payment = parseFloat($("#paymentAmount").val());
         let changeAmount = parseFloat($("#changeAmount").val());
         let paymentMethod = $("#paymentMethod").val();
@@ -347,7 +351,7 @@ $(document).ready(function () {
             return;
         }
 
-        console.log(cartItems);
+        // console.log(cartItems);
 
         // Send data to the backend
         $.ajax({
