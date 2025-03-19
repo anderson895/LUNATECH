@@ -404,6 +404,43 @@ class global_class extends db_connect
 
 
 
+    public function fetch_all_stockRecord_paginated($search = "", $branch_id, $limit = 10, $offset = 0) {
+        $searchQuery = $search ? "AND (products.prod_name LIKE ? OR products.prod_code LIKE ?)" : "";
+    
+        $sql = "
+            SELECT 
+                products.prod_id,
+                products.prod_code,
+                products.prod_name,
+                products.prod_price,
+                stock.stock_in_id,
+                stock.stock_in_date,
+                stock.stock_in_qty,
+                stock.stock_in_sold,
+                stock.stock_in_backjob
+            FROM stock
+            LEFT JOIN products ON products.prod_id = stock.stock_in_prod_id
+            WHERE stock.stock_in_status = '1' AND stock.stock_in_branch_id = ? $searchQuery
+            LIMIT ? OFFSET ?
+        ";
+    
+        $stmt = $this->conn->prepare($sql);
+        
+        if (!$stmt) {
+            die("SQL Error: " . $this->conn->error);
+        }
+    
+        if ($search) {
+            $searchTerm = "%$search%";
+            $stmt->bind_param("issii", $branch_id, $searchTerm, $searchTerm, $limit, $offset);
+        } else {
+            $stmt->bind_param("iii", $branch_id, $limit, $offset);
+        }
+    
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+    
 
 
 

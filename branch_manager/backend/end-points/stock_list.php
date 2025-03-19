@@ -14,21 +14,19 @@ $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 10;  
 $offset = ($page - 1) * $limit;  
 
-$fetch_all_inventoryRecord = $db->fetch_all_inventoryRecord_paginated($search,$branch_id, $limit, $offset);
+$fetch_all_inventoryRecord = $db->fetch_all_stockRecord_paginated($search,$branch_id, $limit, $offset);
 $total_records = $db->count_all_inventoryRecord($branch_id,$search);
 $total_pages = ceil($total_records / $limit);
 
 if ($fetch_all_inventoryRecord->num_rows > 0): ?>
     <?php foreach ($fetch_all_inventoryRecord as $inv): ?>
         <tr class="border-b hover:bg-gray-50 transition">
-            <td class='p-2'>
-                <img src='../barcodes/<?= htmlspecialchars($inv['prod_code']) ?>.png' onerror="this.onerror=null;this.src='../images/no-barcode.png';">
-            </td>
-            <td class='p-2'><?= htmlspecialchars($inv['prod_code']) ?></td>
+            <td class='p-2'><?= htmlspecialchars($inv['stock_in_id']) ?></td>
+            <td class='p-2'><?= htmlspecialchars($inv['stock_in_date']) ?></td>
             <td class="p-4"><?= htmlspecialchars($inv['prod_name']) ?></td>
-            <td class="p-4"><?= htmlspecialchars($inv['total_qty']) ?></td>
-            <td class="p-4"><?= htmlspecialchars($inv['total_sold']) ?></td>
-            <td class="p-4"><?= htmlspecialchars($inv['total_backjob']) ?></td>
+            <td class="p-4"><?= htmlspecialchars($inv['stock_in_qty']) ?></td>
+            <td class="p-4"><?= htmlspecialchars($inv['stock_in_sold']) ?></td>
+            <td class="p-4"><?= htmlspecialchars($inv['stock_in_backjob']) ?></td>
             <td class="p-4">
                 <button class="remove-stock-inv bg-red-500 text-white px-3 py-1 rounded" 
                         data-id="<?= htmlspecialchars($inv['stock_in_id']) ?>"
@@ -50,7 +48,7 @@ if ($fetch_all_inventoryRecord->num_rows > 0): ?>
     <td colspan="7" class="p-4 text-center">
         <div class="pagination flex justify-center space-x-2">
             <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                <button class="pagination-btnInv bg-gray-300 text-black px-3 py-1 rounded <?= ($i == $page) ? 'bg-blue-500 text-white' : '' ?>"
+                <button class="pagination-btnStocks bg-gray-300 text-black px-3 py-1 rounded <?= ($i == $page) ? 'bg-blue-500 text-white' : '' ?>"
                         data-page="<?= $i ?>">
                     <?= $i ?>
                 </button>

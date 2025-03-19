@@ -17,7 +17,7 @@ include "components/header.php";
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-xl font-bold text-gray-700">Inventory List</h2>
             <!-- Search Bar -->
-            <input type="text" id="searchInput" placeholder="Search item..." 
+            <input type="text" id="searchInputInv" placeholder="Search item..." 
                    class="border border-gray-300 p-2 rounded-md w-64 focus:ring-2 focus:ring-blue-400">
         </div>
         
@@ -41,6 +41,7 @@ include "components/header.php";
              <div id="pagination" class="flex justify-center space-x-2 mt-4"></div>
         </div>
     </div>
+    
 
     <!-- Add Record Form (Wider) -->
     <div class="md:w-1/4 w-full bg-white shadow-lg rounded-lg p-6 relative">
@@ -58,7 +59,45 @@ include "components/header.php";
         </form>
     </div>
 
+    
+
 </div>
+
+<!-- Stock List Table -->
+<div class="max-w-12xl mx-auto mt-8 bg-white shadow-lg rounded-lg p-6">
+    <h2 class="text-xl font-bold text-gray-700 mb-4">Stock List</h2>
+    <input type="text" id="searchInputStocks" placeholder="Search item..." 
+    class="border border-gray-300 p-2 rounded-md w-64 mb-3 focus:ring-2 focus:ring-blue-400">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse shadow-sm rounded-lg" id="stockTable">
+            <thead>
+                <tr class="bg-gray-100 text-gray-700 border-b">
+                    <th class="p-3 w-1/4 font-medium">Stock ID</th>
+                    <th class="p-3 w-1/4 font-medium">Date Added</th>
+                    <th class="p-3 w-1/4 font-medium">Product Name</th>
+                    <th class="p-3 w-1/4 font-medium">Current Stocks</th>
+                    <th class="p-3 w-1/4 font-medium">Sold</th>
+                    <th class="p-3 w-1/4 font-medium">Backjob</th>
+                    <th class="p-3 w-1/4 font-medium">Action</th>
+                </tr>
+            </thead>
+            <tbody class="text-gray-600">
+                <!-- Sample Data (Replace with PHP Dynamic Content) -->
+                <tr class="border-b">
+                    <td class="p-3">001</td>
+                    <td class="p-3">2025-03-19</td>
+                    <td class="p-3">Product A</td>
+                    <td class="p-3">100</td>
+                    <td class="p-3">100</td>
+                    <td class="p-3">100</td>
+                </tr>
+             
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
 
 
 <script>
@@ -125,12 +164,14 @@ include "components/header.php";
         }
     });
 
+
+// START CODE FOR FETCHING INVENTORY
     
-        let currentPage = 1;
-        let limit = 5;  
+        var currentPage = 1;
+        var limit = 5;  
 
         function fetchInventory(page = 1) {
-            let searchValue = $('#searchInput').val().toLowerCase();
+            var searchValue = $('#searchInputInv').val().toLowerCase();
 
             $.ajax({
                 url: 'backend/end-points/inventory_list.php',
@@ -139,28 +180,25 @@ include "components/header.php";
                 success: function (data) {
                     $('#inventoryTable tbody').html(data);
 
-                    // Filter after AJAX update
                     $("#inventoryTable tbody tr").each(function () {
                         $(this).toggle($(this).text().toLowerCase().indexOf(searchValue) > -1);
                     });
 
-                    // Update current page
                     currentPage = page;
                 }
             });
         }
 
-        // Load first page on startup
         fetchInventory();
 
         // Pagination Click Event
-        $(document).on("click", ".pagination-btn", function () {
+        $(document).on("click", ".pagination-btnInv", function () {
             let page = $(this).data("page");
             fetchInventory(page);
         });
 
         // Live search function
-        $('#searchInput').on('keyup', function () {
+        $('#searchInputInv').on('keyup', function () {
             let value = $(this).val().toLowerCase();
             $("#inventoryTable tbody tr").filter(function () {
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
@@ -174,9 +212,57 @@ include "components/header.php";
             fetchInventory(currentPage);
         }, 5000);
   
+// END CODE FOR FETCHING INVENTORY
 
 
+// START CODE FOR FETCHING STOCKS
+    
+        var currentPage = 1;
+        var limit = 5;  
 
+        function fetchStocks(page = 1) {
+            var searchValue = $('#searchInputStocks').val().toLowerCase();
+
+            $.ajax({
+                url: 'backend/end-points/stock_list.php',
+                type: 'GET',
+                data: { search: searchValue, page: page, limit: limit },
+                success: function (data) {
+                    $('#stockTable tbody').html(data);
+
+                    $("#stockTable tbody tr").each(function () {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(searchValue) > -1);
+                    });
+
+                    currentPage = page;
+                }
+            });
+        }
+
+        fetchStocks();
+
+        // Pagination Click Event
+        $(document).on("click", ".pagination-btnStocks", function () {
+            let page = $(this).data("page");
+            fetchStocks(page);
+        });
+
+        // Live search function
+        $('#searchInputStocks').on('keyup', function () {
+            let value = $(this).val().toLowerCase();
+            $("#stockTable tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            });
+
+            fetchStocks();
+        });
+
+        // Auto-refresh inventory every 5 seconds
+        setInterval(function () {
+            fetchStocks(currentPage);
+        }, 5000);
+  
+// END CODE FOR FETCHING STOCKS
 
     
     $("#product-form").submit(function (e) { 
