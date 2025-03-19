@@ -136,31 +136,45 @@ include "components/header.php";
 $(document).ready(function () {
     let cartItems = [];
 
-    function fetchInventory() {
-        let searchValue = $('#searchInput').val().toLowerCase();
+  
+        let currentPage = 1;
+        let limit = 5;  
 
-        $.ajax({
-            url: 'backend/end-points/pos_list.php',
-            type: 'GET',
-            success: function (data) {
-                $('#inventoryTable tbody').html(data);
-                $("#inventoryTable tbody tr").addClass("cursor-pointer");
-                $("#inventoryTable tbody tr").each(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(searchValue) > -1);
-                });
-            }
+        function fetchInventory(page = 1) {
+            let searchValue = $('#searchInput').val().toLowerCase();
+
+            $.ajax({
+                url: 'backend/end-points/pos_list.php',
+                type: 'GET',
+                data: { search: searchValue, page: page, limit: limit },
+                success: function (data) {
+                    $('#inventoryTable tbody').html(data);
+                    $("#inventoryTable tbody tr").each(function () {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(searchValue) > -1);
+                    });
+                    currentPage = page;
+                }
+            });
+        }
+
+        fetchInventory();
+
+        $(document).on("click", ".pagination-btn", function () {
+            let page = $(this).data("page");
+            fetchInventory(page);
         });
-    }
-
-    setInterval(fetchInventory, 3000);
-    fetchInventory();
-
-    $('#searchInput').on('keyup', function () {
-        let value = $(this).val().toLowerCase();
-        $("#inventoryTable tbody tr").filter(function () {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        $('#searchInput').on('keyup', function () {
+            let value = $(this).val().toLowerCase();
+            $("#inventoryTable tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            });
+            fetchInventory();
         });
-    });
+
+        setInterval(function () {
+            fetchInventory(currentPage);
+        }, 5000);
+ 
 
     let selectedProduct = null;
     $('#inventoryTable').on('click', 'tr', function () {
@@ -169,7 +183,6 @@ $(document).ready(function () {
         let productPrice = $(this).find('td').eq(3).text().trim(); 
         let productId = $(this).attr('data-prod_id');
 
-        // Populate the form fields
         $('#sale_prod_code').val(productCode);
         $('#sale_prod_name').val(productName); 
         $('#sale_prod_id').val(productId);
@@ -208,7 +221,6 @@ $(document).ready(function () {
         var formData = new FormData(this);
         formData.append('requestType', 'AddToCart'); 
         formData.append('branch_id', branch_id); 
-
         $.ajax({
                 type: "POST",
                 url: "backend/end-points/controller.php",
@@ -221,7 +233,6 @@ $(document).ready(function () {
                     if (response.status === 400) {
                         alertify.error(response.message);
                     } 
-                    
                     fetch_cart();
                     fetchInventory();
                 },
@@ -239,8 +250,6 @@ $(document).ready(function () {
             let cartItemsHtml = "";
             let totalItems = 0;
             let totalPrice = 0;
-
-            // console.log(cartItems); 
 
             cartItems.forEach(item => {
                 let subtotal = item.prod_price * item.cart_qty;
@@ -385,32 +394,7 @@ $(document).ready(function () {
     });
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 <?php include "components/footer.php"; ?>

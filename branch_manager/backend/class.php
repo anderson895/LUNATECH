@@ -15,10 +15,11 @@ class global_class extends db_connect
     public function search_all_history($branch_id, $search = "", $limit = 10, $offset = 0) {
         $searchQuery = $search ? "AND (purchase_record.purchase_invoice LIKE ? OR purchase_record.purchase_date LIKE ?)" : "";
         $sql = "
-            SELECT purchase_record.*, user.user_fullname 
+            SELECT purchase_record.*,purchase_item.*, user.user_fullname 
             FROM purchase_record
             LEFT JOIN user ON purchase_record.purchase_user_id = user.id
             LEFT JOIN branches ON branches.branch_id = purchase_record.purchase_branch_id 
+            LEFT JOIN purchase_item ON purchase_item.item_purchase_id  = purchase_record.purchase_id  
             WHERE purchase_record.purchase_branch_id = ? $searchQuery
             ORDER BY branches.branch_name ASC
             LIMIT ? OFFSET ?
@@ -258,8 +259,10 @@ class global_class extends db_connect
 
 
 
-    public function fetch_all_inventoryRecord($branch_id) {
-        $query = $this->conn->prepare("
+    public function fetch_all_inventoryRecord_paginated($search = "", $branch_id, $limit = 10, $offset = 0) {
+        $searchQuery = $search ? "AND (products.prod_name LIKE ? OR products.prod_code LIKE ?)" : "";
+        
+        $sql = "
             SELECT 
                 products.prod_id,
                 products.prod_code,
@@ -271,20 +274,44 @@ class global_class extends db_connect
                 SUM(stock.stock_in_backjob) AS total_backjob
             FROM stock
             LEFT JOIN products ON products.prod_id = stock.stock_in_prod_id
-            WHERE stock.stock_in_status = '1' AND stock.stock_in_branch_id = ?
+            WHERE stock.stock_in_status = '1' AND stock.stock_in_branch_id = ? $searchQuery
             GROUP BY products.prod_id
+            LIMIT ? OFFSET ?
+        ";
+    
+        $stmt = $this->conn->prepare($sql);
+        
+        if (!$stmt) {
+            die("SQL Error: " . $this->conn->error);
+        }
+    
+        if ($search) {
+            $searchTerm = "%$search%";
+            $stmt->bind_param("issii", $branch_id, $searchTerm, $searchTerm, $limit, $offset);
+        } else {
+            $stmt->bind_param("iii", $branch_id, $limit, $offset);
+        }
+    
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+    
+    
+
+    public function count_all_inventoryRecord($branch_id,$search) {
+        $query = $this->conn->prepare("
+            SELECT COUNT(DISTINCT products.prod_id) AS total 
+            FROM stock
+            LEFT JOIN products ON products.prod_id = stock.stock_in_prod_id
+            WHERE stock.stock_in_status = '1' AND stock.stock_in_branch_id = ?
         ");
     
-        $query->bind_param("i", $branch_id); 
-    
-        if ($query->execute()) {
-            return $query->get_result();
-        }
-        
-        return false; 
+        $query->bind_param("i", $branch_id);
+        $query->execute();
+        $result = $query->get_result()->fetch_assoc();
+        return $result['total'];
     }
-
-
+    
     
     
 

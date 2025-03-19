@@ -2,7 +2,6 @@
 include "components/header.php";
 ?>
 
-<!-- Top bar with user profile -->
 <div class="max-w-12xl mx-auto flex justify-between items-center bg-white p-4 mb-6 rounded-md shadow-md">
     <h2 class="text-lg font-semibold text-gray-700">Inventory</h2>
     <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-lg font-bold text-white">
@@ -39,6 +38,7 @@ include "components/header.php";
                     
                 </tbody>
             </table>
+             <div id="pagination" class="flex justify-center space-x-2 mt-4"></div>
         </div>
     </div>
 
@@ -46,7 +46,7 @@ include "components/header.php";
     <div class="md:w-1/4 w-full bg-white shadow-lg rounded-lg p-6 relative">
         <h2 class="text-xl font-bold mb-4 text-gray-700">Add New Record</h2>
         <form id="product-form" class="flex flex-col gap-3">
-            <input type="text" id="stock_in_prod_code" name="stock_in_prod_code" placeholder="Search Product Code" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
+            <input type="text" id="stock_in_prod_code" name="stock_in_prod_code" placeholder="Search Product" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
             <div id="productSuggestions" class="absolute bg-white border border-gray-300 rounded-md shadow-md w-full hidden mt-12"></div>
             <input hidden type="text" readonly id="stock_in_prod_id" name="stock_in_prod_id" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
             <input type="text" readonly id="stock_in_prod_name" name="stock_in_prod_name" placeholder="Product Name" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
@@ -66,7 +66,6 @@ include "components/header.php";
 
     let selectedProduct = null;
 
-    // Kapag kinlick ang isang row sa inventoryTable
     $('#inventoryTable').on('click', 'tr', function () {
         let productCode = $(this).find('td').eq(1).text().trim(); 
 
@@ -75,11 +74,9 @@ include "components/header.php";
 
         console.log(selectedProduct);
 
-        // Tawagin ang function para mag-fetch ng suggestions batay sa productCode
         fetchProductSuggestions(productCode);
     });
 
-    // Function para kumuha ng suggestions
     function fetchProductSuggestions(query) {
         if (query.length >= 1) { 
             $.ajax({
@@ -105,13 +102,11 @@ include "components/header.php";
         }
     }
 
-    // Kapag nag-type sa stock_in_prod_code, mag-fetch ng suggestions
     $("#stock_in_prod_code").on("input", function() {
         let query = $(this).val();
         fetchProductSuggestions(query);
     });
 
-    // Kapag pinili ang isang suggestion
     $(document).on("click", ".suggestion-item", function() {
         let selectedCode = $(this).data("code");
         let selectedName = $(this).data("name");
@@ -123,46 +118,65 @@ include "components/header.php";
         $("#productSuggestions").hide();
     });
 
-    // Mag-hide ng suggestion kapag nag-click sa labas
+   
     $(document).click(function(e) {
         if (!$(e.target).closest("#stock_in_prod_code, #productSuggestions").length) {
             $("#productSuggestions").hide();
         }
     });
 
-    // Fetch inventory data tuwing 3 segundo
-    function fetchInventory() {
-        let searchValue = $('#searchInput').val().toLowerCase(); 
+    $(document).ready(function () {
+        let currentPage = 1;
+        let limit = 5;  
 
-        $.ajax({
-            url: 'backend/end-points/inventory_list.php', 
-            type: 'GET',
-            success: function (data) {
-                $('#inventoryTable tbody').html(data); 
+        function fetchInventory(page = 1) {
+            let searchValue = $('#searchInput').val().toLowerCase();
 
-                $("#inventoryTable tbody tr").each(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(searchValue) > -1);
-                });
-            }
+            $.ajax({
+                url: 'backend/end-points/inventory_list.php',
+                type: 'GET',
+                data: { search: searchValue, page: page, limit: limit },
+                success: function (data) {
+                    $('#inventoryTable tbody').html(data);
+
+                    // Filter after AJAX update
+                    $("#inventoryTable tbody tr").each(function () {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(searchValue) > -1);
+                    });
+
+                    // Update current page
+                    currentPage = page;
+                }
+            });
+        }
+
+        // Load first page on startup
+        fetchInventory();
+
+        // Pagination Click Event
+        $(document).on("click", ".pagination-btn", function () {
+            let page = $(this).data("page");
+            fetchInventory(page);
         });
-    }
 
-    setInterval(fetchInventory, 3000);
-    fetchInventory();
-
-    // Live search function
-    $('#searchInput').on('keyup', function () {
-        let value = $(this).val().toLowerCase();
-        $("#inventoryTable tbody tr").filter(function () {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        // Live search function
+        $('#searchInput').on('keyup', function () {
+            let value = $(this).val().toLowerCase();
+            $("#inventoryTable tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            });
         });
+
+        // Auto-refresh inventory every 5 seconds
+        setInterval(function () {
+            fetchInventory(currentPage);
+        }, 5000);
     });
 
 
 
-    
 
-    // Form submission
+    
     $("#product-form").submit(function (e) { 
         e.preventDefault();
         $('#BtnaddInventory').prop('disabled', true);

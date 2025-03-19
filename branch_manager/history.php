@@ -29,11 +29,12 @@ include "components/header.php";
         <table id="historyTable" class="table-auto w-full text-sm text-left text-gray-500">
             <thead class="bg-gray-100 text-gray-700">
                 <tr>
-                    <th class="p-3">#</th>
-                    <th class="p-3">Date</th>
-                    <th class="p-3 hidden md:table-cell">Invoice #</th>
-                    <th class="p-3 hidden md:table-cell">Total Sold</th>
-                    <th class="p-3 hidden md:table-cell">Action</th>
+                    <th class="p-3 text-center">#</th>
+                    <th class="p-3 text-center">Date</th>
+                    <th class="p-3 text-center hidden md:table-cell">Invoice #</th>
+                    <th class="p-3 text-center hidden md:table-cell">Total Sold</th>
+                    <th class="p-3 text-center hidden md:table-cell">Profit</th>
+                    <th class="p-3 text-center hidden md:table-cell">Action</th>
                 </tr>
             </thead>
             <tbody>

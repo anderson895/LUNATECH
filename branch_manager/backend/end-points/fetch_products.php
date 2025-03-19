@@ -4,15 +4,17 @@ $db = new global_class();
 
 if (isset($_POST['query'])) {
     $search = $_POST['query'];
+    
 
     $query = $db->conn->prepare("
-        SELECT prod_code, prod_name ,prod_id
+        SELECT prod_code, prod_name, prod_id
         FROM products 
-        WHERE prod_code LIKE ? AND prod_status = 1
+        WHERE (prod_code LIKE ? OR prod_name LIKE ?) AND prod_status = 1
         LIMIT 10
     ");
+    
     $likeSearch = "%" . $search . "%";
-    $query->bind_param("s", $likeSearch);
+    $query->bind_param("ss", $likeSearch, $likeSearch); // Bind both parameters
     $query->execute();
     $result = $query->get_result();
 
