@@ -30,6 +30,11 @@ if ($fetch_all_inventoryRecord->num_rows > 0): ?>
             <td class="p-4"><?= htmlspecialchars($inv['total_sold']) ?></td>
             <td class="p-4"><?= htmlspecialchars($inv['total_backjob']) ?></td>
             <td class="p-4">
+
+                
+
+
+
                 <button class="remove-stock-inv bg-red-500 text-white px-3 py-1 rounded" 
                         data-id="<?= htmlspecialchars($inv['stock_in_id']) ?>"
                         data-table="stock"
@@ -48,7 +53,7 @@ if ($fetch_all_inventoryRecord->num_rows > 0): ?>
 <!-- Pagination Buttons -->
 <tr>
     <td colspan="7" class="p-4 text-center">
-        <div class="pagination flex justify-center space-x-2">
+        <div class="pagination-inv flex justify-center space-x-2">
             <?php for ($i = 1; $i <= $total_pages; $i++): ?>
                 <button class="pagination-btnInv bg-gray-300 text-black px-3 py-1 rounded <?= ($i == $page) ? 'bg-blue-500 text-white' : '' ?>"
                         data-page="<?= $i ?>">

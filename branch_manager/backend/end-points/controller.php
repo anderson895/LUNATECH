@@ -21,6 +21,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 echo json_encode(["status" => 400, "message" => $result]);
             }
+        }else if ($_POST['requestType'] == 'updateInventoryRecord') {
+            $stock_in_id = htmlspecialchars(trim($_POST['stock_in_id']));
+            $branch_id = htmlspecialchars(trim($_POST['branch_id']));
+            $stock_in_qty = htmlspecialchars(trim($_POST['stock_in_qty']));
+            $stock_in_sold = htmlspecialchars(trim($_POST['stock_in_sold']));
+            $stock_in_backjob = htmlspecialchars(trim($_POST['stock_in_backjob']));
+            
+            $result = $db->updateInventoryRecord($stock_in_id,$branch_id, $stock_in_qty, $stock_in_sold, $stock_in_backjob);
+            
+            if ($result == "success") {
+                echo json_encode(["status" => 200, "message" => "Stocks Update successfully added"]);
+            } else {
+                echo json_encode(["status" => 400, "message" => $result]);
+            }
         }else if ($_POST['requestType'] == 'AddToCart') {
 
 

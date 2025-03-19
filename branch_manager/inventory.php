@@ -38,7 +38,7 @@ include "components/header.php";
                     
                 </tbody>
             </table>
-             <div id="pagination" class="flex justify-center space-x-2 mt-4"></div>
+             <!-- <div id="pagination" class="flex justify-center space-x-2 mt-4"></div> -->
         </div>
     </div>
     
@@ -72,31 +72,53 @@ include "components/header.php";
         <table class="w-full text-left border-collapse shadow-sm rounded-lg" id="stockTable">
             <thead>
                 <tr class="bg-gray-100 text-gray-700 border-b">
-                    <th class="p-3 w-1/4 font-medium">Stock ID</th>
-                    <th class="p-3 w-1/4 font-medium">Date Added</th>
-                    <th class="p-3 w-1/4 font-medium">Product Name</th>
-                    <th class="p-3 w-1/4 font-medium">Current Stocks</th>
-                    <th class="p-3 w-1/4 font-medium">Sold</th>
-                    <th class="p-3 w-1/4 font-medium">Backjob</th>
-                    <th class="p-3 w-1/4 font-medium">Action</th>
+                    <th class="p-3 w-1/4 font-medium text-center">Stock ID</th>
+                    <th class="p-3 w-1/4 font-medium text-center">Date Added</th>
+                    <th class="p-3 w-1/4 font-medium text-center">Product Name</th>
+                    <th class="p-3 w-1/4 font-medium text-center">Current Stocks</th>
+                    <th class="p-3 w-1/4 font-medium text-center">Sold</th>
+                    <th class="p-3 w-1/4 font-medium text-center">Backjob</th>
+                    <th class="p-3 w-1/4 font-medium text-center">Action</th>
                 </tr>
             </thead>
             <tbody class="text-gray-600">
-                <!-- Sample Data (Replace with PHP Dynamic Content) -->
-                <tr class="border-b">
-                    <td class="p-3">001</td>
-                    <td class="p-3">2025-03-19</td>
-                    <td class="p-3">Product A</td>
-                    <td class="p-3">100</td>
-                    <td class="p-3">100</td>
-                    <td class="p-3">100</td>
-                </tr>
-             
+                
             </tbody>
         </table>
     </div>
 </div>
 
+
+<!-- Modal -->
+<div id="updateStocks_modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center" style="display:none;">
+    <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md relative">
+        <h2 class="text-xl font-bold mb-4 text-gray-700">Update Stocks</h2>
+        <button id="closeUpdateStocks_modal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700">&times;</button>
+        
+        <form id="frmUpdate_stocks" class="flex flex-col gap-3">
+            
+            <input hidden type="text" readonly id="update_stock_in_id" name="stock_in_id" 
+                class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
+
+            <label for="update_stock_in_qty" class="text-gray-700 font-medium">Quantity</label>
+            <input type="number" id="update_stock_in_qty" placeholder="Qty" name="stock_in_qty" 
+                class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
+
+            <label for="update_stock_in_sold" class="text-gray-700 font-medium">Sold</label>
+            <input type="number" placeholder="Sold" id="update_stock_in_sold" name="stock_in_sold" 
+                class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
+
+            <label for="update_stock_in_backjob" class="text-gray-700 font-medium">Backjob</label>
+            <input type="number" placeholder="Backjob" id="update_stock_in_backjob" name="stock_in_backjob" 
+                class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
+            
+            <button type="submit" id="BtnUpdateStocks" 
+                class="bg-green-500 text-white p-3 rounded-md hover:bg-green-600 transition-all">
+                Update Record
+            </button>
+        </form>
+    </div>
+</div>
 
 
 
@@ -166,103 +188,84 @@ include "components/header.php";
 
 
 // START CODE FOR FETCHING INVENTORY
-    
-        var currentPage = 1;
-        var limit = 5;  
+var currentPageInv = 1;
+var limit = 5;
 
-        function fetchInventory(page = 1) {
-            var searchValue = $('#searchInputInv').val().toLowerCase();
+function fetchInventory(page = 1) {
+    var searchValue = $('#searchInputInv').val().toLowerCase();
 
-            $.ajax({
-                url: 'backend/end-points/inventory_list.php',
-                type: 'GET',
-                data: { search: searchValue, page: page, limit: limit },
-                success: function (data) {
-                    $('#inventoryTable tbody').html(data);
-
-                    $("#inventoryTable tbody tr").each(function () {
-                        $(this).toggle($(this).text().toLowerCase().indexOf(searchValue) > -1);
-                    });
-
-                    currentPage = page;
-                }
-            });
+    $.ajax({
+        url: 'backend/end-points/inventory_list.php',
+        type: 'GET',
+        data: { search: searchValue, page: page, limit: limit },
+        success: function (data) {
+            $('#inventoryTable tbody').html(data);
+            currentPageInv = page;
+            updatePagination('inventoryPagination', page);
         }
+    });
+}
 
-        fetchInventory();
+fetchInventory();
 
-        // Pagination Click Event
-        $(document).on("click", ".pagination-btnInv", function () {
-            let page = $(this).data("page");
-            fetchInventory(page);
-        });
+// Pagination Click Event
+$(document).on("click", ".pagination-btnInv", function () {
+    let page = $(this).data("page");
+    fetchInventory(page);
+});
 
-        // Live search function
-        $('#searchInputInv').on('keyup', function () {
-            let value = $(this).val().toLowerCase();
-            $("#inventoryTable tbody tr").filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-            });
+// Live Search
+$('#searchInputInv').on('keyup', function () {
+    fetchInventory(1); // Reset sa Page 1 kapag may search
+});
 
-            fetchInventory();
-        });
-
-        // Auto-refresh inventory every 5 seconds
-        setInterval(function () {
-            fetchInventory(currentPage);
-        }, 5000);
-  
-// END CODE FOR FETCHING INVENTORY
-
+// Auto-refresh
+setInterval(function () {
+    fetchInventory(currentPageInv);
+}, 5000);
 
 // START CODE FOR FETCHING STOCKS
-    
-        var currentPage = 1;
-        var limit = 5;  
+var currentPageStocks = 1;
 
-        function fetchStocks(page = 1) {
-            var searchValue = $('#searchInputStocks').val().toLowerCase();
+function fetchStocks(page = 1) {
+    var searchValue = $('#searchInputStocks').val().toLowerCase();
 
-            $.ajax({
-                url: 'backend/end-points/stock_list.php',
-                type: 'GET',
-                data: { search: searchValue, page: page, limit: limit },
-                success: function (data) {
-                    $('#stockTable tbody').html(data);
-
-                    $("#stockTable tbody tr").each(function () {
-                        $(this).toggle($(this).text().toLowerCase().indexOf(searchValue) > -1);
-                    });
-
-                    currentPage = page;
-                }
-            });
+    $.ajax({
+        url: 'backend/end-points/stock_list.php',
+        type: 'GET',
+        data: { search: searchValue, page: page, limit: limit },
+        success: function (data) {
+            $('#stockTable tbody').html(data);
+            currentPageStocks = page;
+            updatePagination('stockPagination', page);
         }
+    });
+}
 
-        fetchStocks();
+fetchStocks();
 
-        // Pagination Click Event
-        $(document).on("click", ".pagination-btnStocks", function () {
-            let page = $(this).data("page");
-            fetchStocks(page);
-        });
+// Pagination Click Event
+$(document).on("click", ".pagination-btnStocks", function () {
+    let page = $(this).data("page");
+    fetchStocks(page);
+});
 
-        // Live search function
-        $('#searchInputStocks').on('keyup', function () {
-            let value = $(this).val().toLowerCase();
-            $("#stockTable tbody tr").filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-            });
+// Live Search
+$('#searchInputStocks').on('keyup', function () {
+    fetchStocks(1);
+});
 
-            fetchStocks();
-        });
+// Auto-refresh
+setInterval(function () {
+    fetchStocks(currentPageStocks);
+}, 5000);
 
-        // Auto-refresh inventory every 5 seconds
-        setInterval(function () {
-            fetchStocks(currentPage);
-        }, 5000);
-  
-// END CODE FOR FETCHING STOCKS
+// Function to update pagination buttons dynamically
+function updatePagination(containerId, currentPage) {
+    $("#" + containerId + " .pagination-btn").removeClass("active");
+    $("#" + containerId + " .pagination-btn[data-page='" + currentPage + "']").addClass("active");
+}
+
 
     
     $("#product-form").submit(function (e) { 
@@ -304,7 +307,8 @@ include "components/header.php";
             success: function (response) {
                 if (response.status === 200) {
                     alertify.success(response.message);
-                    $("#product-form")[0].reset();  
+                    $('#updateStocks_modal').fadeOut();
+                    fetchStocks();
                     fetchInventory();
                 } else {
                     $('#BtnaddInventory').prop('disabled', false);
@@ -316,6 +320,69 @@ include "components/header.php";
             }
         });
     });
+
+
+
+
+
+
+
+
+
+
+
+    $("#frmUpdate_stocks").submit(function (e) { 
+        e.preventDefault();
+        $('#BtnUpdateStocks').prop('disabled', true);
+
+        var branch_id = $("#branch_id").val();
+        var stock_in_qty = $("#update_stock_in_qty").val().trim();
+        var stock_in_sold = $("#update_stock_in_sold").val().trim();
+        var stock_in_backjob = $("#update_stock_in_backjob").val().trim();
+
+        if (stock_in_prod_id == "") {
+            alertify.error("Please select a product");
+            $('#BtnUpdateStocks').prop('disabled', false);
+            return;
+        }
+
+        if (stock_in_qty == "" && stock_in_sold == 0 && stock_in_backjob == 0) {
+            alertify.error("Please Select Qty, Sold Or Backjob");
+            $('#BtnUpdateStocks').prop('disabled', false);
+            return;
+        }
+
+        var formData = new FormData(this); 
+        formData.append('requestType', 'updateInventoryRecord');
+        formData.append('branch_id', branch_id);
+
+        $.ajax({
+            type: "POST",
+            url: "backend/end-points/controller.php",
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: "json",
+            beforeSend: function () {
+                $("#BtnUpdateStocks").prop("disabled", true).text("Processing...");
+            },
+            success: function (response) {
+                if (response.status === 200) {
+                    alertify.success(response.message);
+                    $("#product-form")[0].reset();  
+                    fetchStocks();
+                    fetchInventory();
+                } else {
+                    $('#BtnUpdateStocks').prop('disabled', false);
+                    alertify.error(response.message);
+                }
+            },
+            complete: function () {
+                $("#BtnUpdateStocks").prop("disabled", false).text("Add Record");
+            }
+        });
+    });
+
 
 });
 

@@ -16,7 +16,7 @@ class global_class extends db_connect
     {
         $query = "
             SELECT 
-                (SELECT COUNT(*) FROM `stock` WHERE stock_in_status='1') AS stockCount,
+                (SELECT COUNT(*) FROM `stock` WHERE stock_in_status='1') AS stockCount where stock_in_branch_id=$branch_id,
                 (SELECT COUNT(*) FROM `purchase_record` WHERE purchase_branch_id=$branch_id) AS purchase_record_count,
                 (
                     SELECT CONCAT(products.prod_name)
@@ -421,6 +421,7 @@ class global_class extends db_connect
             FROM stock
             LEFT JOIN products ON products.prod_id = stock.stock_in_prod_id
             WHERE stock.stock_in_status = '1' AND stock.stock_in_branch_id = ? $searchQuery
+            ORDER BY stock.stock_in_date DESC  -- Sort by latest to oldest
             LIMIT ? OFFSET ?
         ";
     
@@ -440,6 +441,7 @@ class global_class extends db_connect
         $stmt->execute();
         return $stmt->get_result();
     }
+    
     
 
 
@@ -590,6 +592,24 @@ class global_class extends db_connect
             return 'Error: ' . $query->error;
         }
     }
+
+
+    public function updateInventoryRecord($stock_in_id, $branch_id, $stock_in_qty, $stock_in_sold, $stock_in_backjob) {
+        $query = $this->conn->prepare(
+            "UPDATE `stock` 
+             SET `stock_in_branch_id` = ?, `stock_in_qty` = ?, `stock_in_sold` = ?, `stock_in_backjob` = ? 
+             WHERE `stock_in_id` = ?"
+        );
+    
+        $query->bind_param("iiiii", $branch_id, $stock_in_qty, $stock_in_sold, $stock_in_backjob, $stock_in_id);
+    
+        if ($query->execute()) {
+            return 'success';
+        } else {
+            return 'Error: ' . $query->error;
+        }
+    }
+    
 
 
      public function purchase_record($invoice,$purchase_id) {

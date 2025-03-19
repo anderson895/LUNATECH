@@ -95,4 +95,4 @@ include "components/header.php";
 <script src="assets/js/weekly_sales.js"></script>
 <script src="assets/js/monthly_sales.js"></script>
 <script src="assets/js/analytics.js"></script>
-<script src="assets/js/date_today.js"></script>
+<!-- <script src="assets/js/date_today.js"></script> -->
