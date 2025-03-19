@@ -48,7 +48,7 @@ include "components/header.php";
         </div>
         <div class="bg-white p-4 rounded-lg shadow-md">
             <h3 class="text-gray-600 text-sm">Best Seller</h3>
-            <p class="text-2xl font-bold text-gray-800 most_purchased_item" >Wireless Headphones</p>
+            <p class="text-2xl font-bold text-gray-800 most_purchased_item" ></p>
         </div>
     </div>
 
