@@ -125,7 +125,7 @@ include "components/header.php";
         }
     });
 
-    $(document).ready(function () {
+    
         let currentPage = 1;
         let limit = 5;  
 
@@ -165,13 +165,15 @@ include "components/header.php";
             $("#inventoryTable tbody tr").filter(function () {
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
             });
+
+            fetchInventory();
         });
 
         // Auto-refresh inventory every 5 seconds
         setInterval(function () {
             fetchInventory(currentPage);
         }, 5000);
-    });
+  
 
 
 
