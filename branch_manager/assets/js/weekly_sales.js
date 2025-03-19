@@ -4,13 +4,11 @@ $.ajax({
     type: 'GET',
     dataType: 'json',
     success: function(data) {
-        // console.log(data)
-        // Prepare the data for the chart
+        
         let weeklySalesData = [];
         let weeks = [];
 
-        $(".WeeklySales").text(Number(data[0]['sales']).toLocaleString('en-PH', { style: 'currency', currency: 'PHP' }));
-        // Loop through the response data and prepare the arrays
+      
         data.forEach(function(item) {
             weeklySalesData.push(item.sales);  // Add weekly sales to the data array
             weeks.push(item.week);  // Add the week labels to the categories
