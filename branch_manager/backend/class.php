@@ -12,6 +12,147 @@ class global_class extends db_connect
     }
 
 
+    public function getDataAnalytics($branch_id)
+    {
+        $query = "
+            SELECT 
+                (SELECT COUNT(*) FROM `stock` WHERE stock_in_status='1') AS stockCount,
+                (SELECT COUNT(*) FROM `purchase_record` WHERE purchase_branch_id=$branch_id) AS purchase_record_count,
+                (
+                    SELECT CONCAT(products.prod_name)
+                    FROM `purchase_item` 
+                    LEFT JOIN purchase_record ON purchase_record.purchase_id = purchase_item.item_purchase_id 
+                    LEFT JOIN products ON products.prod_id = purchase_item.item_prod_id 
+                    WHERE purchase_record.purchase_branch_id = $branch_id 
+                    GROUP BY item_prod_id, products.prod_name
+                    ORDER BY COUNT(item_prod_id) DESC 
+                    LIMIT 1
+                ) AS most_purchased_item
+        ";
+    
+        // Execute the query
+        $result = $this->conn->query($query);
+        
+        if ($result) {
+            // Fetch the result and return as JSON
+            $row = $result->fetch_assoc();
+            echo json_encode($row);
+        } else {
+            // Error handling if query fails
+            echo json_encode(['error' => 'Failed to retrieve counts', 'sql_error' => $this->conn->error]);
+        }
+    }
+    
+    
+
+    
+
+        public function getDailySalesData($branch_id)
+    {
+        $query = "
+            SELECT 
+                DATE(`purchase_date`) AS `order_day`, 
+                SUM(`purchase_total_payment`) AS `daily_sales`
+            FROM `purchase_record`
+            WHERE purchase_record.purchase_branch_id = $branch_id 
+            AND MONTH(`purchase_date`) = MONTH(CURDATE()) 
+            AND YEAR(`purchase_date`) = YEAR(CURDATE())
+            GROUP BY DATE(`purchase_date`)
+            ORDER BY `order_day`
+        ";
+
+        $result = $this->conn->query($query);
+
+        if ($result) {
+            $salesData = [];
+            while ($row = $result->fetch_assoc()) {
+                $salesData[] = [
+                    'date' => $row['order_day'],
+                    'sales' => $row['daily_sales']
+                ];
+            }
+            echo json_encode($salesData); // Return the sales data as JSON
+        } else {
+            echo json_encode(['error' => 'Failed to retrieve daily sales data']);
+        }
+    }
+
+
+
+
+    public function getWeeklySales($branch_id)
+    {
+        $query = "
+        SELECT 
+            WEEK(`purchase_date`, 1) AS `order_week`,  -- `1` means the week starts on Monday
+            SUM(`purchase_total_payment`) AS `weekly_sales`
+        FROM `purchase_record`
+        WHERE purchase_branch_id = $branch_id 
+        AND YEAR(`purchase_date`) = YEAR(CURDATE())  -- Filter for current year
+        GROUP BY WEEK(`purchase_date`, 1)
+        ORDER BY `order_week`
+    ";
+
+    $result = $this->conn->query($query);
+
+    if ($result) {
+        $salesData = [];
+        while ($row = $result->fetch_assoc()) {
+            $salesData[] = [
+                'week' => 'Week ' . $row['order_week'],
+                'sales' => $row['weekly_sales']
+            ];
+        }
+        echo json_encode($salesData); // Return the sales data as JSON
+    } else {
+        echo json_encode(['error' => 'Failed to retrieve weekly sales data']);
+    }
+    }
+
+
+
+
+
+    
+
+
+
+    public function getMonthlySales($branch_id)
+    {
+        $query = "
+            SELECT 
+                MONTH(`purchase_date`) AS `order_month`,
+                SUM(`purchase_total_payment`) AS `monthly_sales`
+            FROM `purchase_record`
+            WHERE purchase_branch_id = $branch_id 
+            AND YEAR(`purchase_date`) = YEAR(CURDATE()) 
+            GROUP BY MONTH(`purchase_date`) 
+            ORDER BY `order_month`
+        ";
+    
+        $result = $this->conn->query($query);
+    
+        if ($result) {
+            $salesData = [];
+            while ($row = $result->fetch_assoc()) {
+                $salesData[] = [
+                    'month' => date('F', mktime(0, 0, 0, $row['order_month'], 10)),
+                    'sales' => $row['monthly_sales']
+                ];
+            }
+            echo json_encode($salesData);
+        } else {
+            // Log the error for debugging
+            error_log('Database query failed: ' . $this->conn->error);
+            echo json_encode(['error' => 'Failed to retrieve monthly sales data']);
+        }
+    }
+
+
+
+
+
+
     public function search_all_history($branch_id, $search = "", $limit = 10, $offset = 0) {
         $searchQuery = $search ? "AND (purchase_record.purchase_invoice LIKE ? OR purchase_record.purchase_date LIKE ?)" : "";
         

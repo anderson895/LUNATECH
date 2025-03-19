@@ -63,7 +63,7 @@ if (isset($_SESSION['id'])) {
   <!-- Hide Sidebar Button -->
   <div class="flex items-center space-x-4 p-4 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
   <img src="../assets/images/logo/business_logo.jpeg" alt="Logo" class="w-20 h-20 rounded-full border-2 border-gray-300 shadow-sm transform transition-transform duration-300 hover:scale-105"> <!-- Logo -->
-  <h1 class="text-1xl font-bold text-gray-800 tracking-tight text-left lg:text-left hover:text-indigo-600 transition-colors duration-300"><?=$On_Session[0]['user_type']?></h1>
+  <h1 class="text-1xl font-bold text-gray-800 tracking-tight text-left lg:text-left hover:text-indigo-600 transition-colors duration-300"><?= strtoupper($On_Session[0]['branch_name']) ?></h1>
 </div>
 
 
