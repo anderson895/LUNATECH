@@ -40,7 +40,8 @@ $purchase_record = $db->purchase_record($invoice,$purchase_id);
         <?php foreach ($purchase_record as $item): ?>
             <div class="flex justify-between">
                 <span><?= $item['prod_name'] ?> x<?= $item['item_qty'] ?></span>
-                <span>₱<?= number_format($item['prod_price'] * $item['item_qty'], 2) ?></span>
+                <span>₱<?= number_format($item['item_price_sold'] * $item['item_qty'], 2) ?></span>
+                <!-- <span>₱<?= number_format($item['item_price_capital'] * $item['item_qty'], 2) ?></span> -->
             </div>
         <?php endforeach; ?>
     </div>

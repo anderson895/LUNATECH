@@ -14,13 +14,21 @@ class global_class extends db_connect
 
     public function search_all_history($branch_id, $search = "", $limit = 10, $offset = 0) {
         $searchQuery = $search ? "AND (purchase_record.purchase_invoice LIKE ? OR purchase_record.purchase_date LIKE ?)" : "";
+        
         $sql = "
-            SELECT purchase_record.*,purchase_item.*, user.user_fullname 
+            SELECT 
+                purchase_record.*, 
+                purchase_item.*, 
+                user.user_fullname, 
+                SUM(purchase_item.item_price_sold) AS total_item_price_sold, 
+                SUM(purchase_item.item_price_capital) AS total_item_price_capital, 
+                (SUM(purchase_item.item_price_sold) - SUM(purchase_item.item_price_capital)) AS total_profit
             FROM purchase_record
             LEFT JOIN user ON purchase_record.purchase_user_id = user.id
             LEFT JOIN branches ON branches.branch_id = purchase_record.purchase_branch_id 
-            LEFT JOIN purchase_item ON purchase_item.item_purchase_id  = purchase_record.purchase_id  
+            LEFT JOIN purchase_item ON purchase_item.item_purchase_id = purchase_record.purchase_id  
             WHERE purchase_record.purchase_branch_id = ? $searchQuery
+            GROUP BY purchase_record.purchase_id, user.user_fullname
             ORDER BY branches.branch_name ASC
             LIMIT ? OFFSET ?
         ";
@@ -37,6 +45,7 @@ class global_class extends db_connect
         $stmt->execute();
         return $stmt->get_result();
     }
+    
     
     // Function to count total history records
     public function count_all_history($branch_id, $search = "") {

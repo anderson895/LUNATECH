@@ -35,11 +35,10 @@ if ($search_all_history && $search_all_history->num_rows > 0) {
         $formattedDate = date("Y-m-d", strtotime($history['purchase_date']));
         $invoice = htmlspecialchars($history['purchase_invoice']);
         $totalSold = htmlspecialchars($history['purchase_total_payment']);
+        $total_profit = htmlspecialchars($history['total_profit']);
         $id = htmlspecialchars($history['purchase_id']);
 
-        $total_sold=$history['item_price_sold']*$history['item_qty'];
-        $total_capital=$history['item_price_capital']*$history['item_qty'];
-        $total_profit=$total_sold-$total_capital;
+        
 
         $output .= "<tr class='border-b hover:bg-gray-100 transition'>
             <td class='p-3 text-center'>" . $count . "</td>
