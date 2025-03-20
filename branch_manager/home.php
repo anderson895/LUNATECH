@@ -10,41 +10,19 @@ include "components/header.php";
             <?php echo substr(ucfirst($On_Session[0]['user_username']), 0, 1); ?>
         </div>
     </div>
-
+    <?php 
+    if(isset($On_Session[0]['branch_id'])){ 
+    ?>
     <!-- Dashboard Metrics -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-
-
-        <!-- <div class="bg-white p-4 rounded-lg shadow-md">
-           <div class="row d-flex-wrap">
-                <div class="col-7">
-                    <h5 id="greeting" class="mt-3 color_red">greet</h5>
-                    <h1 id="time" class="fw-bolder color_red" style="font-size: 3rem; margin-top: -10px; margin-bottom: -10px"></h1>
-                    <h5 id="date" class="m-0 color_red">July 30, 2024</h5>
-                </div>
-                <div class="col-5" id="weatherAnimation">
-                    <i id="gmorning" style="font-size: 5rem;" class="bi color_red bi-cloud-sun" hidden></i>
-                    <i id="gafternoon" style="font-size: 5rem;" class="bi color_red bi-sun" hidden></i>
-                    <i id="gdawn" style="font-size: 5rem;" class="bi color_red bi-sunset" hidden></i>
-                    <i id="gevening" style="font-size: 5rem;" class="bi color_red bi-cloud-moon" hidden></i>
-                </div>
-            </div>
-        </div> -->
-        
-        <!-- <div class="bg-white p-4 rounded-lg shadow-md">
-            <h3 class="text-gray-600 text-sm">Total Purchase</h3>
-            <p class="text-2xl font-bold text-gray-800 purchase_record_count">0</p>
-        </div> -->
-
 
         <div class="bg-white p-4 rounded-lg shadow-md">
             <h3 class="text-gray-600 text-sm">Total Inventory Stocks</h3>
             <p class="text-2xl font-bold text-gray-800 stockCount">0</p>
         </div>
         <div class="bg-white p-4 rounded-lg shadow-md">
-            <h3 class="text-gray-600 text-sm">Daily Sales</h3>
-            <p class="text-2xl font-bold text-gray-800 DailySales">0</p>
+            <h3 class="text-gray-600 text-sm">Today Sales</h3>
+            <p class="text-2xl font-bold text-gray-800 TodaySales">0</p>
         </div>
         <div class="bg-white p-4 rounded-lg shadow-md">
             <h3 class="text-gray-600 text-sm">Best Seller</h3>
@@ -83,8 +61,16 @@ include "components/header.php";
         </div>
     </div>
 
-  
 </div>
+<?php 
+}else{
+?>
+<div class="w-full p-6 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded-lg text-lg">
+    <p class="font-bold">No Branches Assigned</p>
+</div>
+<?php 
+}
+?>
 
 <!-- Include ApexCharts -->
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
@@ -95,4 +81,4 @@ include "components/header.php";
 <script src="assets/js/weekly_sales.js"></script>
 <script src="assets/js/monthly_sales.js"></script>
 <script src="assets/js/analytics.js"></script>
-<!-- <script src="assets/js/date_today.js"></script> -->
+<script src="assets/js/getTodaySalesData.js"></script>

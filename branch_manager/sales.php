@@ -4,12 +4,14 @@ include "components/header.php";
 
 <!-- Top bar with user profile -->
 <div class="max-w-12xl mx-auto flex justify-between items-center bg-white p-4 mb-6 rounded-md shadow-md">
-    <h2 class="text-lg font-semibold text-gray-700">Inventory</h2>
+    <h2 class="text-lg font-semibold text-gray-700">Sales</h2>
     <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-lg font-bold text-white">
         <?php echo substr(ucfirst($On_Session[0]['user_username']), 0, 1); ?>
     </div>
 </div>
-
+<?php 
+if(isset($On_Session[0]['branch_id'])){ 
+?>
 <!-- Main Content -->
 <div class="max-w-12xl mx-auto flex flex-col md:flex-row gap-8 items-start">
     <!-- Inventory Table (Wider) -->
@@ -125,7 +127,15 @@ include "components/header.php";
 
 
 
-
+<?php 
+}else{
+?>
+<div class="w-full p-6 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded-lg text-lg">
+    <p class="font-bold">No Branches Assigned</p>
+</div>
+<?php 
+}
+?>
 
 
 

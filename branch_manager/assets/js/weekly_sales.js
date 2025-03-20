@@ -1,6 +1,6 @@
-// jQuery AJAX request to fetch weekly sales data
+
 $.ajax({
-    url: 'backend/end-points/getWeeklySales.php',  // Your PHP endpoint for weekly sales data
+    url: 'backend/end-points/getWeeklySales.php',  
     type: 'GET',
     dataType: 'json',
     success: function(data) {
@@ -10,11 +10,10 @@ $.ajax({
 
       
         data.forEach(function(item) {
-            weeklySalesData.push(item.sales);  // Add weekly sales to the data array
-            weeks.push(item.week);  // Add the week labels to the categories
+            weeklySalesData.push(item.sales);  
+            weeks.push(item.week); 
         });
 
-        // Now render the chart with the dynamic data
         var options = {
             chart: {
                 type: 'bar',
@@ -25,10 +24,10 @@ $.ajax({
             },
             series: [{
                 name: 'Weekly Sales',
-                data: weeklySalesData  // Use the dynamic weekly sales data
+                data: weeklySalesData 
             }],
             xaxis: {
-                categories: weeks,  // Use the dynamic weeks for the categories
+                categories: weeks,  
                 labels: {
                     style: {
                         colors: '#333',

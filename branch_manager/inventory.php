@@ -9,6 +9,9 @@ include "components/header.php";
     </div>
 </div>
 
+<?php 
+if(isset($On_Session[0]['branch_id'])){ 
+?>
 <!-- Main Content -->
 <div class="max-w-12xl mx-auto flex flex-col md:flex-row gap-8 items-start">
 
@@ -119,6 +122,17 @@ include "components/header.php";
         </form>
     </div>
 </div>
+
+<?php 
+}else{
+?>
+<div class="w-full p-6 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded-lg text-lg">
+    <p class="font-bold">No Branches Assigned</p>
+</div>
+<?php 
+}
+?>
+
 
 
 

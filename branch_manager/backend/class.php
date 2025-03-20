@@ -16,10 +16,10 @@ class global_class extends db_connect
     {
         $query = "
             SELECT 
-                (SELECT COUNT(*) FROM `stock` WHERE stock_in_status='1') AS stockCount where stock_in_branch_id=$branch_id,
+                (SELECT COUNT(*) FROM `stock` WHERE stock_in_status='1' AND stock_in_branch_id=$branch_id) AS stockCount,
                 (SELECT COUNT(*) FROM `purchase_record` WHERE purchase_branch_id=$branch_id) AS purchase_record_count,
                 (
-                    SELECT CONCAT(products.prod_name)
+                    SELECT products.prod_name
                     FROM `purchase_item` 
                     LEFT JOIN purchase_record ON purchase_record.purchase_id = purchase_item.item_purchase_id 
                     LEFT JOIN products ON products.prod_id = purchase_item.item_prod_id 
@@ -44,10 +44,7 @@ class global_class extends db_connect
     }
     
     
-
-    
-
-        public function getDailySalesData($branch_id)
+    public function getDailySalesData($branch_id)
     {
         $query = "
             SELECT 
@@ -76,6 +73,41 @@ class global_class extends db_connect
             echo json_encode(['error' => 'Failed to retrieve daily sales data']);
         }
     }
+
+    
+
+    public function getTodaySalesData($branch_id)
+{
+    $query = "
+        SELECT SUM(purchase_total_payment) AS TodaySales
+        FROM purchase_record
+        WHERE purchase_branch_id = ? 
+        AND DATE(purchase_date) = DATE(NOW())  -- Change CURDATE() to NOW()
+        GROUP BY DATE(purchase_date)
+    ";
+
+    if ($stmt = $this->conn->prepare($query)) {
+        $stmt->bind_param("i", $branch_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result) {
+            $salesData = $result->fetch_assoc();
+            
+            
+            
+            echo json_encode($salesData ?: ['date' => date("Y-m-d"), 'sales' => 0]); // If no sales, return 0
+        }
+        
+        $stmt->close();
+    } else {
+        echo json_encode(['error' => 'Failed to prepare SQL statement', 'sql_error' => $this->conn->error]);
+    }
+}
+
+    
+
+    
 
 
 

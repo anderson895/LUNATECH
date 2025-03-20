@@ -13,6 +13,73 @@ class global_class extends db_connect
 
 
 
+    public function getMonthlySalesAllBranches()
+{
+    $query = "
+        SELECT 
+            purchase_branch_id,
+            branches.branch_name,
+            MONTH(`purchase_date`) AS `order_month`,
+            SUM(`purchase_total_payment`) AS `monthly_sales`
+        FROM `purchase_record`
+        LEFT JOIN branches ON branches.branch_id = purchase_record.purchase_branch_id
+        WHERE YEAR(`purchase_date`) = YEAR(CURDATE()) 
+        GROUP BY purchase_branch_id, branch_name, MONTH(`purchase_date`)
+        ORDER BY purchase_branch_id, `order_month`
+    ";
+
+    $result = $this->conn->query($query);
+
+    if ($result) {
+        $salesData = [];
+        $monthsList = [
+            'January', 'February', 'March', 'April', 'May', 'June', 
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+
+        while ($row = $result->fetch_assoc()) {
+            $branch_name = $row['branch_name'];
+            $month = date('F', mktime(0, 0, 0, $row['order_month'], 10));
+
+            // Initialize branch if not set
+            if (!isset($salesData[$branch_name])) {
+                $salesData[$branch_name] = array_fill_keys($monthsList, 0);
+            }
+
+            $salesData[$branch_name][$month] = $row['monthly_sales'];
+        }
+
+        echo json_encode($salesData);
+    } else {
+        error_log('Database query failed: ' . $this->conn->error);
+        echo json_encode(['error' => 'Failed to retrieve monthly sales data']);
+    }
+}
+
+    
+
+
+
+    public function getDataAnalytics()
+    {
+        $query = "
+            SELECT 
+                (SELECT COUNT(*) FROM `user` WHERE user_status='1') AS totalUser,
+                (SELECT COUNT(*) FROM `branches` WHERE branch_status='1') AS totalBranches,
+                (SELECT COUNT(*) FROM `products` WHERE prod_status='1') AS totalProduct
+        ";
+    
+        $result = $this->conn->query($query);
+        
+        if ($result) {
+            $row = $result->fetch_assoc();
+            echo json_encode($row);
+        } else {
+            echo json_encode(['error' => 'Failed to retrieve counts', 'sql_error' => $this->conn->error]);
+        }
+    }
+    
+
     
 
     public function check_account($id) {
