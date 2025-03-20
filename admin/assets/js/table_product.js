@@ -3,39 +3,44 @@ $(document).ready(function () {
     const recordsPerPage = 10;
 
     function fetchProducts() {
-    let searchQuery = $("#searchInput").val();
+        let searchQuery = $("#searchInput").val();
+        
+        // Store checked product IDs before refresh
+        let checkedProducts = [];
+        $(".rowCheckbox:checked").each(function () {
+            checkedProducts.push($(this).closest("tr").find(".togglerDeleteProduct").data("prod_id"));
+        });
     
-    // Store checked product IDs before refresh
-    let checkedProducts = [];
-    $(".rowCheckbox:checked").each(function () {
-        checkedProducts.push($(this).closest("tr").find(".togglerDeleteProduct").data("prod_id"));
-    });
-
-    $.ajax({
-        url: 'backend/end-points/product_list.php',
-        type: 'GET',
-        data: { search: searchQuery, page: currentPage, limit: recordsPerPage },
-        success: function (response) {
-            let data = JSON.parse(response);
-            $("#userTable tbody").html(data.table);
-            updatePagination(data.totalPages);
-
-            // Restore checked states after refresh
-            $(".rowCheckbox").each(function () {
-                let prodId = $(this).closest("tr").find(".togglerDeleteProduct").data("prod_id");
-                if (checkedProducts.includes(prodId)) {
-                    $(this).prop("checked", true);
-                }
-            });
-
-            // Check 'Check All' if all rows are checked
-            $("#checkAll").prop("checked", $(".rowCheckbox").length > 0 && $(".rowCheckbox:checked").length === $(".rowCheckbox").length);
-        },
-        error: function () {
-            console.error("Failed to fetch product list.");
-        }
-    });
-}
+        $.ajax({
+            url: 'backend/end-points/product_list.php',
+            type: 'GET',
+            data: { search: searchQuery, page: currentPage, limit: recordsPerPage },
+            success: function (response) {
+                let data = JSON.parse(response);
+                
+                $("#userTable tbody").html(data.table);
+                updatePagination(data.totalPages);
+    
+                // Update total products count in UI
+                $("#totalProducts").text("Total: " + data.totalProducts);
+    
+                // Restore checked states after refresh
+                $(".rowCheckbox").each(function () {
+                    let prodId = $(this).closest("tr").find(".togglerDeleteProduct").data("prod_id");
+                    if (checkedProducts.includes(prodId)) {
+                        $(this).prop("checked", true);
+                    }
+                });
+    
+                // Check 'Check All' if all rows are checked
+                $("#checkAll").prop("checked", $(".rowCheckbox").length > 0 && $(".rowCheckbox:checked").length === $(".rowCheckbox").length);
+            },
+            error: function () {
+                console.error("Failed to fetch product list.");
+            }
+        });
+    }
+    
 
 
     // Search Filtering

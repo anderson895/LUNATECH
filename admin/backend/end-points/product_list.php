@@ -45,5 +45,9 @@ if ($fetch_all_product->num_rows > 0) {
 }
 
 // Return JSON response
-echo json_encode(["table" => $output, "totalPages" => $totalPages]);
+echo json_encode([
+    "table" => $output, 
+    "totalPages" => $totalPages, 
+    "totalProducts" => $totalRecords // Include total product count
+]);
 ?>

@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $branch_address = htmlspecialchars(trim($_POST['branch_address']));
         $branch_started = htmlspecialchars(trim($_POST['branch_started']));
         $branch_manager = htmlspecialchars(trim($_POST['branch_manager']));
-        $branch_tel = htmlspecialchars(trim($_POST['new_branch_tel']));
+        $branch_tel = htmlspecialchars(trim($_POST['branch_tel']));
 
         $result = $db->addbranch($branch_code, $branch_name, $branch_address, $branch_started, $branch_manager,$branch_tel);
 

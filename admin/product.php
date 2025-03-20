@@ -15,7 +15,6 @@
 </div>
 
 
-
 <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
     <!-- Top Section (Button & Search) -->
     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4">
@@ -25,21 +24,21 @@
                 Add New
             </button>
 
-            <button id="deleteAllBtn" class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300 w-full sm:w-auto">
+            <button id="deleteAllBtn" class="bg-red-500 text-white py-2 px-4 text-sm rounded-md flex items-center justify-center hover:bg-red-600 transition duration-300 w-full sm:w-auto">
                 Delete All
             </button>
         </div>
 
         <input type="text" id="searchInput" placeholder="Search item..." 
-               class="border border-gray-300 p-2 rounded-md w-full sm:w-64 focus:ring-2 focus:ring-blue-400">
+               class="border border-gray-300 p-2 rounded-md w-full sm:w-64 focus:ring-2 focus:ring-blue-400 focus:outline-none transition duration-300">
     </div>
 
     <!-- Table Wrapper for Responsiveness -->
     <div class="overflow-x-auto">
-        <table id="userTable" class="table-auto w-full text-sm text-left text-gray-500">
-            <thead class="bg-gray-100 text-gray-700">
+        <table id="userTable" class="table-auto w-full text-sm text-left text-gray-500 border-collapse">
+            <thead class="bg-gray-100 text-gray-700 border-b">
                 <tr>
-                    <th class="p-3 text-center">
+                    <th class="p-3 text-center w-12">
                         <input type="checkbox" id="checkAll">
                     </th>
                     <th class="p-3">Barcode</th>
@@ -52,13 +51,18 @@
                 </tr>
             </thead>
             <tbody>
-                 
+                <!-- Table rows will be populated dynamically -->
             </tbody>
-          
         </table>
-        <div id="pagination" class="flex justify-center space-x-2 mt-4"></div>
+    </div>
+
+    <!-- Bottom Section (Pagination & Total Count) -->
+    <div class="flex flex-col sm:flex-row sm:justify-between items-center mt-4">
+        <p id="totalProducts" class="text-xs text-gray-500"></p>
+        <div id="pagination" class="flex space-x-2 mt-2 sm:mt-0"></div>
     </div>
 </div>
+
 
 
 
@@ -104,8 +108,10 @@
                     </div>
                 </form>
             </div>
-
+           
+           
     </div>
+    
 </div>
 
 

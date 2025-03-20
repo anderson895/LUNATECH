@@ -23,7 +23,7 @@ class global_class extends db_connect
             SUM(`purchase_total_payment`) AS `monthly_sales`
         FROM `purchase_record`
         LEFT JOIN branches ON branches.branch_id = purchase_record.purchase_branch_id
-        WHERE YEAR(`purchase_date`) = YEAR(CURDATE()) 
+        WHERE YEAR(`purchase_date`) = YEAR(CURDATE()) AND branches.branch_status='1'
         GROUP BY purchase_branch_id, branch_name, MONTH(`purchase_date`)
         ORDER BY purchase_branch_id, `order_month`
     ";
