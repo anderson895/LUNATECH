@@ -37,8 +37,10 @@
                     <th class="p-3">Username</th>
                     <th class="p-3">Position</th>
                     
+                    <?php  if($On_Session[0]['user_type']=="Administrator"){
+                        echo '<th class="p-3">Action</th>';
+                    }?>
                     
-                    <th class="p-3">Action</th>
                 </tr>
             </thead>
             <tbody>

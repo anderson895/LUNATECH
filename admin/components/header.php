@@ -52,7 +52,7 @@ if (isset($_SESSION['id'])) {
 <?php include "../function/PageSpinner.php"; ?>
 
 
-
+<input hidden type="text" id="user_type" value="<?=$On_Session[0]['user_type']?>">
 
 
   <div class="min-h-screen flex flex-col lg:flex-row">

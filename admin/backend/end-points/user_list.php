@@ -12,6 +12,7 @@ if ($fetch_all_user->num_rows > 0): ?>
             <td class="p-2"><?php echo htmlspecialchars($user['user_username']); ?></td>
             <td class="p-2"><?php echo htmlspecialchars($user['user_type']); ?></td>
            
+        <?php  if($On_Session[0]['user_type']=="Administrator"){?>
             <td class="p-2">
                 <button class="bg-blue-500 text-white py-1 px-3 rounded-md togglerUpdateUserAdmin" 
                 data-id="<?= htmlspecialchars($user['id']) ?>"
@@ -24,6 +25,8 @@ if ($fetch_all_user->num_rows > 0): ?>
                 <button class="bg-red-500 text-white py-1 px-3 rounded-md togglerDeleteUserAdmin" 
                 data-id="<?= htmlspecialchars($user['id']) ?>">Remove</button>
             </td>
+        <?php }?>
+
         </tr>
     <?php endforeach; ?>
 <?php else: ?>
