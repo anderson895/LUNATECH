@@ -203,7 +203,7 @@ $(document).on('click', '.togglerUpdateProduct', function(e) {
     $('#update_product_capital').val(prod_capital);
     $('#update_prod_price').val(prod_price);
 
-    console.log(prod_name);
+    console.log(prod_capital);
     
     e.preventDefault();
     $('#updateProductModal').fadeIn();
