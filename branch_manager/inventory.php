@@ -49,17 +49,45 @@ if(isset($On_Session[0]['branch_id'])){
     <!-- Add Record Form (Wider) -->
     <div class="md:w-1/4 w-full bg-white shadow-lg rounded-lg p-6 relative">
         <h2 class="text-xl font-bold mb-4 text-gray-700">Add New Record</h2>
-        <form id="product-form" class="flex flex-col gap-3">
-            <input type="text" id="stock_in_prod_code" name="stock_in_prod_code" placeholder="Search Product" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
-            <div id="productSuggestions" class="absolute bg-white border border-gray-300 rounded-md shadow-md w-full hidden mt-12"></div>
-            <input hidden type="text" readonly id="stock_in_prod_id" name="stock_in_prod_id" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
-            <input type="text" readonly id="stock_in_prod_name" name="stock_in_prod_name" placeholder="Product Name" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
-            
-            <input type="number" placeholder="Qty" id="stock_in_qty" name="stock_in_qty" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
-            <input type="number" placeholder="Sold" id="stock_in_sold" name="stock_in_sold" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
-            <input type="number" placeholder="Backjob" id="stock_in_backjob" name="stock_in_backjob" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
-            <button type="submit" id="BtnaddInventory" class="bg-green-500 text-white p-3 rounded-md hover:bg-green-600 transition-all">Add Record</button>
-        </form>
+        <form id="product-form" class="flex flex-col gap-3 relative w-full max-w-lg mx-auto">
+    <!-- Search Product Input -->
+    <div class="relative w-full">
+        <input type="text" id="stock_in_prod_code" name="stock_in_prod_code" placeholder="Search Product"
+            class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
+        <!-- Suggestions Box -->
+        <div id="productSuggestions"
+            class="absolute bg-white border border-gray-300 rounded-md shadow-md w-full hidden z-10 mt-1 overflow-auto max-h-60">
+            <!-- Suggestions will appear here -->
+        </div>
+    </div>
+
+    <!-- Hidden Product ID -->
+    <input hidden type="text" readonly id="stock_in_prod_id" name="stock_in_prod_id"
+        class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
+
+    <!-- Product Name -->
+    <input type="text" readonly id="stock_in_prod_name" name="stock_in_prod_name" placeholder="Product Name"
+        class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
+
+    <!-- Quantity Input -->
+    <input type="number" placeholder="Qty" id="stock_in_qty" name="stock_in_qty"
+        class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
+
+    <!-- Sold Input -->
+    <input type="number" placeholder="Sold" id="stock_in_sold" name="stock_in_sold"
+        class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
+
+    <!-- Backjob Input -->
+    <input type="number" placeholder="Backjob" id="stock_in_backjob" name="stock_in_backjob"
+        class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
+
+    <!-- Add Button -->
+    <button type="submit" id="BtnaddInventory"
+        class="bg-green-500 text-white p-3 rounded-md hover:bg-green-600 transition-all">
+        Add Record
+    </button>
+</form>
+
     </div>
 
     
