@@ -29,7 +29,7 @@ if ($fetch_all_product->num_rows > 0) {
             <button class='bg-blue-500 text-white py-1 px-3 rounded-md text-xs sm:text-sm togglerUpdateProduct w-full sm:w-auto'
                 data-prod_id='" . htmlspecialchars($product['prod_id']) . "'
                 data-prod_name='" . htmlspecialchars($product['prod_name']) . "'
-                data-prod_capital='" . htmlspecialchars($product['prod_capital']) . "'>
+                data-prod_capital='" . htmlspecialchars($product['prod_capital']) . "'
                 data-prod_price='" . htmlspecialchars($product['prod_price']) . "'>
                 Update
             </button>
