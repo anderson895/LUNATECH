@@ -231,15 +231,15 @@ class global_class extends db_connect
 
 
 
-    public function updateProduct($prod_id,$prod_name,$product_price) {
+    public function updateProduct($prod_id,$prod_name,$product_capital,$product_price){
     
         // Prepare the UPDATE query
         $query = $this->conn->prepare(
             "UPDATE `products` 
-             SET `prod_name` = ?,`prod_price` = ?
+             SET `prod_name` = ?,`prod_capital` = ?,`prod_price` = ?
              WHERE `prod_id` = ?"
         );
-        $query->bind_param("sdi", $prod_name,$product_price, $prod_id);
+        $query->bind_param("sddi", $prod_name,$product_capital,$product_price, $prod_id);
     
         if ($query->execute()) {
             return 'success';

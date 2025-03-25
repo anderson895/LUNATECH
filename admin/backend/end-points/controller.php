@@ -162,9 +162,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $prod_id = $_POST['prod_id'];
         $prod_name = htmlspecialchars(trim($_POST['prod_name']));
-        $product_price = htmlspecialchars(trim($_POST['product_price']));
+        $product_capital = htmlspecialchars(trim($_POST['update_product_capital']));
+        $product_price = htmlspecialchars(trim($_POST['update_product_price']));
 
-        $result = $db->updateProduct($prod_id,$prod_name,$product_price);
+        $result = $db->updateProduct($prod_id,$prod_name,$product_capital,$product_price);
 
         if ($result == "success") {
             echo json_encode(["status" => 200, "message" => "Update Successfully"]);
