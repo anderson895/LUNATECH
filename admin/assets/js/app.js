@@ -195,10 +195,12 @@ $(document).on('click', '.togglerDeleteBranch', function(e) {
 $(document).on('click', '.togglerUpdateProduct', function(e) {
     var prod_id = $(this).data('prod_id');
     var prod_name = $(this).data('prod_name');
+    var prod_capital = $(this).data('prod_capital');
     var prod_price = $(this).data('prod_price');
 
     $('#update_prod_id').val(prod_id);
     $('#update_prod_name').val(prod_name);
+    $('#update_product_capital').val(prod_capital);
     $('#update_prod_price').val(prod_price);
 
     console.log(prod_name);
