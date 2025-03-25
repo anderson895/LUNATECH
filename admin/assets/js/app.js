@@ -201,9 +201,9 @@ $(document).on('click', '.togglerUpdateProduct', function(e) {
     $('#update_prod_id').val(prod_id);
     $('#update_prod_name').val(prod_name);
     $('#update_product_capital').val(prod_capital);
-    $('#update_prod_price').val(prod_price);
+    $('#update_product_price').val(prod_price);
 
-    console.log(prod_capital);
+    console.log(prod_price);
     
     e.preventDefault();
     $('#updateProductModal').fadeIn();
