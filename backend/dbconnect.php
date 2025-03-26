@@ -1,15 +1,13 @@
 <?php
+// define("db_host", "localhost");
+// define("db_user", "root");
+// define("db_pass", "");
+// define("db_name", "lunatech");
 
 define("db_host", "localhost");
-define("db_user", "root");
-define("db_pass", "");
-define("db_name", "lunatech");
-
-// define("db_host", "localhost");
-// define("db_user", "u841289135_lunatech");
-// define("db_pass", "Lunatech2025");
-// define("db_name", "u841289135_lunatech");
-
+define("db_user", "u841289135_lunatech");
+define("db_pass", "Lunatech2025");
+define("db_name", "u841289135_lunatech");
 class db_connect
 {
     public $host = db_host;
