@@ -46,8 +46,8 @@
                     <th class="p-3">Model</th>
                     <th class="p-3">Capital </th>
                     <th class="p-3">Current Price </th>
-                    <th class="p-3 hidden md:table-cell">Added By</th>
-                    <th class="p-3 hidden md:table-cell">Date Added</th>
+                    <th class="p-3">Added By</th>
+                    <th class="p-3">Date Added</th>
                     <th class="p-3 text-center">Action</th>
                 </tr>
             </thead>
