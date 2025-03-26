@@ -1,0 +1,4 @@
+manual input sold price
+Profit administrator/general manager only
+branch dashboard analytics(total sales per unit)
+Total Inventory Stocks (change to total unit pcs)

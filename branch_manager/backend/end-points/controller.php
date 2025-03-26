@@ -40,9 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $branch_id = htmlspecialchars(trim($_POST['branch_id']));
             $qty = htmlspecialchars(trim($_POST['sale_qty']));
+            $sale_price = htmlspecialchars(trim($_POST['sale_price']));
             $prod_id = htmlspecialchars(trim($_POST['sale_prod_id']));
             
-            $result = $db->AddToCart($branch_id,$qty, $prod_id);
+            $result = $db->AddToCart($branch_id,$qty,$sale_price, $prod_id);
             
             if ($result == "success") {
                 echo json_encode(["status" => 200, "message" => "Cart record successfully added"]);
@@ -51,10 +52,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }else if($_POST['requestType'] == 'RemoveCartItem'){
             
+            $cart_id = htmlspecialchars(trim($_POST['cart_id']));
             $cart_prod_id = htmlspecialchars(trim($_POST['cart_prod_id']));
             $branch_id = htmlspecialchars(trim($_POST['branch_id']));
             
-            $result = $db->RemoveCartItem($cart_prod_id,$branch_id);
+            $result = $db->RemoveCartItem($cart_id,$cart_prod_id,$branch_id);
             
             if ($result == "success") {
                 echo json_encode(["status" => 200, "message" => "Cart record successfully removed"]);
@@ -96,11 +98,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $item_prod_id = $item['cart_prod_id'];
                             $item_qty = $item['quantity'];
                             $cart_id = $item['cart_id'];
-                            $prod_price = $item['prod_price'];
+                            $cart_sale_price = $item['cart_sale_price'];
                             $prod_capital = $item['prod_capital'];
             
                             // Pass the valid purchase ID
-                            $db->addpurchase_item($purchase_id,$branch_id, $item_prod_id, $item_qty, $cart_id,$prod_price,$prod_capital);
+                            $db->addpurchase_item($purchase_id,$branch_id, $item_prod_id, $item_qty, $cart_id,$cart_sale_price,$prod_capital);
                         }
                     }
                 } else {

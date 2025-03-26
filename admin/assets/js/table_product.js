@@ -118,7 +118,7 @@ $(document).ready(function () {
 
         var new_product_name = $("#new_product_name").val().trim();
         var new_product_capital = $("#new_product_capital").val().trim();
-        var new_product_price = $("#new_product_price").val().trim();
+        var new_product_current = $("#new_product_current").val().trim();
 
         console.log(new_product_name);
 
@@ -138,12 +138,12 @@ $(document).ready(function () {
             return;
         }
         
-        if (new_product_price == "") {
+        if (new_product_current == "") {
             alertify.error("Current Price is required");
             $('#BtnaddInventory').prop('disabled', false);
             return;
         }
-        if (isNaN(new_product_price) || new_product_price <= 0) {
+        if (isNaN(new_product_current) || new_product_current <= 0) {
             alertify.error("Current Price must be a valid number greater than 0");
             $('#BtnaddInventory').prop('disabled', false);
             return;

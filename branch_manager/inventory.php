@@ -49,44 +49,65 @@ if(isset($On_Session[0]['branch_id'])){
     <!-- Add Record Form (Wider) -->
     <div class="md:w-1/4 w-full bg-white shadow-lg rounded-lg p-6 relative">
         <h2 class="text-xl font-bold mb-4 text-gray-700">Add New Record</h2>
-        <form id="product-form" class="flex flex-col gap-3 relative w-full max-w-lg mx-auto">
-    <!-- Search Product Input -->
-    <div class="relative w-full">
-        <input type="text" id="stock_in_prod_code" name="stock_in_prod_code" placeholder="Search Product"
-            class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
-        <!-- Suggestions Box -->
-        <div id="productSuggestions"
-            class="absolute bg-white border border-gray-300 rounded-md shadow-md w-full hidden z-10 mt-1 overflow-auto max-h-60">
-            <!-- Suggestions will appear here -->
-        </div>
-    </div>
+        <form id="product-form" class="flex flex-col gap-4 relative w-full max-w-lg mx-auto">
+            <!-- Search Product Input -->
+            <div class="relative w-full">
+                <input type="text" id="stock_in_prod_code" name="stock_in_prod_code" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                <label for="stock_in_prod_code" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 left-2 bg-white px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-blue-600">
+                    Search Product
+                </label>
+                <!-- Suggestions Box -->
+                <div id="productSuggestions" class="absolute bg-white border border-gray-300 rounded-md shadow-md w-full hidden z-10 mt-1 overflow-auto max-h-60">
+                    <!-- Suggestions will appear here -->
+                </div>
+            </div>
 
-    <!-- Hidden Product ID -->
-    <input hidden type="text" readonly id="stock_in_prod_id" name="stock_in_prod_id"
-        class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
+            <!-- Hidden Product ID -->
+            <div class="relative w-full" hidden>
+                <input type="text" readonly id="stock_in_prod_id" name="stock_in_prod_id" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                <label for="stock_in_prod_id" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 left-2 bg-white px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-blue-600">
+                    Product ID
+                </label>
+            </div>
 
-    <!-- Product Name -->
-    <input type="text" readonly id="stock_in_prod_name" name="stock_in_prod_name" placeholder="Product Name"
-        class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
+            <!-- Product Name -->
+            <div class="relative w-full">
+                <input type="text" readonly id="stock_in_prod_name" name="stock_in_prod_name" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                <label for="stock_in_prod_name" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 left-2 bg-white px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-blue-600">
+                    Product Name
+                </label>
+            </div>
 
-    <!-- Quantity Input -->
-    <input type="number" placeholder="Qty" id="stock_in_qty" name="stock_in_qty"
-        class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
+            <!-- Quantity Input -->
+            <div class="relative w-full">
+                <input type="number" id="stock_in_qty" name="stock_in_qty" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                <label for="stock_in_qty" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 left-2 bg-white px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-blue-600">
+                    Quantity
+                </label>
+            </div>
 
-    <!-- Sold Input -->
-    <input type="number" placeholder="Sold" id="stock_in_sold" name="stock_in_sold"
-        class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
+            <!-- Sold Input -->
+            <div class="relative w-full">
+                <input type="number" id="stock_in_sold" name="stock_in_sold" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                <label for="stock_in_sold" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 left-2 bg-white px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-blue-600">
+                    Sold
+                </label>
+            </div>
 
-    <!-- Backjob Input -->
-    <input type="number" placeholder="Backjob" id="stock_in_backjob" name="stock_in_backjob"
-        class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
+            <!-- Backjob Input -->
+            <div class="relative w-full">
+                <input type="number" id="stock_in_backjob" name="stock_in_backjob" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                <label for="stock_in_backjob" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 left-2 bg-white px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-blue-600">
+                    Backjob
+                </label>
+            </div>
 
-    <!-- Add Button -->
-    <button type="submit" id="BtnaddInventory"
-        class="bg-green-500 text-white p-3 rounded-md hover:bg-green-600 transition-all">
-        Add Record
-    </button>
-</form>
+            <!-- Add Button -->
+            <button type="submit" id="BtnaddInventory" class="bg-green-500 text-white p-3 rounded-md hover:bg-green-600 transition-all">
+                Add Record
+            </button>
+        </form>
+
 
     </div>
 

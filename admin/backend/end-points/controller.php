@@ -68,11 +68,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $branch_code = htmlspecialchars(trim($_POST['branch_code']));
         $branch_name = htmlspecialchars(trim($_POST['branch_name']));
         $branch_address = htmlspecialchars(trim($_POST['branch_address']));
-        $branch_started = htmlspecialchars(trim($_POST['branch_started']));
         $branch_manager = htmlspecialchars(trim($_POST['branch_manager']));
-        $branch_tel = htmlspecialchars(trim($_POST['branch_tel']));
 
-        $result = $db->addbranch($branch_code, $branch_name, $branch_address, $branch_started, $branch_manager,$branch_tel);
+        $result = $db->addbranch($branch_code, $branch_name, $branch_address, $branch_manager);
 
         if ($result == "success") {
             echo json_encode(["status" => 200, "message" => "Successfully Added"]);
@@ -86,11 +84,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $branch_code = htmlspecialchars(trim($_POST['branch_code']));
         $branch_name = htmlspecialchars(trim($_POST['branch_name']));
         $branch_address = htmlspecialchars(trim($_POST['branch_address']));
-        $branch_started = htmlspecialchars(trim($_POST['branch_started']));
         $branch_manager = htmlspecialchars(trim($_POST['branch_manager']));
-        $branch_tel = htmlspecialchars(trim($_POST['branch_tel']));
 
-        $result = $db->updatebranch($branch_id,$branch_code, $branch_name, $branch_address,$branch_tel, $branch_started, $branch_manager);
+        $result = $db->updatebranch($branch_id,$branch_code, $branch_name, $branch_address, $branch_manager);
 
         if ($result == "success") {
             echo json_encode(["status" => 200, "message" => "Update Successfully"]);
@@ -128,10 +124,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         session_start();
         $new_product_name = htmlspecialchars(trim($_POST['new_product_name']));
         $new_product_capital = htmlspecialchars(trim($_POST['new_product_capital']));
-        $new_product_price = htmlspecialchars(trim($_POST['new_product_price']));
+        $new_product_current = htmlspecialchars(trim($_POST['new_product_current']));
         $added_by = $_SESSION['id'];
         
-        $result = $db->addproduct($new_product_name,$new_product_capital, $new_product_price, $added_by);
+        $result = $db->addproduct($new_product_name,$new_product_capital, $new_product_current, $added_by);
         
         if ($result == "success") {
             // Kunin ang latest product code (assuming auto-increment ID o last inserted code)
@@ -163,9 +159,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $prod_id = $_POST['prod_id'];
         $prod_name = htmlspecialchars(trim($_POST['prod_name']));
         $product_capital = htmlspecialchars(trim($_POST['update_product_capital']));
-        $product_price = htmlspecialchars(trim($_POST['update_product_price']));
+        $product_current = htmlspecialchars(trim($_POST['update_product_current']));
 
-        $result = $db->updateProduct($prod_id,$prod_name,$product_capital,$product_price);
+        $result = $db->updateProduct($prod_id,$prod_name,$product_capital,$product_current);
 
         if ($result == "success") {
             echo json_encode(["status" => 200, "message" => "Update Successfully"]);

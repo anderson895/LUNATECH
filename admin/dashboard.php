@@ -40,10 +40,19 @@
 
 
 
-<!-- Chart Section -->
 <div class="bg-white mt-6 p-6 rounded-lg shadow-md">
-        <h3 class="text-lg font-semibold text-gray-700 mb-4">Sales Overview</h3>
-        <div id="monthly_sales_chart"></div>
+    <h3 class="text-lg font-semibold text-gray-700 mb-4">Sales Overview</h3>
+
+    <!-- Sales Filter -->
+    <div class="mb-4 flex space-x-4">
+        <select id="salesFilter" class="p-2 border rounded">
+            <option value="monthly">Monthly Sales</option>
+            <option value="daily">Daily Sales</option>
+        </select>
+    </div>
+
+    <!-- Sales Chart -->
+    <div id="sales_chart"></div> <!-- ✅ Ensure this exists -->
 </div>
 
 
@@ -62,4 +71,4 @@
 
 <?php include "components/footer.php";?>
 <script src="assets/js/analytics.js"></script>
-<script src="assets/js/all_branches_monthly_sales.js"></script>
+<script src="assets/js/all_branches_sales.js"></script>

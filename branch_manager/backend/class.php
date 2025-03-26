@@ -13,35 +13,51 @@ class global_class extends db_connect
 
 
     public function getDataAnalytics($branch_id)
-    {
-        $query = "
-            SELECT 
-                (SELECT COUNT(*) FROM `stock` WHERE stock_in_status='1' AND stock_in_branch_id=$branch_id) AS stockCount,
-                (SELECT COUNT(*) FROM `purchase_record` WHERE purchase_branch_id=$branch_id) AS purchase_record_count,
-                (
-                    SELECT products.prod_name
-                    FROM `purchase_item` 
-                    LEFT JOIN purchase_record ON purchase_record.purchase_id = purchase_item.item_purchase_id 
-                    LEFT JOIN products ON products.prod_id = purchase_item.item_prod_id 
-                    WHERE purchase_record.purchase_branch_id = $branch_id 
-                    GROUP BY item_prod_id, products.prod_name
-                    ORDER BY COUNT(item_prod_id) DESC 
-                    LIMIT 1
-                ) AS most_purchased_item
-        ";
-    
-        // Execute the query
-        $result = $this->conn->query($query);
-        
+{
+    // Prepare the SQL query using parameterized queries
+    $query = "
+        SELECT 
+            (SELECT SUM(stock_in_qty) FROM `stock` WHERE stock_in_status='1' AND stock_in_branch_id=?) AS stockCount,
+            (SELECT COUNT(*) FROM `purchase_record` WHERE purchase_branch_id=?) AS purchase_record_count,
+            (
+                SELECT products.prod_name
+                FROM `purchase_item` 
+                LEFT JOIN purchase_record ON purchase_record.purchase_id = purchase_item.item_purchase_id 
+                LEFT JOIN products ON products.prod_id = purchase_item.item_prod_id 
+                WHERE purchase_record.purchase_branch_id = ? 
+                GROUP BY item_prod_id, products.prod_name
+                ORDER BY COUNT(item_prod_id) DESC 
+                LIMIT 1
+            ) AS most_purchased_item
+    ";
+
+    // Prepare the statement
+    if ($stmt = $this->conn->prepare($query)) {
+        // Bind parameters
+        $stmt->bind_param("iii", $branch_id, $branch_id, $branch_id);
+
+        // Execute the statement
+        $stmt->execute();
+
+        // Get the result
+        $result = $stmt->get_result();
+
         if ($result) {
             // Fetch the result and return as JSON
             $row = $result->fetch_assoc();
             echo json_encode($row);
         } else {
-            // Error handling if query fails
-            echo json_encode(['error' => 'Failed to retrieve counts', 'sql_error' => $this->conn->error]);
+            echo json_encode(['error' => 'Failed to retrieve counts']);
         }
+
+        // Close the statement
+        $stmt->close();
+    } else {
+        // SQL error handling
+        echo json_encode(['error' => 'Query preparation failed', 'sql_error' => $this->conn->error]);
     }
+}
+
     
     
     public function getDailySalesData($branch_id)
@@ -151,34 +167,55 @@ class global_class extends db_connect
 
     public function getMonthlySales($branch_id)
     {
+        $branch_id = intval($branch_id); // Ensure $branch_id is an integer to prevent SQL injection
+    
         $query = "
             SELECT 
-                MONTH(`purchase_date`) AS `order_month`,
-                SUM(`purchase_total_payment`) AS `monthly_sales`
-            FROM `purchase_record`
+                MONTH(purchase_date) AS order_month,
+                SUM(purchase_total_payment) AS monthly_sales,
+                products.prod_name
+            FROM purchase_record
+            LEFT JOIN purchase_item ON purchase_record.purchase_id = purchase_item.item_purchase_id 
+            LEFT JOIN products ON purchase_item.item_prod_id = products.prod_id 
             WHERE purchase_branch_id = $branch_id 
-            AND YEAR(`purchase_date`) = YEAR(CURDATE()) 
-            GROUP BY MONTH(`purchase_date`) 
-            ORDER BY `order_month`
+            AND YEAR(purchase_date) = YEAR(CURDATE()) 
+            GROUP BY order_month, products.prod_name
+            ORDER BY order_month
         ";
     
         $result = $this->conn->query($query);
     
         if ($result) {
             $salesData = [];
+            $monthlyTotalSales = [];
+    
             while ($row = $result->fetch_assoc()) {
-                $salesData[] = [
-                    'month' => date('F', mktime(0, 0, 0, $row['order_month'], 10)),
+                $monthName = date('F', mktime(0, 0, 0, $row['order_month'], 10));
+                
+                // Store product sales data
+                $salesData[$monthName][] = [
+                    'product' => $row['prod_name'],
                     'sales' => $row['monthly_sales']
                 ];
+    
+                // Sum up total monthly sales
+                if (!isset($monthlyTotalSales[$monthName])) {
+                    $monthlyTotalSales[$monthName] = 0;
+                }
+                $monthlyTotalSales[$monthName] += $row['monthly_sales'];
             }
-            echo json_encode($salesData);
+    
+            echo json_encode([
+                'sales_by_product' => $salesData,
+                'total_monthly_sales' => $monthlyTotalSales
+            ]);
         } else {
             // Log the error for debugging
             error_log('Database query failed: ' . $this->conn->error);
             echo json_encode(['error' => 'Failed to retrieve monthly sales data']);
         }
     }
+    
 
 
 
@@ -190,9 +227,12 @@ class global_class extends db_connect
         
         $sql = "
             SELECT 
-                purchase_record.*, 
-                purchase_item.*, 
+                purchase_record.purchase_date, 
+                purchase_record.purchase_invoice, 
+                purchase_record.purchase_total_payment, 
+                purchase_record.purchase_id, 
                 user.user_fullname, 
+                SUM(purchase_item.item_qty) AS total_item_unit_sold, 
                 SUM(purchase_item.item_price_sold) AS total_item_price_sold, 
                 SUM(purchase_item.item_price_capital) AS total_item_price_capital, 
                 (SUM(purchase_item.item_price_sold) - SUM(purchase_item.item_price_capital)) AS total_profit
@@ -201,8 +241,8 @@ class global_class extends db_connect
             LEFT JOIN branches ON branches.branch_id = purchase_record.purchase_branch_id 
             LEFT JOIN purchase_item ON purchase_item.item_purchase_id = purchase_record.purchase_id  
             WHERE purchase_record.purchase_branch_id = ? $searchQuery
-            GROUP BY purchase_record.purchase_id, user.user_fullname
-            ORDER BY branches.branch_name ASC
+            GROUP BY purchase_record.purchase_date, user.user_fullname
+            ORDER BY purchase_record.purchase_date ASC
             LIMIT ? OFFSET ?
         ";
     
@@ -218,6 +258,7 @@ class global_class extends db_connect
         $stmt->execute();
         return $stmt->get_result();
     }
+    
     
     
     // Function to count total history records
@@ -260,7 +301,7 @@ class global_class extends db_connect
 
 
 
-    public function AddToCart($branch_id, $qty, $prod_id) {
+    public function AddToCart($branch_id,$qty,$sale_price, $prod_id) {
         // Get current stock quantities (FIFO order)
         $stockQuery = $this->conn->prepare(
             "SELECT stock_in_id, stock_in_qty 
@@ -299,25 +340,25 @@ class global_class extends db_connect
     
             // Check if an entry with the same stock_in_id already exists in pos_cart
             $checkCartQuery = $this->conn->prepare(
-                "SELECT cart_qty FROM pos_cart WHERE cart_prod_id = ? AND cart_branch_id = ? AND cart_stock_in_id = ?"
+                "SELECT cart_qty FROM pos_cart WHERE cart_prod_id = ? AND cart_branch_id = ? AND cart_sale_price = ? AND cart_stock_in_id = ?"
             );
-            $checkCartQuery->bind_param("iii", $prod_id, $branch_id, $stock['stock_in_id']);
+            $checkCartQuery->bind_param("iidi", $prod_id, $branch_id,$sale_price, $stock['stock_in_id']);
             $checkCartQuery->execute();
             $cartResult = $checkCartQuery->get_result();
     
             if ($cartResult->num_rows > 0) {
                 // If exists, update the quantity
                 $updateCartQuery = $this->conn->prepare(
-                    "UPDATE pos_cart SET cart_qty = cart_qty + ? WHERE cart_prod_id = ? AND cart_branch_id = ? AND cart_stock_in_id = ?"
+                    "UPDATE pos_cart SET cart_qty = cart_qty + ? WHERE cart_prod_id = ? AND cart_branch_id = ? AND cart_sale_price = ? AND cart_stock_in_id = ?"
                 );
-                $updateCartQuery->bind_param("iiii", $deductQty, $prod_id, $branch_id, $stock['stock_in_id']);
+                $updateCartQuery->bind_param("iiidi", $deductQty, $prod_id, $branch_id,$sale_price, $stock['stock_in_id']);
                 $updateCartQuery->execute();
             } else {
                 // If not exists, insert a new row
                 $insertCartQuery = $this->conn->prepare(
-                    "INSERT INTO pos_cart (cart_prod_id, cart_qty, cart_branch_id, cart_stock_in_id) VALUES (?, ?, ?, ?)"
+                    "INSERT INTO pos_cart (cart_prod_id, cart_qty,cart_sale_price, cart_branch_id, cart_stock_in_id) VALUES (?, ?,?, ?, ?)"
                 );
-                $insertCartQuery->bind_param("iiii", $prod_id, $deductQty, $branch_id, $stock['stock_in_id']);
+                $insertCartQuery->bind_param("iidii", $prod_id, $deductQty,$sale_price, $branch_id, $stock['stock_in_id']);
                 $insertCartQuery->execute();
             }
     
@@ -329,21 +370,20 @@ class global_class extends db_connect
     
     
 
-    public function RemoveCartItem($cart_prod_id, $branch_id) {
+    public function RemoveCartItem($cart_id,$cart_prod_id,$branch_id) {
         // Get all cart entries for the given product and branch
         $cartQuery = $this->conn->prepare("
             SELECT cart_id, cart_qty, cart_stock_in_id 
             FROM pos_cart 
-            WHERE cart_prod_id = ? AND cart_branch_id = ?
+            WHERE cart_id = ? AND cart_prod_id = ? AND cart_branch_id = ? 
         ");
-        $cartQuery->bind_param("ii", $cart_prod_id, $branch_id);
+        $cartQuery->bind_param("iii",$cart_id, $cart_prod_id, $branch_id);
         $cartQuery->execute();
         $result = $cartQuery->get_result();
         
         if ($result->num_rows > 0) {
             // Process each cart entry
             while ($cartRow = $result->fetch_assoc()) {
-                $cart_id = $cartRow['cart_id'];
                 $qty = $cartRow['cart_qty'];
                 $stock_in_id = $cartRow['cart_stock_in_id']; // Track original stock source
                 
@@ -385,15 +425,16 @@ class global_class extends db_connect
             SELECT 
                 MIN(c.cart_id) AS cart_id, 
                 c.cart_prod_id, 
+                c.cart_sale_price, 
                 SUM(c.cart_qty) AS cart_qty, 
                 c.cart_branch_id, 
                 p.prod_name, 
-                p.prod_price,
+                p.prod_current_price,
                 p.prod_capital
             FROM pos_cart c 
             JOIN products p ON c.cart_prod_id = p.prod_id
             WHERE c.cart_branch_id = ?
-            GROUP BY c.cart_prod_id, c.cart_branch_id, p.prod_name, p.prod_price
+            GROUP BY c.cart_prod_id, c.cart_branch_id, p.prod_name, c.cart_sale_price
         ");
         
         $query->bind_param("i", $branch_id);
@@ -407,7 +448,8 @@ class global_class extends db_connect
                 'cart_id' => $row['cart_id'], // Only for reference, not meaningful in grouped data
                 'cart_prod_id' => $row['cart_prod_id'],
                 'prod_name' => $row['prod_name'],
-                'prod_price' => $row['prod_price'],
+                'prod_current_price' => $row['prod_current_price'],
+                'cart_sale_price' => $row['cart_sale_price'],
                 'prod_capital' => $row['prod_capital'],
                 'cart_qty' => $row['cart_qty'] // Summed quantity of the product in the cart
             ];
@@ -444,7 +486,7 @@ class global_class extends db_connect
                 products.prod_id,
                 products.prod_code,
                 products.prod_name,
-                products.prod_price,
+                products.prod_current_price,
                 stock.stock_in_id,
                 stock.stock_in_date,
                 stock.stock_in_qty,
@@ -488,7 +530,7 @@ class global_class extends db_connect
                 products.prod_id,
                 products.prod_code,
                 products.prod_name,
-                products.prod_price,
+                products.prod_current_price,
                 stock.stock_in_id,
                 SUM(stock.stock_in_qty) AS total_qty,
                 SUM(stock.stock_in_sold) AS total_sold,
@@ -572,13 +614,13 @@ class global_class extends db_connect
 
 
 
-    public function addpurchase_item($item_purchase_id,$branch_id, $item_prod_id, $item_qty, $cart_id,$prod_price,$prod_capital) {
+    public function addpurchase_item($item_purchase_id,$branch_id, $item_prod_id, $item_qty, $cart_id,$cart_sale_price,$prod_capital) {
         // Insert purchase item
         $query = $this->conn->prepare("
             INSERT INTO `purchase_item` (`item_purchase_id`, `item_prod_id`, `item_qty`,`item_price_sold`,`item_price_capital`) 
             VALUES (?, ?, ?,?,?)
         ");
-        $query->bind_param("iiidd", $item_purchase_id, $item_prod_id, $item_qty,$prod_price,$prod_capital);
+        $query->bind_param("iiidd", $item_purchase_id, $item_prod_id, $item_qty,$cart_sale_price,$prod_capital);
     
         if (!$query->execute()) {
             return 'Error: ' . $query->error;

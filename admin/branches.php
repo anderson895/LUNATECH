@@ -52,8 +52,6 @@
                     <th class="p-3">Branch Code</th>
                     <th class="p-3">Branch Name</th>
                     <th class="p-3">Branch Address</th>
-                    <th class="p-3">Branch Tel</th>
-                    <th class="p-3">Branch Started</th>
                     <th class="p-3">Branch Manager</th>
                     
                     
@@ -101,7 +99,7 @@
             </div>
 
             <div class="mb-4">
-                <label for="update_branch_name" class="block text-sm font-medium text-gray-700">Branch Name</label>
+                <label for="update_branch_name" class="block text-sm font-medium text-gray-700">Store Name</label>
                 <input type="text" id="update_branch_name" name="branch_name" class="w-full p-2 border rounded-md" required>
             </div>
 
@@ -110,15 +108,7 @@
                 <input type="text" id="update_branch_address" name="branch_address" class="w-full p-2 border rounded-md" required>
             </div>
 
-            <div class="mb-4">
-                <label for="update_branch_tel" class="block text-sm font-medium text-gray-700">Tel </label>
-                <input type="text" id="update_branch_tel" name="branch_tel" class="w-full p-2 border rounded-md" required>
-            </div>
-            
-            <div class="mb-4">
-                <label for="update_branch_started" class="block text-sm font-medium text-gray-700">Branch Started</label>
-                <input type="date" id="update_branch_started" name="branch_started" class="w-full p-2 border rounded-md" required>
-            </div>
+          
 
 
             <div class="mb-4">
@@ -160,7 +150,7 @@
             </div>
 
             <div class="mb-4">
-                <label for="new_branch_name" class="block text-sm font-medium text-gray-700">Branch Name</label>
+                <label for="new_branch_name" class="block text-sm font-medium text-gray-700">Store Name</label>
                 <input type="text" id="new_branch_name" name="branch_name" class="w-full p-2 border rounded-md" required>
             </div>
 
@@ -170,19 +160,6 @@
             </div>
 
 
-            <div class="mb-4">
-                <label for="new_branch_tel" class="block text-sm font-medium text-gray-700">Tel </label>
-                <input type="text" id="new_branch_tel" name="branch_tel" class="w-full p-2 border rounded-md" required>
-            </div>
-            
-            <?php
-            date_default_timezone_set('Asia/Manila');
-            ?>
-
-            <div class="mb-4">
-                <label for="new_branch_started" class="block text-sm font-medium text-gray-700">Branch Started</label>
-                <input type="date" id="new_branch_started" name="branch_started" class="w-full p-2 border rounded-md" value="<?php echo date('Y-m-d'); ?>" required>
-            </div>
 
 
 

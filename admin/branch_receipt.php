@@ -15,7 +15,7 @@ $purchase_record = $db->purchase_record($invoice,$purchase_id);
     <div class="text-center mb-4">
         <img class="h-12 mx-auto mb-2" src="../assets/images/logo/business_logo.jpeg" alt="Logo" />
         <div class="font-bold">NDG COMPANY</div>
-        <div class="text-gray-700"><?= ucfirst($purchase_record[0]['branch_address']) ?></div>
+         <div class="text-gray-700"><?= ucfirst($purchase_record[0]['branch_address']) ?></div>
     </div>
 
     <!-- Invoice Details -->
@@ -38,7 +38,7 @@ $purchase_record = $db->purchase_record($invoice,$purchase_id);
     <div class="border-t border-dashed border-gray-400 mt-2 pt-2">
         <?php foreach ($purchase_record as $item): ?>
             <div class="flex justify-between">
-                <span><?= $item['prod_name'] ?> (₱<?= number_format($item['item_price_sold'],2) ?>)x<?= $item['item_qty'] ?></span>
+                <span><?= $item['prod_name'] ?> (<?= $item['item_price_sold'] ?>)x<?= $item['item_qty'] ?></span>
                 <span>₱<?= number_format($item['item_price_sold'] * $item['item_qty'], 2) ?></span>
                 <!-- <span>₱<?= number_format($item['item_price_capital'] * $item['item_qty'], 2) ?></span> -->
             </div>

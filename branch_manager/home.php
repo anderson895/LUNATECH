@@ -18,7 +18,7 @@ include "components/header.php";
 
         <div class="bg-white p-4 rounded-lg shadow-md">
             <h3 class="text-gray-600 text-sm">Total Inventory Stocks</h3>
-            <p class="text-2xl font-bold text-gray-800 stockCount">0</p>
+            <p class="text-2xl font-bold text-gray-800 TotalItems">0</p>
         </div>
         <div class="bg-white p-4 rounded-lg shadow-md">
             <h3 class="text-gray-600 text-sm">Today Sales</h3>

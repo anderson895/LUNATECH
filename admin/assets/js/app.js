@@ -196,14 +196,14 @@ $(document).on('click', '.togglerUpdateProduct', function(e) {
     var prod_id = $(this).data('prod_id');
     var prod_name = $(this).data('prod_name');
     var prod_capital = $(this).data('prod_capital');
-    var prod_price = $(this).data('prod_price');
+    var prod_current_price = $(this).data('prod_current_price');
 
     $('#update_prod_id').val(prod_id);
     $('#update_prod_name').val(prod_name);
     $('#update_product_capital').val(prod_capital);
-    $('#update_product_price').val(prod_price);
+    $('#update_product_current').val(prod_current_price);
 
-    console.log(prod_price);
+    console.log(prod_current_price);
     
     e.preventDefault();
     $('#updateProductModal').fadeIn();
@@ -232,18 +232,15 @@ $(document).on('click', '.togglerUpdateBranch', function(e) {
     var branch_code = $(this).data('branch_code');
     var branch_name = $(this).data('branch_name');
     var branch_address = $(this).data('branch_address');
-    var branch_started = $(this).data('branch_started');
     var branch_manager_id = $(this).data('branch_manager_id');
     var user_fullname = $(this).data('user_fullname');
-    var branch_tel = $(this).data('branch_tel');
 
     // Populate the form fields
     $('#branch_id').val(branch_id);
     $('#update_branch_code').val(branch_code);
     $('#update_branch_name').val(branch_name);
     $('#update_branch_address').val(branch_address);
-    $('#update_branch_started').val(branch_started);
-    $('#branch_tel').val(branch_tel);
+  
 
     // Set the branch manager
     $('#currentValue').val(branch_manager_id);

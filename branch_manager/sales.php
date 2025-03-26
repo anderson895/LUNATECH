@@ -30,7 +30,7 @@ if(isset($On_Session[0]['branch_id'])){
                 <thead>
                     <tr class="bg-gray-100 text-gray-700 border-b">
                         <th class="p-3 w-1/4 font-medium">Code</th>
-                        <th class="p-3 w-1/4 font-medium">Product</th>
+                        <th class="p-3 w-1/4 font-medium">Model</th>
                         <th class="p-3 w-1/4 font-medium">Current Stocks</th>
                         <th class="p-3 w-1/4 font-medium">Price</th>
                     </tr>
@@ -48,16 +48,53 @@ if(isset($On_Session[0]['branch_id'])){
             <!-- <h2 class="text-xl font-bold text-gray-700"> ....</h2> -->
         </div>
         <div class="w-full rounded-lg mb-4">
-            <form id="product-form" class="flex flex-col gap-4">
-                <input type="hidden" id="sale_prod_code" name="sale_prod_code" placeholder="Search Product Code" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
-                <input type="hidden" id="sale_prod_id" name="sale_prod_id" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
-                <input type="text" readonly id="sale_prod_name" name="sale_prod_name" placeholder="Product Name" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
-                <input type="number" placeholder="Qty" id="sale_qty" name="sale_qty" class="border border-gray-300 p-3 rounded-md w-full focus:ring-2 focus:ring-blue-400">
-                
-                <button type="submit" id="BtnaddInventory" class="bg-gray-500 text-white p-3 rounded-md hover:bg-gray-600 transition-all mt-4 w-full">
-                    <span class="material-icons mr-2">add_shopping_cart</span> Add to Cart
-                </button>
-            </form>
+        <form id="addCartFrm" class="flex flex-col gap-6">
+    <!-- Product Code -->
+    <div class="relative" hidden>
+        <input type="text" id="sale_prod_code" name="sale_prod_code" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+        <label for="sale_prod_code" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 left-2 z-10 bg-white px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-blue-600">
+            Product Code
+        </label>
+    </div>
+
+    <!-- Product ID -->
+    <div class="relative" hidden>
+        <input type="text" id="sale_prod_id" name="sale_prod_id" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+        <label for="sale_prod_id" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 left-2 z-10 bg-white px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-blue-600">
+            Product ID
+        </label>
+    </div>
+
+    <!-- Model -->
+    <div class="relative">
+        <input type="text" readonly id="sale_prod_name" name="sale_prod_name" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+        <label for="sale_prod_name" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 left-2 z-10 bg-white px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-blue-600">
+            Model
+        </label>
+    </div>
+
+    <!-- Quantity -->
+    <div class="relative">
+        <input type="number" id="sale_qty" name="sale_qty" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+        <label for="sale_qty" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 left-2 z-10 bg-white px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-blue-600">
+            Qty
+        </label>
+    </div>
+
+    <!-- Price -->
+    <div class="relative">
+        <input type="text" id="sale_price" name="sale_price" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+        <label for="sale_price" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 left-2 z-10 bg-white px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-blue-600">
+            Price
+        </label>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" id="BtnaddInventory" class="bg-gray-500 text-white p-3 rounded-md hover:bg-gray-600 transition-all mt-4 w-full flex items-center justify-center gap-2">
+        <span class="material-icons">add_shopping_cart</span> Add to Cart
+    </button>
+</form>
+
         </div>
 
            <!-- Cart Summary (for visual appeal) -->
@@ -106,6 +143,7 @@ if(isset($On_Session[0]['branch_id'])){
                 <option value="bank_transfer">Bank Transfer</option>
             </select>
         </div>
+        
 
         <div class="mb-3">
             <label class="block text-gray-600 text-sm font-medium">Payment:</label>
@@ -186,29 +224,40 @@ $(document).ready(function () {
         }, 5000);
  
 
-    let selectedProduct = null;
-    $('#inventoryTable').on('click', 'tr', function () {
-        let productCode = $(this).find('td').eq(0).text().trim(); 
-        let productName = $(this).find('td').eq(1).text().trim(); 
-        let productPrice = $(this).find('td').eq(3).text().trim(); 
+        let selectedProduct = null;
+
+    $('#inventoryTable').on('click', 'tr', function (event) {
+        event.stopPropagation(); // Prevent the click from propagating to document
+
+        let productCode = $(this).data('prod_code'); 
+        let productName = $(this).data('prod_name'); 
+        let productPrice =$(this).data('prod_current_price'); 
         let productId = $(this).attr('data-prod_id');
 
+      
         $('#sale_prod_code').val(productCode);
         $('#sale_prod_name').val(productName); 
         $('#sale_prod_id').val(productId);
         $('#sale_qty').val(1);
+        $('#sale_price').val(productPrice); // Use the cleaned number
+
+
+        console.log(productPrice);
 
         selectedProduct = {
             id: productId,
             code: productCode,
             name: productName,
-            price: parseFloat(productPrice.replace('₱', '').trim()), 
+            price: productPrice, // Already a number
             quantity: 0 
         };
     });
 
+  
+
+
     
-    $('#product-form').on('submit', function (e) {
+    $('#addCartFrm').on('submit', function (e) {
         e.preventDefault();
         
         var prod_id = $("#sale_prod_id").val().trim();
@@ -260,16 +309,22 @@ $(document).ready(function () {
             let cartItemsHtml = "";
             let totalItems = 0;
             let totalPrice = 0;
+            
+
+           
 
             cartItems.forEach(item => {
-                let subtotal = item.prod_price * item.cart_qty;
+                let subtotal = item.cart_sale_price * item.cart_qty;
                 totalItems += item.cart_qty;
                 totalPrice += subtotal;
 
+
+                console.log(item);
+
                 cartItemsHtml += `
-                    <div class="cart-item flex justify-between items-center border-b py-2" data-prod_capital="${item.prod_capital}" data-prod_price="${item.prod_price}" data-cart_id="${item.cart_id}" data-cart_prod_id="${item.cart_prod_id}">
-                        <p>${item.prod_name} - ₱${parseFloat(item.prod_price).toFixed(2)} x ${item.cart_qty} = <strong>₱${subtotal.toFixed(2)}</strong></p>
-                        <button class="removeItem text-red-500 hover:text-red-700" data-cart_prod_id="${item.cart_prod_id}">X</button>
+                    <div class="cart-item flex justify-between items-center border-b py-2" data-prod_capital="${item.prod_capital}" data-cart_sale_price="${item.cart_sale_price}" data-cart_id="${item.cart_id}" data-cart_prod_id="${item.cart_prod_id}">
+                        <p>${item.prod_name} - ₱${parseFloat(item.cart_sale_price).toFixed(2)} x ${item.cart_qty} = <strong>₱${subtotal.toFixed(2)}</strong></p>
+                        <button class="removeItem text-red-500 hover:text-red-700" data-cart_id="${item.cart_id}" data-cart_prod_id="${item.cart_prod_id}">X</button>
                     </div>
                 `;
             });
@@ -286,13 +341,13 @@ $(document).ready(function () {
 }
 
 $(document).on('click', '.removeItem', function () {
+    let cart_id = $(this).data('cart_id');
     let cart_prod_id = $(this).data('cart_prod_id');
     let branch_id = $("#branch_id").val();
-    
     $.ajax({
         url: "backend/end-points/controller.php",
         type: 'POST',
-        data: { cart_prod_id: cart_prod_id,branch_id: branch_id, requestType: 'RemoveCartItem' },
+        data: { cart_id:cart_id,cart_prod_id: cart_prod_id,branch_id: branch_id, requestType: 'RemoveCartItem' },
         success: function (response) {
             console.log(response);
             fetch_cart(); 
@@ -363,7 +418,7 @@ $(document).ready(function () {
             let item = {
                 cart_id: $(this).data("cart_id"),
                 cart_prod_id: $(this).data("cart_prod_id"),
-                prod_price: $(this).data("prod_price"),
+                cart_sale_price: $(this).data("cart_sale_price"),
                 prod_capital: $(this).data("prod_capital"),
                 quantity: parseInt($(this).find("p").text().split(" x ")[1]),
             };

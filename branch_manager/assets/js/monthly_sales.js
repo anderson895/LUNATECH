@@ -10,28 +10,47 @@ $(document).ready(function() {
                 return;
             }
 
-            // Prepare the data from the response
-            var months = [];
-            var sales = [];
+            // Extract months and total monthly sales
+            var months = Object.keys(response.total_monthly_sales);
+            var totalSales = Object.values(response.total_monthly_sales).map(Number); // Convert to numbers
 
-            // Assuming the response is in the format: [{month: "January", sales: 1200}, ...]
-            response.forEach(function(item) {
-                months.push(item.month);
-                sales.push(parseInt(item.sales)); // Ensure sales data is numeric
+            // Initialize product-wise sales for tooltip
+            var productSales = {};
+
+            // Process product sales breakdown
+            Object.entries(response.sales_by_product).forEach(([month, products]) => {
+                var productInfo = products.map(product => `${product.product}: ${product.sales}`).join("<br>");
+                productSales[month] = productInfo;
             });
 
-            // Define chart options
+            // Define ApexCharts options
             var options = {
                 chart: {
                     type: 'area',
                     height: 300
                 },
                 series: [{
-                    name: 'Sales',
-                    data: sales
+                    name: 'Total Sales',
+                    data: totalSales
                 }],
                 xaxis: {
                     categories: months
+                },
+                tooltip: {
+                    shared: true,
+                    custom: function({ series, seriesIndex, dataPointIndex, w }) {
+                        var month = w.globals.categoryLabels[dataPointIndex];
+                        var total = series[seriesIndex][dataPointIndex];
+                        var productBreakdown = productSales[month] || "No product sales";
+                        return `
+                            <div class="bg-white p-2 shadow-md rounded-md">
+                                <strong>${month}</strong><br>
+                                Total Sales: ₱${total.toLocaleString()}<br>
+                                <hr>
+                                ${productBreakdown}
+                            </div>
+                        `;
+                    }
                 }
             };
 
@@ -40,7 +59,7 @@ $(document).ready(function() {
             chart.render();
         },
         error: function(xhr, status, error) {
-            console.error("Error fetching sales data: ", status, error);
+            console.error("Error fetching sales data:", status, error);
         }
     });
 });

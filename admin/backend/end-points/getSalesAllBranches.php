@@ -4,7 +4,7 @@ $db = new global_class();
 
 
 
-$orders = $db->getMonthlySalesAllBranches();
+$orders = $db->getSalesAllBranches();
 
     
    

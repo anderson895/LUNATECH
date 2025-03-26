@@ -21,11 +21,15 @@ $total_pages = ceil($total_records / $limit);
 
 if ($fetch_all_inventoryRecord->num_rows > 0): ?>
     <?php foreach ($fetch_all_inventoryRecord as $inv): ?>
-       <tr class="border-b hover:bg-gray-50 transition" data-prod_id="<?=$inv['prod_id']?>">
+       <tr class="border-b hover:bg-gray-50 transition" 
+       data-prod_id="<?=$inv['prod_id']?>" 
+       data-prod_code="<?=$inv['prod_code']?>" 
+       data-prod_name="<?=$inv['prod_name']?>" 
+       data-prod_current_price="<?=$inv['prod_current_price']?>">
             <td class="p-4"><?=$inv['prod_code']?></td>
             <td class="p-4"><?=$inv['prod_name']?></td>
             <td class="p-4"><?=$inv['total_qty']?></td>
-            <td class="p-4">₱ <?=htmlspecialchars(number_format($inv['prod_price'], 2, '.', ','))?></td>
+            <td class="p-4">₱ <?=htmlspecialchars(number_format($inv['prod_current_price'], 2, '.', ','))?></td>    
        </tr>
     <?php endforeach; ?>
 <?php else: ?>
