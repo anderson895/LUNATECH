@@ -23,6 +23,7 @@ class global_class extends db_connect
         LEFT JOIN user ON user.id = purchase_record.purchase_user_id  
         LEFT JOIN branches ON branches.branch_id = purchase_record.purchase_branch_id   
         WHERE purchase_record.purchase_invoice = ? AND item_purchase_id=?
+        
         GROUP BY purchase_item.item_id
         ";
     
@@ -72,7 +73,7 @@ class global_class extends db_connect
             LEFT JOIN purchase_item ON purchase_item.item_purchase_id = purchase_record.purchase_id
             $whereSql
             GROUP BY purchase_record.purchase_id
-            ORDER BY branches.branch_name ASC
+            ORDER BY purchase_record.purchase_date DESC
             LIMIT ? OFFSET ?";
     
         $stmt = $this->conn->prepare($sql);
@@ -84,20 +85,11 @@ class global_class extends db_connect
         $stmt->execute();
         return $stmt->get_result();
     }
-    
 
-
-    public function get_all_branches() {
-        $sql = "SELECT branch_name,branch_id FROM branches where branch_status='1' ORDER BY branch_name ASC";
-        $result = $this->conn->query($sql);
-        return $result;
-    }
-    
-    
-    
-    // Function to count total history records
+       // Function to count total history records
     public function count_all_history($search = "") {
-        $searchQuery = $search ? "WHERE AND (purchase_record.purchase_invoice LIKE ? OR purchase_record.purchase_date LIKE ?)" : "";
+        $searchQuery = $search ? "WHERE (purchase_record.purchase_invoice LIKE ? OR purchase_record.purchase_date LIKE ?)" : "";
+        
         $sql = "
             SELECT COUNT(*) as total
             FROM purchase_record
@@ -116,9 +108,23 @@ class global_class extends db_connect
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
+        
         return $row['total'] ?? 0;
     }
+    
 
+    
+
+
+    public function get_all_branches() {
+        $sql = "SELECT branch_name,branch_id FROM branches where branch_status='1' ORDER BY branch_name ASC";
+        $result = $this->conn->query($sql);
+        return $result;
+    }
+    
+    
+    
+ 
 
 
 

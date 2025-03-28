@@ -57,6 +57,7 @@ $purchase_record = $db->purchase_record($invoice, $purchase_id);
                 <th class="border border-gray-400 p-2">Payment</th>
                 <th class="border border-gray-400 p-2">Capital</th>
                 <th class="border border-gray-400 p-2">Profit</th>
+                <th class="border border-gray-400 p-2">Remarks</th>
             </tr>
         </thead>
         <tbody>
@@ -71,6 +72,7 @@ $purchase_record = $db->purchase_record($invoice, $purchase_id);
                 <td class="border border-gray-400 p-2"><?= $item['purchase_mode_of_payment'] ?></td>
                 <td class="border border-gray-400 p-2">₱<?= number_format($total_capital, 2) ?></td>
                 <td class="border border-gray-400 p-2">₱<?= number_format($total_profit, 2) ?></td>
+                <td class="border border-gray-400 p-2"><?= ucfirst($item['purchase_remarks']) ?></td>
             </tr>
             <?php endforeach; ?>
         </tbody>

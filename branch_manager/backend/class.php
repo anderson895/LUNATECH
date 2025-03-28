@@ -509,7 +509,7 @@ class global_class extends db_connect
 
 
     public function fetch_all_stockRecord_paginated($search = "", $branch_id, $limit = 10, $offset = 0) {
-        $searchQuery = $search ? "AND (products.prod_name LIKE ? OR products.prod_code LIKE ?)" : "";
+        $searchQuery = $search ? "AND (products.prod_name LIKE ? OR stock.stock_in_date LIKE ?)" : "";
     
         $sql = "
             SELECT 
@@ -617,7 +617,7 @@ class global_class extends db_connect
     
 
 
-    public function addpurchase_record($paymentMethod, $total,$payment, $changeAmount, $branch_id, $user_id) {
+    public function addpurchase_record($paymentMethod, $total,$payment, $changeAmount, $branch_id,$remarks, $user_id) {
         // Generate a unique invoice number
         do {
             $purchase_invoice = 'INV-' . time() . rand(1000, 9999);
@@ -631,10 +631,10 @@ class global_class extends db_connect
     
         // Prepare the insert query
         $query = $this->conn->prepare(
-            "INSERT INTO `purchase_record` (`purchase_mode_of_payment`, `purchase_total_payment`,`purchase_payment`, `purchased_change`, `purchase_branch_id`, `purchase_user_id`, `purchase_invoice`) 
-            VALUES (?, ?, ?,?, ?, ?, ?)"
+            "INSERT INTO `purchase_record` (`purchase_mode_of_payment`, `purchase_total_payment`,`purchase_payment`, `purchased_change`, `purchase_branch_id`, `purchase_user_id`,`purchase_remarks`, `purchase_invoice`) 
+            VALUES (?, ?, ?,?, ?, ?, ?,?)"
         );
-        $query->bind_param("sdddiis", $paymentMethod, $total,$payment, $changeAmount, $branch_id, $user_id, $purchase_invoice);
+        $query->bind_param("sdddiiss", $paymentMethod, $total,$payment, $changeAmount, $branch_id, $user_id,$remarks, $purchase_invoice);
     
         if ($query->execute()) {
             return [
