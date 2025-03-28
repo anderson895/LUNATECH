@@ -21,7 +21,7 @@ $fetch_all_inventoryRecord = $db->fetch_all_stockRecord_paginated($search,$branc
 
 <?php if ($fetch_all_inventoryRecord->num_rows > 0): ?>
             <?php foreach ($fetch_all_inventoryRecord as $inv): ?>
-                <?php $formattedDate = date("d/m/Y", strtotime($inv['stock_in_date'])); ?>
+                <?php $formattedDate = date("Y-m-d", strtotime($inv['stock_in_date'])); ?>
                 <tr class="border-b hover:bg-gray-100 transition" data-stock-date="<?= htmlspecialchars($formattedDate) ?>">
                     <td class="p-3 text-center"><?= htmlspecialchars($formattedDate) ?></td>
                     <td class="p-3 text-center"><?= htmlspecialchars($inv['prod_name']) ?></td>
@@ -59,7 +59,7 @@ $fetch_all_inventoryRecord = $db->fetch_all_stockRecord_paginated($search,$branc
                 <?php 
                     $uniqueDates = [];
                     foreach ($fetch_all_inventoryRecord as $inv) {
-                        $formattedDate = date("d/m/Y", strtotime($inv['stock_in_date']));
+                        $formattedDate = date("Y-m-d", strtotime($inv['stock_in_date']));
                         $uniqueDates[$formattedDate] = true; // Store unique dates
                     }
                 ?>

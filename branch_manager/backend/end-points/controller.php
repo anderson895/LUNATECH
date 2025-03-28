@@ -76,8 +76,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $payment = htmlspecialchars(trim($_POST['payment']));
             $changeAmount = htmlspecialchars(trim($_POST['changeAmount']));
             $paymentMethod = htmlspecialchars(trim($_POST['paymentMethod']));
+            $remarks = htmlspecialchars(trim($_POST['remarks']));
             
-            $purchase_result = $db->addpurchase_record($paymentMethod, $total,$payment, $changeAmount, $branch_id, $user_id);
+            $purchase_result = $db->addpurchase_record($paymentMethod, $total,$payment, $changeAmount, $branch_id,$remarks, $user_id);
             
             if (isset($purchase_result['id']) && isset($purchase_result['invoice'])) { 
                 $purchase_id = $purchase_result['id'];

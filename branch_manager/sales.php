@@ -155,6 +155,16 @@ if(isset($On_Session[0]['branch_id'])){
             <input type="text" id="changeAmount" class="border border-gray-300 p-2 w-full rounded-md bg-gray-100" readonly>
         </div>
 
+
+
+        <div class="mb-3">
+            <label class="block text-gray-600 text-sm font-medium" for="remarks">Remarks:</label>
+            <textarea id="remarks" name="remarks" class="border border-gray-300 p-2 w-full rounded-md h-24"></textarea>
+        </div>
+
+
+
+
         <div class="flex justify-end space-x-2">
             <button id="confirmPurchase" class="bg-green-500 text-white p-2 rounded-md">Confirm</button>
             <button id="closeModal" class="bg-gray-500 text-white p-2 rounded-md">Cancel</button>
@@ -403,6 +413,7 @@ $(document).ready(function () {
     $("#confirmPurchase").click(function () {
         let totalBill = parseFloat($("#totalBill").val().replace(/[^\d.]/g, ''));
         let branch_id = $("#branch_id").val();
+        let remarks = $("#remarks").val();
         let payment = parseFloat($("#paymentAmount").val());
         let changeAmount = parseFloat($("#changeAmount").val().replace(/[^\d.]/g, ''));
         let paymentMethod = $("#paymentMethod").val();
@@ -438,6 +449,7 @@ $(document).ready(function () {
                 requestType: "CompletePurchase",
                 total: totalBill,
                 payment: payment,
+                remarks: remarks,
                 branch_id: branch_id,
                 changeAmount: changeAmount,
                 paymentMethod: paymentMethod,
