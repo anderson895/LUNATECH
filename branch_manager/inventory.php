@@ -28,9 +28,7 @@ if(isset($On_Session[0]['branch_id'])){
             <table class="w-full text-left border-collapse shadow-sm rounded-lg" id="inventoryTable">
                 <thead>
                     <tr class="bg-gray-100 text-gray-700 border-b">
-                        <th class="p-3 w-1/4 font-medium">Barcode</th>
-                        <th class="p-3 w-1/4 font-medium">Code</th>
-                        <th class="p-3 w-1/4 font-medium">Item</th>
+                        <th class="p-3 w-1/4 font-medium">Model</th>
                         <th class="p-3 w-1/4 font-medium">Current Stocks</th>
                         <th class="p-3 w-1/4 font-medium">Sold</th>
                         <th class="p-3 w-1/4 font-medium">Backjob</th>
@@ -110,26 +108,26 @@ if(isset($On_Session[0]['branch_id'])){
 
 
     </div>
-
-    
-
 </div>
+
+
+
 
 <!-- Stock List Table -->
 <div class="max-w-12xl mx-auto mt-8 bg-white shadow-lg rounded-lg p-6">
-    <h2 class="text-xl font-bold text-gray-700 mb-4">Stock List</h2>
+    <h2 class="text-xl font-bold text-gray-700 mb-4">Inventory Logs</h2>
     <input type="text" id="searchInputStocks" placeholder="Search item..." 
     class="border border-gray-300 p-2 rounded-md w-64 mb-3 focus:ring-2 focus:ring-blue-400">
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse shadow-sm rounded-lg" id="stockTable">
             <thead>
                 <tr class="bg-gray-100 text-gray-700 border-b">
-                    <th class="p-3 w-1/4 font-medium text-center">Stock ID</th>
-                    <th class="p-3 w-1/4 font-medium text-center">Date Added</th>
-                    <th class="p-3 w-1/4 font-medium text-center">Product Name</th>
-                    <th class="p-3 w-1/4 font-medium text-center">Current Stocks</th>
-                    <th class="p-3 w-1/4 font-medium text-center">Sold</th>
-                    <th class="p-3 w-1/4 font-medium text-center">Backjob</th>
+                   
+                    <th class="p-3 w-1/4 font-medium text-center">DATE ADDED</th>
+                    <th class="p-3 w-1/4 font-medium text-center">MODEL</th>
+                    <th class="p-3 w-1/4 font-medium text-center">CURRENT STOCKS</th>
+                    <th class="p-3 w-1/4 font-medium text-center">SOLD</th>
+                    <th class="p-3 w-1/4 font-medium text-center">BACKJOB</th>
                     <th class="p-3 w-1/4 font-medium text-center">Action</th>
                 </tr>
             </thead>
@@ -191,7 +189,7 @@ if(isset($On_Session[0]['branch_id'])){
     let selectedProduct = null;
 
     $('#inventoryTable').on('click', 'tr', function () {
-        let productCode = $(this).find('td').eq(1).text().trim(); 
+        let productCode = $(this).find('td').eq(0).text().trim(); 
 
         $('#stock_in_prod_code').val(productCode);
         selectedProduct = { code: productCode };
@@ -215,7 +213,7 @@ if(isset($On_Session[0]['branch_id'])){
                                         data-id='${item.prod_id}' 
                                         data-code='${item.prod_code}' 
                                         data-name='${item.prod_name}'>
-                                        ${item.prod_code} - ${item.prod_name}
+                                        ${item.prod_name}
                                       </div>`;
                     });
                     $("#productSuggestions").html(suggestions).show();
@@ -236,7 +234,7 @@ if(isset($On_Session[0]['branch_id'])){
         let selectedName = $(this).data("name");
         let selectedId = $(this).data("id");
 
-        $("#stock_in_prod_code").val(selectedCode);
+        $("#stock_in_prod_code").val(selectedName);
         $("#stock_in_prod_name").val(selectedName);
         $("#stock_in_prod_id").val(selectedId);
         $("#productSuggestions").hide();
@@ -252,7 +250,7 @@ if(isset($On_Session[0]['branch_id'])){
 
 // START CODE FOR FETCHING INVENTORY
 var currentPageInv = 1;
-var limit = 5;
+var limit = 100;
 
 function fetchInventory(page = 1) {
     var searchValue = $('#searchInputInv').val().toLowerCase();
@@ -287,8 +285,23 @@ setInterval(function () {
     fetchInventory(currentPageInv);
 }, 5000);
 
-// START CODE FOR FETCHING STOCKS
+
+
 var currentPageStocks = 1;
+var selectedDateFilter = "all"; // Store selected filter
+
+// Filter Function
+// $(".filter-btn").on("click", function () {
+$(document).on('click', '.filter-btn', function() {
+    selectedDateFilter = $(this).attr("data-date"); // Update selected date
+
+    if (selectedDateFilter === "all") {
+        $("tr[data-stock-date]").show(); // Show all rows
+    } else {
+        $("tr[data-stock-date]").hide(); // Hide all rows
+        $(`tr[data-stock-date='${selectedDateFilter}']`).show(); // Show only matching rows
+    }
+});
 
 function fetchStocks(page = 1) {
     var searchValue = $('#searchInputStocks').val().toLowerCase();
@@ -301,10 +314,17 @@ function fetchStocks(page = 1) {
             $('#stockTable tbody').html(data);
             currentPageStocks = page;
             updatePagination('stockPagination', page);
+
+            // Reapply the selected filter after refresh
+            if (selectedDateFilter !== "all") {
+                $("tr[data-stock-date]").hide(); // Hide all rows
+                $(`tr[data-stock-date='${selectedDateFilter}']`).show(); // Show only filtered rows
+            }
         }
     });
 }
 
+// Initial Fetch
 fetchStocks();
 
 // Pagination Click Event
@@ -318,10 +338,12 @@ $('#searchInputStocks').on('keyup', function () {
     fetchStocks(1);
 });
 
-// Auto-refresh
+// Auto-refresh (preserves filter)
 setInterval(function () {
     fetchStocks(currentPageStocks);
 }, 5000);
+
+
 
 // Function to update pagination buttons dynamically
 function updatePagination(containerId, currentPage) {
@@ -441,13 +463,24 @@ function updatePagination(containerId, currentPage) {
                 }
             },
             complete: function () {
-                $("#BtnUpdateStocks").prop("disabled", false).text("Add Record");
+                $("#BtnUpdateStocks").prop("disabled", false).text("Update Record");
             }
         });
     });
 
 
 });
+
+
+
+
+
+
+
+
+
+
+
 
 </script>
 

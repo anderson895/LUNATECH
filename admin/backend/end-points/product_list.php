@@ -19,8 +19,7 @@ if ($fetch_all_product->num_rows > 0) {
     foreach ($fetch_all_product as $product) {
         $output .= "<tr class='border-b'>
         <td class='p-2 text-center'><input type='checkbox' class='rowCheckbox' name='rowCheckbox[]'></td>
-        <td class='p-2'><img src='../barcodes/" . htmlspecialchars($product['prod_code']) . ".png'></td>
-        <td class='p-2'>" . htmlspecialchars($product['prod_code']) . "</td>
+        
         <td class='p-2'>" . htmlspecialchars($product['prod_name']) . "</td>
         <td class='p-2'>₱ " . htmlspecialchars(number_format($product['prod_capital'], 2, '.', ',')) . "</td>
         <td class='p-2'>₱ " . htmlspecialchars(number_format($product['prod_current_price'], 2, '.', ',')) . "</td>

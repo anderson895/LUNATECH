@@ -21,12 +21,9 @@ $total_pages = ceil($total_records / $limit);
 if ($fetch_all_inventoryRecord->num_rows > 0): ?>
     <?php foreach ($fetch_all_inventoryRecord as $inv): ?>
         <tr class="border-b hover:bg-gray-50 transition">
-            <td class='p-2'>
-                <img src='../barcodes/<?= htmlspecialchars($inv['prod_code']) ?>.png' onerror="this.onerror=null;this.src='../images/no-barcode.png';">
-            </td>
-            <td class='p-2'><?= htmlspecialchars($inv['prod_code']) ?></td>
+          
             <td class="p-4"><?= htmlspecialchars($inv['prod_name']) ?></td>
-            <td class="p-4"><?= htmlspecialchars($inv['total_qty']) ?></td>
+            <td class="p-4"><?= htmlspecialchars($inv['remaining_qty']) ?></td>
             <td class="p-4"><?= htmlspecialchars($inv['total_sold']) ?></td>
             <td class="p-4"><?= htmlspecialchars($inv['total_backjob']) ?></td>
             <td class="p-4">

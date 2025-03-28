@@ -29,9 +29,9 @@ if(isset($On_Session[0]['branch_id'])){
             <table class="w-full text-left border-collapse shadow-sm rounded-lg" id="inventoryTable">
                 <thead>
                     <tr class="bg-gray-100 text-gray-700 border-b">
-                        <th class="p-3 w-1/4 font-medium">Code</th>
                         <th class="p-3 w-1/4 font-medium">Model</th>
                         <th class="p-3 w-1/4 font-medium">Current Stocks</th>
+                        <th class="p-3 w-1/4 font-medium">Sold</th>
                         <th class="p-3 w-1/4 font-medium">Price</th>
                     </tr>
                 </thead>
@@ -186,7 +186,7 @@ $(document).ready(function () {
 
   
         let currentPage = 1;
-        let limit = 5;  
+        let limit = 100;  
 
         function fetchInventory(page = 1) {
             let searchValue = $('#searchInput').val().toLowerCase();

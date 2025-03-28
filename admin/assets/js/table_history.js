@@ -1,17 +1,16 @@
 $(document).ready(function () {
     let currentPage = 1;
-    const recordsPerPage = 10;
+    let selectedBranchId = ""; // Default: show all branches
+    const recordsPerPage = 100;
 
     function fetchHistory() {
         let searchQuery = $("#searchInput").val();
-
-       
+        
         $.ajax({
             url: 'backend/end-points/history_list.php',
             type: 'GET',
-            data: { search: searchQuery, page: currentPage, limit: recordsPerPage },
+            data: { search: searchQuery, branch_id: selectedBranchId, page: currentPage, limit: recordsPerPage },
             success: function (response) {
-                
                 let data;
                 try {
                     data = JSON.parse(response);
@@ -22,10 +21,9 @@ $(document).ready(function () {
 
                 $("#historyTable tbody").html(data.table);
                 updatePagination(data.totalPages);
-
             },
             error: function () {
-                console.error("Failed to fetch branch list.");
+                console.error("Failed to fetch history list.");
             }
         });
     }
@@ -33,6 +31,13 @@ $(document).ready(function () {
     // Search Filtering 
     $("#searchInput").on("keyup", function () {
         currentPage = 1;
+        fetchHistory();
+    });
+
+    // Handle Branch Click (Including "View All")
+    $(document).on("click", ".branch-filter", function () {
+        selectedBranchId = $(this).data("branch-id") || ""; // If empty, reset filter
+        currentPage = 1; // Reset to page 1
         fetchHistory();
     });
 
@@ -49,8 +54,6 @@ $(document).ready(function () {
         currentPage = $(this).data("page");
         fetchHistory();
     });
-
-   
 
     // Auto-refresh every 5 seconds
     setInterval(fetchHistory, 5000);

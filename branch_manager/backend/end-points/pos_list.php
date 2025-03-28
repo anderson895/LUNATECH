@@ -26,9 +26,9 @@ if ($fetch_all_inventoryRecord->num_rows > 0): ?>
        data-prod_code="<?=$inv['prod_code']?>" 
        data-prod_name="<?=$inv['prod_name']?>" 
        data-prod_current_price="<?=$inv['prod_current_price']?>">
-            <td class="p-4"><?=$inv['prod_code']?></td>
             <td class="p-4"><?=$inv['prod_name']?></td>
-            <td class="p-4"><?=$inv['total_qty']?></td>
+            <td class="p-4"><?=$inv['remaining_qty']?></td>
+            <td class="p-4"><?=$inv['total_sold']?></td>
             <td class="p-4">₱ <?=htmlspecialchars(number_format($inv['prod_current_price'], 2, '.', ','))?></td>    
        </tr>
     <?php endforeach; ?>
