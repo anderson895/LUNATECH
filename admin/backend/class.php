@@ -41,41 +41,58 @@ class global_class extends db_connect
 
 
 
-    public function search_all_history($search = "", $limit = 10, $offset = 0) {
-        $searchQuery = $search ? "WHERE AND (purchase_record.purchase_invoice LIKE ? OR purchase_record.purchase_date LIKE ?)" : "";
-        
+    public function search_all_history($search = "", $branch_id = 0, $limit = 10, $offset = 0) {
+        $whereClauses = [];
+        $params = [];
+        $paramTypes = "";
+    
+        if (!empty($search)) {
+            $whereClauses[] = "(purchase_record.purchase_invoice LIKE ? OR purchase_record.purchase_date LIKE ?)";
+            $searchTerm = "%$search%";
+            $params[] = &$searchTerm;
+            $params[] = &$searchTerm;
+            $paramTypes .= "ss";
+        }
+    
+        if ($branch_id > 0) {
+            $whereClauses[] = "branches.branch_id = ?";
+            $params[] = &$branch_id;
+            $paramTypes .= "i";
+        }
+    
+        $whereSql = !empty($whereClauses) ? "WHERE " . implode(" AND ", $whereClauses) : "";
+    
         $sql = "
-            SELECT 
-                purchase_record.*, 
-                purchase_record.*, 
-                purchase_item.*, 
-                user.user_fullname, 
-                branches.branch_name, 
+            SELECT purchase_record.*, branches.branch_name, 
                 SUM(purchase_item.item_price_sold) AS total_item_price_sold, 
                 SUM(purchase_item.item_price_capital) AS total_item_price_capital, 
                 (SUM(purchase_item.item_price_sold) - SUM(purchase_item.item_price_capital)) AS total_profit
             FROM purchase_record
-            LEFT JOIN user ON purchase_record.purchase_user_id = user.id
-            LEFT JOIN branches ON branches.branch_id = purchase_record.purchase_branch_id 
-            LEFT JOIN purchase_item ON purchase_item.item_purchase_id = purchase_record.purchase_id  
-            $searchQuery
-            GROUP BY purchase_record.purchase_id, user.user_fullname
+            LEFT JOIN branches ON branches.branch_id = purchase_record.purchase_branch_id
+            LEFT JOIN purchase_item ON purchase_item.item_purchase_id = purchase_record.purchase_id
+            $whereSql
+            GROUP BY purchase_record.purchase_id
             ORDER BY branches.branch_name ASC
-            LIMIT ? OFFSET ?
-        ";
+            LIMIT ? OFFSET ?";
     
         $stmt = $this->conn->prepare($sql);
+        $params[] = &$limit;
+        $params[] = &$offset;
+        $paramTypes .= "ii";
         
-        if ($search) {
-            $searchTerm = "%$search%";
-            $stmt->bind_param("ssii",$searchTerm, $searchTerm, $limit, $offset);
-        } else {
-            $stmt->bind_param("ii", $limit, $offset);
-        }
-    
+        $stmt->bind_param($paramTypes, ...$params);
         $stmt->execute();
         return $stmt->get_result();
     }
+    
+
+
+    public function get_all_branches() {
+        $sql = "SELECT branch_name,branch_id FROM branches where branch_status='1' ORDER BY branch_name ASC";
+        $result = $this->conn->query($sql);
+        return $result;
+    }
+    
     
     
     // Function to count total history records

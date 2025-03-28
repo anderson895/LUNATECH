@@ -41,8 +41,7 @@
                     <th class="p-3 text-center w-12">
                         <input type="checkbox" id="checkAll">
                     </th>
-                    <th class="p-3">Barcode</th>
-                    <th class="p-3">Code</th>
+                 
                     <th class="p-3">Model</th>
                     <th class="p-3">Capital </th>
                     <th class="p-3">Current Price </th>

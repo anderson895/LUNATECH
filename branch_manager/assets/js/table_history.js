@@ -1,6 +1,6 @@
 $(document).ready(function () {
     let currentPage = 1;
-    const recordsPerPage = 10;
+    const recordsPerPage = 100;
 
     function fetchHistory() {
         let searchQuery = $("#searchInput").val();
