@@ -3,23 +3,3 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}\.php -f
 RewriteRule ^(.*)$ $1.php [L]
 
-# Prevent direct access to PHP files (except index.php)
-<FilesMatch "\.(php)$">
-    Order Allow,Deny
-    Deny from all
-</FilesMatch>
-
-# Block access to sensitive files
-<Files "config.php">
-    Order Allow,Deny
-    Deny from all
-</Files>
-
-# Disable directory listing
-Options -Indexes
-
-# Prevent common exploits
-RewriteCond %{QUERY_STRING} base64_encode[^(]*\([^)]*\) [OR]
-RewriteCond %{QUERY_STRING} (\.\./|\.\.) [NC,OR]
-RewriteCond %{REQUEST_URI} ^.*(phpmyadmin|admin|backup|database|dump|config|phpinfo).* [NC]
-RewriteRule ^(.*)$ - [F,L]
