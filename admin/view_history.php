@@ -96,7 +96,7 @@ $(document).ready(function () {
             ["Date: ", "<?= $purchase_record[0]['purchase_date'] ?>"],
             ["Branch Manager: ", "<?= ucfirst($purchase_record[0]['user_fullname']) ?>"],
             [""], // Empty row before table
-            ["Product", "Price Sold", "Payment", "Capital", "Profit"]
+            ["Model", "Price Sold", "Payment", "Capital", "Profit","Remarks"]
         ];
 
         // Append table data
