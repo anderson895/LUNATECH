@@ -52,7 +52,7 @@
     </div>
 
     <!-- Sales Chart -->
-    <div id="sales_chart"></div> <!-- ✅ Ensure this exists -->
+    <div id="sales_chart"></div>
 </div>
 
 
