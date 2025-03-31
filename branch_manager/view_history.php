@@ -92,7 +92,7 @@ $(document).ready(function () {
             ["Date: ", "<?= $purchase_record[0]['purchase_date'] ?>"],
             ["Branch Manager: ", "<?= ucfirst($purchase_record[0]['user_fullname']) ?>"],
             [""], // Empty row before table
-            ["Product", "Price Sold", "Payment", "Remarks", "Profit"]
+            ["Product", "Price Sold", "Payment", "Remarks"]
         ];
 
         // Append table data
@@ -143,8 +143,7 @@ $(document).ready(function () {
             { wch: 20 }, // Product
             { wch: 15 }, // Price Sold
             { wch: 15 }, // Payment
-            { wch: 15 }, // Capital
-            { wch: 15 }  // Profit
+            { wch: 15 }  // Remarks
         ];
 
         // Append sheet to workbook
