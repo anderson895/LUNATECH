@@ -2,9 +2,9 @@
 include('../class.php');
 $db = new global_class();
 
+$filterType=$_GET['filterType'];
 
-
-$orders = $db->getSalesAllBranches();
+$orders = $db->getSalesAllBranches($filterType);
 
     
    
