@@ -287,7 +287,7 @@ $('.togglerUpdateUserAdmin').click(function (e) {
     $('#updateUserModal').fadeIn();
   });  
 
-  $('.UpdateBranchModalClose').click(function (e) { 
+  $('.togglerUpdateUserClose').click(function (e) { 
     e.preventDefault();
     $('#updateUserModal').fadeOut();
   });  
