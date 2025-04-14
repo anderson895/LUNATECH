@@ -137,9 +137,12 @@ class global_class extends db_connect
 {
     date_default_timezone_set('Asia/Manila');
     $getDateToday = date('Y-m-d');
+    $currentYear = date('Y');
+    $currentMonth = date('m');
 
     $filterType = in_array($filterType, ['daily', 'monthly']) ? $filterType : 'monthly';
 
+    // Fetch branches
     $queryBranches = "SELECT branch_id, branch_name FROM branches WHERE branch_status = '1'";
     $resultBranches = $this->conn->query($queryBranches);
 
@@ -150,36 +153,38 @@ class global_class extends db_connect
         return;
     }
 
+    // Setup time periods
     if ($filterType === 'monthly') {
         $timePeriods = [
             'January', 'February', 'March', 'April', 'May', 'June', 
             'July', 'August', 'September', 'October', 'November', 'December'
         ];
     } else {
-        $daysInMonth = cal_days_in_month(CAL_GREGORIAN, date('m'), date('Y'));
+        $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $currentMonth, $currentYear);
         $timePeriods = array_map('strval', range(1, $daysInMonth));
     }
 
+    // Initialize sales data
     $salesData = [];
     while ($branch = $resultBranches->fetch_assoc()) {
         $salesData[$branch['branch_name']] = array_fill_keys($timePeriods, ['products' => [], 'total_sales' => 0]);
     }
 
+    // Product-level sales
     $querySales = "
         SELECT 
             pr.purchase_branch_id, 
             b.branch_name, 
             " . ($filterType === 'monthly' ? "MONTH(CONVERT_TZ(pr.purchase_date, '+00:00', '+08:00'))" : "DAY(CONVERT_TZ(pr.purchase_date, '+00:00', '+08:00'))") . " AS order_period, 
             COALESCE(p.prod_name, 'Unknown Product') AS prod_name,
-            CAST(SUM(pi.item_price_sold * pi.item_qty) AS DECIMAL(10,2)) AS total_product_sales,
-            CAST(SUM(pr.purchase_total_payment) AS DECIMAL(10,2)) AS total_sales
+            CAST(SUM(pi.item_price_sold * pi.item_qty) AS DECIMAL(10,2)) AS total_product_sales
         FROM purchase_record pr
         LEFT JOIN branches b ON b.branch_id = pr.purchase_branch_id
         LEFT JOIN purchase_item pi ON pi.item_purchase_id = pr.purchase_id
         LEFT JOIN products p ON p.prod_id = pi.item_prod_id
-        WHERE YEAR(CONVERT_TZ(pr.purchase_date, '+00:00', '+08:00')) = YEAR(NOW()) 
-          AND b.branch_status = '1' 
-          " . ($filterType === 'daily' ? "AND DATE(CONVERT_TZ(pr.purchase_date, '+00:00', '+08:00')) = '$getDateToday'" : "") . "
+        WHERE YEAR(CONVERT_TZ(pr.purchase_date, '+00:00', '+08:00')) = $currentYear
+          " . ($filterType === 'daily' ? "AND MONTH(CONVERT_TZ(pr.purchase_date, '+00:00', '+08:00')) = $currentMonth" : "") . "
+          AND b.branch_status = '1'
         GROUP BY pr.purchase_branch_id, b.branch_name, order_period, p.prod_name
         ORDER BY pr.purchase_branch_id, order_period
     ";
@@ -187,20 +192,50 @@ class global_class extends db_connect
     $resultSales = $this->conn->query($querySales);
 
     if (!$resultSales) {
-        error_log("❌ DB Error: " . $this->conn->error);
+        error_log("❌ DB Error (sales): " . $this->conn->error);
         http_response_code(500);
-        echo json_encode(['error' => 'Failed to retrieve sales data']);
+        echo json_encode(['error' => 'Failed to retrieve product sales']);
         return;
     }
 
     while ($row = $resultSales->fetch_assoc()) {
         $branchName = $row['branch_name'];
         $period = ($filterType === 'monthly') ? $timePeriods[$row['order_period'] - 1] : strval($row['order_period']);
-
         $salesData[$branchName][$period]['products'][$row['prod_name']] = (float) $row['total_product_sales'];
-        $salesData[$branchName][$period]['total_sales'] += (float) $row['total_sales'];
     }
 
+    // Branch total sales
+    $queryTotals = "
+        SELECT 
+            pr.purchase_branch_id,
+            b.branch_name,
+            " . ($filterType === 'monthly' ? "MONTH(CONVERT_TZ(pr.purchase_date, '+00:00', '+08:00'))" : "DAY(CONVERT_TZ(pr.purchase_date, '+00:00', '+08:00'))") . " AS order_period,
+            CAST(SUM(pr.purchase_total_payment) AS DECIMAL(10,2)) AS total_sales
+        FROM purchase_record pr
+        LEFT JOIN branches b ON b.branch_id = pr.purchase_branch_id
+        WHERE YEAR(CONVERT_TZ(pr.purchase_date, '+00:00', '+08:00')) = $currentYear
+          " . ($filterType === 'daily' ? "AND MONTH(CONVERT_TZ(pr.purchase_date, '+00:00', '+08:00')) = $currentMonth" : "") . "
+          AND b.branch_status = '1'
+        GROUP BY pr.purchase_branch_id, b.branch_name, order_period
+        ORDER BY pr.purchase_branch_id, order_period
+    ";
+
+    $resultTotals = $this->conn->query($queryTotals);
+
+    if (!$resultTotals) {
+        error_log("❌ DB Error (totals): " . $this->conn->error);
+        http_response_code(500);
+        echo json_encode(['error' => 'Failed to retrieve total sales']);
+        return;
+    }
+
+    while ($row = $resultTotals->fetch_assoc()) {
+        $branchName = $row['branch_name'];
+        $period = ($filterType === 'monthly') ? $timePeriods[$row['order_period'] - 1] : strval($row['order_period']);
+        $salesData[$branchName][$period]['total_sales'] = (float) $row['total_sales'];
+    }
+
+    // Return result
     header('Content-Type: application/json');
     echo json_encode([
         'filterType' => $filterType,
@@ -208,6 +243,7 @@ class global_class extends db_connect
         'dateChecked' => $getDateToday
     ]);
 }
+
 
 
     
