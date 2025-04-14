@@ -20,18 +20,12 @@ $total_pages = ceil($total_records / $limit);
 
 if ($fetch_all_inventoryRecord->num_rows > 0): ?>
     <?php foreach ($fetch_all_inventoryRecord as $inv): ?>
-        <tr class="border-b hover:bg-gray-50 transition">
-          
+        <tr class="cursor-pointer border-b bg-white hover:bg-gray-50 hover:shadow-md hover:-translate-y-[2px] transition duration-200 ease-in-out">
             <td class="p-4"><?= htmlspecialchars($inv['prod_name']) ?></td>
             <td class="p-4"><?= htmlspecialchars($inv['remaining_qty']) ?></td>
             <td class="p-4"><?= htmlspecialchars($inv['total_sold']) ?></td>
             <td class="p-4"><?= htmlspecialchars($inv['total_backjob']) ?></td>
             <td class="p-4">
-
-                
-
-
-
                 <button class="remove-stock-inv bg-red-500 text-white px-3 py-1 rounded" 
                         data-id="<?= htmlspecialchars($inv['stock_in_id']) ?>"
                         data-table="stock"
@@ -40,6 +34,7 @@ if ($fetch_all_inventoryRecord->num_rows > 0): ?>
                 </button>
             </td>
         </tr>
+
     <?php endforeach; ?>
 <?php else: ?>
     <tr>
