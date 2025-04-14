@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 26, 2025 at 04:22 AM
+-- Generation Time: Apr 14, 2025 at 06:13 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -116,7 +116,9 @@ INSERT INTO `purchase_item` (`item_id`, `item_purchase_id`, `item_prod_id`, `ite
 (74, 54, 68, 3, 13501.00, 12301.00),
 (75, 54, 68, 2, 14000.00, 12301.00),
 (76, 55, 69, 2, 2700.00, 2500.00),
-(77, 56, 68, 2, 13501.00, 12301.00);
+(77, 56, 68, 2, 13501.00, 12301.00),
+(78, 57, 68, 1, 13501.00, 12301.00),
+(79, 57, 69, 2, 2700.00, 2500.00);
 
 -- --------------------------------------------------------
 
@@ -133,17 +135,19 @@ CREATE TABLE `purchase_record` (
   `purchased_change` decimal(10,2) DEFAULT NULL,
   `purchase_branch_id` int(11) NOT NULL,
   `purchase_user_id` int(11) NOT NULL,
-  `purchase_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `purchase_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `purchase_remarks` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `purchase_record`
 --
 
-INSERT INTO `purchase_record` (`purchase_id`, `purchase_invoice`, `purchase_mode_of_payment`, `purchase_total_payment`, `purchase_payment`, `purchased_change`, `purchase_branch_id`, `purchase_user_id`, `purchase_date`) VALUES
-(54, 'INV-17429504519815', 'cash', 68503, 68600.00, 97.00, 19, 6, '2025-03-26 00:54:11'),
-(55, 'INV-17429528304080', 'cash', 5400, 5400.00, 0.00, 19, 6, '2025-03-26 01:33:50'),
-(56, 'INV-17429588101030', 'cash', 27002, 27002.00, 0.00, 18, 10, '2025-03-26 03:13:30');
+INSERT INTO `purchase_record` (`purchase_id`, `purchase_invoice`, `purchase_mode_of_payment`, `purchase_total_payment`, `purchase_payment`, `purchased_change`, `purchase_branch_id`, `purchase_user_id`, `purchase_date`, `purchase_remarks`) VALUES
+(54, 'INV-17429504519815', 'cash', 68503, 68600.00, 97.00, 19, 6, '2025-03-26 00:54:11', ''),
+(55, 'INV-17429528304080', 'cash', 5400, 5400.00, 0.00, 19, 6, '2025-03-26 01:33:50', ''),
+(56, 'INV-17429588101030', 'cash', 27002, 27002.00, 0.00, 18, 10, '2025-03-26 03:13:30', ''),
+(57, 'INV-17446039897497', 'cash', 18901, 20000.00, 1099.00, 18, 10, '2025-04-14 04:13:09', '');
 
 -- --------------------------------------------------------
 
@@ -170,7 +174,12 @@ INSERT INTO `stock` (`stock_in_id`, `stock_in_branch_id`, `stock_in_prod_id`, `s
 (91, 19, 68, 0, 0, 0, '2025-03-26 00:50:00', 1),
 (92, 19, 68, 80, 0, 0, '2025-03-26 01:33:26', 1),
 (93, 19, 69, 8, 0, 0, '2025-03-26 01:33:31', 1),
-(94, 18, 68, 8, 0, 0, '2025-03-26 03:13:21', 1);
+(94, 18, 68, 8, 0, 0, '2025-03-26 03:13:21', 1),
+(95, 18, 68, 0, 3, 0, '2025-04-14 03:41:42', 1),
+(96, 18, 69, 10, 0, 0, '2025-04-14 03:46:07', 1),
+(97, 18, 69, 0, 1, 0, '2025-04-14 03:46:16', 1),
+(98, 18, 68, 0, 1, 0, '2025-04-14 04:13:09', 1),
+(99, 18, 69, 0, 2, 0, '2025-04-14 04:13:09', 1);
 
 -- --------------------------------------------------------
 
@@ -270,7 +279,7 @@ ALTER TABLE `branches`
 -- AUTO_INCREMENT for table `pos_cart`
 --
 ALTER TABLE `pos_cart`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=241;
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=243;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -282,19 +291,19 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `purchase_item`
 --
 ALTER TABLE `purchase_item`
-  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
 
 --
 -- AUTO_INCREMENT for table `purchase_record`
 --
 ALTER TABLE `purchase_record`
-  MODIFY `purchase_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `purchase_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT for table `stock`
 --
 ALTER TABLE `stock`
-  MODIFY `stock_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
+  MODIFY `stock_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100;
 
 --
 -- AUTO_INCREMENT for table `user`
