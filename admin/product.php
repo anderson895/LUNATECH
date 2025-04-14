@@ -128,10 +128,9 @@
 </div>
 
 
-
-<!-- Modal for Adding Promo -->
+<!-- Modal for Adding Product -->
 <div id="addProductModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center" style="display:none;">
-    <div class="bg-white shadow-md rounded-lg p-6 max-w-md mx-auto">
+    <div class="bg-white shadow-md rounded-lg p-6 mx-auto" style="width: 350px;">
 
                 <h3 class="text-xl font-semibold text-gray-900 mb-4">Add New Product</h3>
                 
@@ -149,7 +148,6 @@
                             >
                     </div>
 
-
                      <!-- Product Capital Price -->
                     <div>
                         <label for="new_product_capital" class="block text-sm font-medium text-gray-700">Capital Price</label>
@@ -157,15 +155,12 @@
                             class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                     </div>
 
-
                     <!-- Product Current Price -->
                     <div>
                         <label for="new_product_current" class="block text-sm font-medium text-gray-700">Current Price</label>
                         <input type="text" id="new_product_current" name="new_product_current" 
                             class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                     </div>
-
-                   
 
                     <!-- Buttons -->
                     <div class="flex justify-end space-x-2">
@@ -177,6 +172,7 @@
 
     </div>
 </div>
+
 
 
 
