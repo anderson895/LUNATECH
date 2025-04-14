@@ -152,50 +152,49 @@ class global_class extends db_connect
 
 
     public function getDataAnalytics($branch_id)
-{
-    // Prepare the SQL query using parameterized queries
-    $query = "
-        SELECT 
-            (SELECT SUM(stock_in_qty) FROM `stock` WHERE stock_in_status='1' AND stock_in_branch_id=?) AS stockCount,
-            (SELECT COUNT(*) FROM `purchase_record` WHERE purchase_branch_id=?) AS purchase_record_count,
-            (
-                SELECT products.prod_name
-                FROM `purchase_item` 
-                LEFT JOIN purchase_record ON purchase_record.purchase_id = purchase_item.item_purchase_id 
-                LEFT JOIN products ON products.prod_id = purchase_item.item_prod_id 
-                WHERE purchase_record.purchase_branch_id = ? 
-                GROUP BY item_prod_id, products.prod_name
-                ORDER BY COUNT(item_prod_id) DESC 
-                LIMIT 1
-            ) AS most_purchased_item
-    ";
-
-    // Prepare the statement
-    if ($stmt = $this->conn->prepare($query)) {
-        // Bind parameters
-        $stmt->bind_param("iii", $branch_id, $branch_id, $branch_id);
-
-        // Execute the statement
-        $stmt->execute();
-
-        // Get the result
-        $result = $stmt->get_result();
-
-        if ($result) {
-            // Fetch the result and return as JSON
-            $row = $result->fetch_assoc();
-            echo json_encode($row);
+    {
+        $query = "
+            SELECT 
+                (
+                    SELECT SUM(stock_in_qty - stock_in_sold - stock_in_backjob) 
+                    FROM `stock` 
+                    WHERE stock_in_status='1' AND stock_in_branch_id=?
+                ) AS stockCount,
+                (
+                    SELECT COUNT(*) 
+                    FROM `purchase_record` 
+                    WHERE purchase_branch_id=?
+                ) AS purchase_record_count,
+                (
+                    SELECT products.prod_name
+                    FROM `purchase_item` 
+                    LEFT JOIN purchase_record ON purchase_record.purchase_id = purchase_item.item_purchase_id 
+                    LEFT JOIN products ON products.prod_id = purchase_item.item_prod_id 
+                    WHERE purchase_record.purchase_branch_id = ? 
+                    GROUP BY item_prod_id, products.prod_name
+                    ORDER BY COUNT(item_prod_id) DESC 
+                    LIMIT 1
+                ) AS most_purchased_item
+        ";
+    
+        if ($stmt = $this->conn->prepare($query)) {
+            $stmt->bind_param("iii", $branch_id, $branch_id, $branch_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+    
+            if ($result) {
+                $row = $result->fetch_assoc();
+                echo json_encode($row);
+            } else {
+                echo json_encode(['error' => 'Failed to retrieve counts']);
+            }
+    
+            $stmt->close();
         } else {
-            echo json_encode(['error' => 'Failed to retrieve counts']);
+            echo json_encode(['error' => 'Query preparation failed', 'sql_error' => $this->conn->error]);
         }
-
-        // Close the statement
-        $stmt->close();
-    } else {
-        // SQL error handling
-        echo json_encode(['error' => 'Query preparation failed', 'sql_error' => $this->conn->error]);
     }
-}
+    
 
     
     
