@@ -520,11 +520,12 @@ class global_class extends db_connect
                 stock.stock_in_date,
                 stock.stock_in_qty,
                 stock.stock_in_sold,
-                stock.stock_in_backjob
+                stock.stock_in_backjob,
+                (stock.stock_in_qty - (stock.stock_in_sold + stock.stock_in_backjob)) AS remaining_qty
             FROM stock
             LEFT JOIN products ON products.prod_id = stock.stock_in_prod_id
             WHERE stock.stock_in_status = '1' AND stock.stock_in_branch_id = ? $searchQuery
-            ORDER BY stock.stock_in_date DESC  
+            ORDER BY stock.stock_in_date DESC
             LIMIT ? OFFSET ?
         ";
     
@@ -544,6 +545,8 @@ class global_class extends db_connect
         $stmt->execute();
         return $stmt->get_result();
     }
+    
+    
     
 
 
