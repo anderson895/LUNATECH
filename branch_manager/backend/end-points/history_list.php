@@ -78,7 +78,7 @@ if ($search_all_history && $search_all_history->num_rows > 0) {
         $count++;
     }
 } else {
-    $output .= "<tr><td colspan='5' class='p-4 text-center text-gray-500'>No record found.</td></tr>";
+    $output .= "<tr><td colspan='6' class='p-4 text-center text-gray-500'>No record found.</td></tr>";
 }
 
 echo json_encode(["table" => $output, "totalPages" => $totalPages]);
