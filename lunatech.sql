@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 14, 2025 at 06:13 AM
+-- Generation Time: May 01, 2025 at 08:57 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -90,8 +90,8 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`prod_id`, `prod_code`, `prod_name`, `prod_capital`, `prod_current_price`, `prod_added_by`, `prod_date_added`, `prod_status`) VALUES
-(68, 'P76190', 'IP 11 128', 12301.00, 13501.00, 1, '2025-03-26 01:42:15', 1),
-(69, 'P50538', 'IP 12 256', 2500.00, 2700.00, 1, '2025-03-26 01:15:49', 1);
+(68, 'P76190', 'IP 11 128', 12301.00, 13501.00, 1, '2025-04-14 04:36:52', 1),
+(69, 'P50538', 'IP 12 256', 2500.00, 2700.00, 1, '2025-04-14 04:36:53', 1);
 
 -- --------------------------------------------------------
 
@@ -113,12 +113,8 @@ CREATE TABLE `purchase_item` (
 --
 
 INSERT INTO `purchase_item` (`item_id`, `item_purchase_id`, `item_prod_id`, `item_qty`, `item_price_sold`, `item_price_capital`) VALUES
-(74, 54, 68, 3, 13501.00, 12301.00),
-(75, 54, 68, 2, 14000.00, 12301.00),
-(76, 55, 69, 2, 2700.00, 2500.00),
-(77, 56, 68, 2, 13501.00, 12301.00),
-(78, 57, 68, 1, 13501.00, 12301.00),
-(79, 57, 69, 2, 2700.00, 2500.00);
+(84, 61, 68, 1, 13501.00, 12301.00),
+(85, 61, 69, 1, 2700.00, 2500.00);
 
 -- --------------------------------------------------------
 
@@ -136,18 +132,16 @@ CREATE TABLE `purchase_record` (
   `purchase_branch_id` int(11) NOT NULL,
   `purchase_user_id` int(11) NOT NULL,
   `purchase_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `purchase_remarks` text NOT NULL
+  `purchase_remarks` text NOT NULL,
+  `purchase_display_status` int(11) NOT NULL DEFAULT 1 COMMENT '0=archived,1=exist'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `purchase_record`
 --
 
-INSERT INTO `purchase_record` (`purchase_id`, `purchase_invoice`, `purchase_mode_of_payment`, `purchase_total_payment`, `purchase_payment`, `purchased_change`, `purchase_branch_id`, `purchase_user_id`, `purchase_date`, `purchase_remarks`) VALUES
-(54, 'INV-17429504519815', 'cash', 68503, 68600.00, 97.00, 19, 6, '2025-03-26 00:54:11', ''),
-(55, 'INV-17429528304080', 'cash', 5400, 5400.00, 0.00, 19, 6, '2025-03-26 01:33:50', ''),
-(56, 'INV-17429588101030', 'cash', 27002, 27002.00, 0.00, 18, 10, '2025-03-26 03:13:30', ''),
-(57, 'INV-17446039897497', 'cash', 18901, 20000.00, 1099.00, 18, 10, '2025-04-14 04:13:09', '');
+INSERT INTO `purchase_record` (`purchase_id`, `purchase_invoice`, `purchase_mode_of_payment`, `purchase_total_payment`, `purchase_payment`, `purchased_change`, `purchase_branch_id`, `purchase_user_id`, `purchase_date`, `purchase_remarks`, `purchase_display_status`) VALUES
+(61, 'INV-17460825106967', 'cash', 16201, 16500.00, 299.00, 19, 6, '2025-05-01 06:55:17', '', 0);
 
 -- --------------------------------------------------------
 
@@ -172,14 +166,22 @@ CREATE TABLE `stock` (
 
 INSERT INTO `stock` (`stock_in_id`, `stock_in_branch_id`, `stock_in_prod_id`, `stock_in_qty`, `stock_in_sold`, `stock_in_backjob`, `stock_in_date`, `stock_in_status`) VALUES
 (91, 19, 68, 0, 0, 0, '2025-03-26 00:50:00', 1),
-(92, 19, 68, 80, 0, 0, '2025-03-26 01:33:26', 1),
+(92, 19, 68, 80, 2, 0, '2025-05-01 05:31:37', 1),
 (93, 19, 69, 8, 0, 0, '2025-03-26 01:33:31', 1),
 (94, 18, 68, 8, 0, 0, '2025-03-26 03:13:21', 1),
 (95, 18, 68, 0, 3, 0, '2025-04-14 03:41:42', 1),
 (96, 18, 69, 10, 0, 0, '2025-04-14 03:46:07', 1),
 (97, 18, 69, 0, 1, 0, '2025-04-14 03:46:16', 1),
 (98, 18, 68, 0, 1, 0, '2025-04-14 04:13:09', 1),
-(99, 18, 69, 0, 2, 0, '2025-04-14 04:13:09', 1);
+(99, 18, 69, 0, 2, 0, '2025-04-14 04:13:09', 1),
+(100, 19, 68, 0, 1, 0, '2025-04-14 04:28:09', 1),
+(101, 19, 68, 0, 2, 0, '2025-04-14 04:28:25', 1),
+(102, 19, 69, 0, 1, 0, '2025-04-14 04:28:25', 1),
+(103, 19, 69, 2, 0, 0, '2025-05-01 05:42:46', 1),
+(104, 19, 69, 0, 5, 0, '2025-05-01 06:04:43', 1),
+(105, 19, 68, 0, 0, 5, '2025-05-01 06:10:38', 1),
+(106, 19, 68, 0, 1, 0, '2025-05-01 06:55:10', 1),
+(107, 19, 69, 0, 1, 0, '2025-05-01 06:55:10', 1);
 
 -- --------------------------------------------------------
 
@@ -279,7 +281,7 @@ ALTER TABLE `branches`
 -- AUTO_INCREMENT for table `pos_cart`
 --
 ALTER TABLE `pos_cart`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=243;
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=254;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -291,19 +293,19 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `purchase_item`
 --
 ALTER TABLE `purchase_item`
-  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
 
 --
 -- AUTO_INCREMENT for table `purchase_record`
 --
 ALTER TABLE `purchase_record`
-  MODIFY `purchase_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+  MODIFY `purchase_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT for table `stock`
 --
 ALTER TABLE `stock`
-  MODIFY `stock_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100;
+  MODIFY `stock_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=108;
 
 --
 -- AUTO_INCREMENT for table `user`
