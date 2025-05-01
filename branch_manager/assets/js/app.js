@@ -20,8 +20,8 @@
                     success: function(response) {
                         if (response.status === 200) {
                             Swal.fire(
-                                'Deleted!',
-                                response.message,  // Show the success message from the response
+                                'Moved to archive!',
+                                response.message,  // Display the success message from the response
                                 'success'
                             ).then(() => {
                                 location.reload(); 
@@ -29,7 +29,7 @@
                         } else {
                             Swal.fire(
                                 'Error!',
-                                response.message,  // Show the error message from the response
+                                response.message,  // Display the error message from the response
                                 'error'
                             );
                         }
@@ -37,10 +37,11 @@
                     error: function() {
                         Swal.fire(
                             'Error!',
-                            'There was a problem with the request.',
+                            'There was a problem processing the request.',
                             'error'
                         );
                     }
+                    
                 });
             }
         });
