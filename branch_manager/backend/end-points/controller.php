@@ -22,13 +22,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode(["status" => 400, "message" => $result]);
             }
         }else if ($_POST['requestType'] == 'updateInventoryRecord') {
+            
+            session_start();
+            $id = intval($_SESSION['id']);
+            $On_Session = $db->check_account($id);
+            $branch_id = $On_Session[0]['branch_id'];
+            
             $stock_in_id = htmlspecialchars(trim($_POST['stock_in_id']));
-            $branch_id = htmlspecialchars(trim($_POST['branch_id']));
             $stock_in_qty = htmlspecialchars(trim($_POST['stock_in_qty']));
             $stock_in_sold = htmlspecialchars(trim($_POST['stock_in_sold']));
             $stock_in_backjob = htmlspecialchars(trim($_POST['stock_in_backjob']));
             
-            $result = $db->updateInventoryRecord($stock_in_id,$branch_id, $stock_in_qty, $stock_in_sold, $stock_in_backjob);
+            $change_details = array(
+                "stock_in_id" => $stock_in_id,
+                "user_id" => $id,
+                "branch_id" => $branch_id,
+                "stock_in_qty" => $stock_in_qty,
+                "stock_in_sold" => $stock_in_sold,
+                "stock_in_backjob" => $stock_in_backjob,
+                "date_request" => date("Y-m-d") 
+            );
+            
+            
+            
+
+            
+            $result = $db->updateInventoryRecord($stock_in_id,$change_details);
             
             if ($result == "success") {
                 echo json_encode(["status" => 200, "message" => "Stocks Update successfully added"]);
@@ -115,11 +134,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             
             
-        }else if($_POST['requestType'] =='GenericDelete'){
+        }else if($_POST['requestType'] =='RequestToDeleteStocks'){
 
-            // echo "<pre>";
-            // print_r($_POST);
-            // echo "</pre>";
+            session_start();
+            $id = intval($_SESSION['id']);
+            $On_Session = $db->check_account($id);
+            $branch_id = $On_Session[0]['branch_id'];
+
+            $stock_in_id = $_POST['id'];
+
+            $change_details = array(
+                "stock_in_id" => $stock_in_id,
+                "user_id" => $id,
+                "branch_id " => $branch_id,
+                "date_request" => date("Y-m-d") 
+                
+            );
+            
+
+            $table = $_POST['table'];
+            $id_name = $_POST['id_name'];
+
+            
+          
+            $result = $db->RequestToDeleteStocks($stock_in_id,$table,$id_name,$change_details);
+    
+            if ($result == "success") {
+                echo json_encode(["status" => 200, "message" => "Delete Successfully"]);
+            } else {
+                echo json_encode(["status" => 400, "message" => $result]);
+            }
+            
+        }else if($_POST['requestType'] =='GenericDelete'){
             $id = $_POST['id'];
             $table = $_POST['table'];
             $id_name = $_POST['id_name'];

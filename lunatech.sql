@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 01, 2025 at 08:57 AM
+-- Generation Time: May 01, 2025 at 02:54 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -114,7 +114,8 @@ CREATE TABLE `purchase_item` (
 
 INSERT INTO `purchase_item` (`item_id`, `item_purchase_id`, `item_prod_id`, `item_qty`, `item_price_sold`, `item_price_capital`) VALUES
 (84, 61, 68, 1, 13501.00, 12301.00),
-(85, 61, 69, 1, 2700.00, 2500.00);
+(85, 61, 69, 1, 2700.00, 2500.00),
+(86, 62, 68, 1, 13501.00, 12301.00);
 
 -- --------------------------------------------------------
 
@@ -141,7 +142,8 @@ CREATE TABLE `purchase_record` (
 --
 
 INSERT INTO `purchase_record` (`purchase_id`, `purchase_invoice`, `purchase_mode_of_payment`, `purchase_total_payment`, `purchase_payment`, `purchased_change`, `purchase_branch_id`, `purchase_user_id`, `purchase_date`, `purchase_remarks`, `purchase_display_status`) VALUES
-(61, 'INV-17460825106967', 'cash', 16201, 16500.00, 299.00, 19, 6, '2025-05-01 06:55:17', '', 0);
+(61, 'INV-17460825106967', 'cash', 16201, 16500.00, 299.00, 19, 6, '2025-05-01 06:55:17', '', 0),
+(62, 'INV-17461032245688', 'cash', 13501, 13501.00, 0.00, 23, 11, '2025-05-01 12:40:24', '', 1);
 
 -- --------------------------------------------------------
 
@@ -157,6 +159,8 @@ CREATE TABLE `stock` (
   `stock_in_sold` int(11) NOT NULL,
   `stock_in_backjob` int(11) NOT NULL,
   `stock_in_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `stock_in_action_approval` varchar(60) DEFAULT NULL,
+  `stock_in_request_changes` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `stock_in_status` int(11) NOT NULL DEFAULT 1 COMMENT '0=deleted,1=exist'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -164,24 +168,28 @@ CREATE TABLE `stock` (
 -- Dumping data for table `stock`
 --
 
-INSERT INTO `stock` (`stock_in_id`, `stock_in_branch_id`, `stock_in_prod_id`, `stock_in_qty`, `stock_in_sold`, `stock_in_backjob`, `stock_in_date`, `stock_in_status`) VALUES
-(91, 19, 68, 0, 0, 0, '2025-03-26 00:50:00', 1),
-(92, 19, 68, 80, 2, 0, '2025-05-01 05:31:37', 1),
-(93, 19, 69, 8, 0, 0, '2025-03-26 01:33:31', 1),
-(94, 18, 68, 8, 0, 0, '2025-03-26 03:13:21', 1),
-(95, 18, 68, 0, 3, 0, '2025-04-14 03:41:42', 1),
-(96, 18, 69, 10, 0, 0, '2025-04-14 03:46:07', 1),
-(97, 18, 69, 0, 1, 0, '2025-04-14 03:46:16', 1),
-(98, 18, 68, 0, 1, 0, '2025-04-14 04:13:09', 1),
-(99, 18, 69, 0, 2, 0, '2025-04-14 04:13:09', 1),
-(100, 19, 68, 0, 1, 0, '2025-04-14 04:28:09', 1),
-(101, 19, 68, 0, 2, 0, '2025-04-14 04:28:25', 1),
-(102, 19, 69, 0, 1, 0, '2025-04-14 04:28:25', 1),
-(103, 19, 69, 2, 0, 0, '2025-05-01 05:42:46', 1),
-(104, 19, 69, 0, 5, 0, '2025-05-01 06:04:43', 1),
-(105, 19, 68, 0, 0, 5, '2025-05-01 06:10:38', 1),
-(106, 19, 68, 0, 1, 0, '2025-05-01 06:55:10', 1),
-(107, 19, 69, 0, 1, 0, '2025-05-01 06:55:10', 1);
+INSERT INTO `stock` (`stock_in_id`, `stock_in_branch_id`, `stock_in_prod_id`, `stock_in_qty`, `stock_in_sold`, `stock_in_backjob`, `stock_in_date`, `stock_in_action_approval`, `stock_in_request_changes`, `stock_in_status`) VALUES
+(91, 19, 68, 0, 0, 0, '2025-05-01 10:31:16', NULL, NULL, 1),
+(92, 19, 68, 80, 2, 0, '2025-05-01 12:25:36', NULL, NULL, 1),
+(93, 19, 69, 99, 1, 0, '2025-05-01 12:25:34', NULL, NULL, 1),
+(94, 18, 68, 8, 0, 0, '2025-05-01 07:12:22', NULL, NULL, 1),
+(95, 18, 68, 0, 3, 0, '2025-05-01 07:12:22', NULL, NULL, 1),
+(96, 18, 69, 10, 0, 0, '2025-05-01 07:12:22', NULL, NULL, 1),
+(97, 18, 69, 0, 1, 0, '2025-05-01 07:12:22', NULL, NULL, 1),
+(98, 18, 68, 0, 1, 0, '2025-05-01 07:12:22', NULL, NULL, 1),
+(99, 18, 69, 0, 2, 0, '2025-05-01 07:12:22', NULL, NULL, 1),
+(100, 19, 68, 0, 1, 0, '2025-05-01 07:12:22', NULL, NULL, 1),
+(101, 19, 68, 0, 2, 0, '2025-05-01 07:12:22', NULL, NULL, 1),
+(102, 19, 69, 0, 1, 0, '2025-05-01 07:12:22', NULL, NULL, 1),
+(103, 19, 69, 2, 0, 0, '2025-05-01 07:12:22', NULL, NULL, 1),
+(104, 19, 69, 0, 5, 0, '2025-05-01 07:12:22', NULL, NULL, 1),
+(105, 19, 68, 0, 0, 5, '2025-05-01 10:31:24', NULL, NULL, 1),
+(106, 19, 68, 0, 1, 0, '2025-05-01 10:39:33', NULL, NULL, 1),
+(107, 19, 69, 0, 1, 0, '2025-05-01 07:12:22', NULL, NULL, 1),
+(114, 23, 68, 8, 0, 0, '2025-05-01 12:38:34', NULL, NULL, 1),
+(116, 23, 68, 1, 0, 0, '2025-05-01 12:38:45', NULL, NULL, 1),
+(117, 23, 68, 0, 1, 0, '2025-05-01 12:40:24', NULL, NULL, 1),
+(118, 23, 68, 2, 0, 0, '2025-05-01 12:41:39', 'For Stock Deletion', '{\"stock_in_id\":\"118\",\"user_id\":11,\"branch_id \":23,\"date_request\":\"2025-05-01\"}', 1);
 
 -- --------------------------------------------------------
 
@@ -281,7 +289,7 @@ ALTER TABLE `branches`
 -- AUTO_INCREMENT for table `pos_cart`
 --
 ALTER TABLE `pos_cart`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=254;
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=255;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -293,19 +301,19 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `purchase_item`
 --
 ALTER TABLE `purchase_item`
-  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
 
 --
 -- AUTO_INCREMENT for table `purchase_record`
 --
 ALTER TABLE `purchase_record`
-  MODIFY `purchase_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `purchase_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT for table `stock`
 --
 ALTER TABLE `stock`
-  MODIFY `stock_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=108;
+  MODIFY `stock_in_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=119;
 
 --
 -- AUTO_INCREMENT for table `user`

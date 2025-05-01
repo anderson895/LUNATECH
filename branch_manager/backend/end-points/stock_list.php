@@ -29,19 +29,39 @@ $fetch_all_inventoryRecord = $db->fetch_all_stockRecord_paginated($search,$branc
                     <td class="p-3 text-center"><?= htmlspecialchars($inv['stock_in_sold']) ?></td>
                     <td class="p-3 text-center"><?= htmlspecialchars($inv['stock_in_backjob']) ?></td>
                     <td class="p-3 flex justify-center space-x-2">
-                        <button class="update-stock-inv bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition"
-                                data-stock_in_id="<?= htmlspecialchars($inv['stock_in_id']) ?>"
-                                data-stock_in_qty="<?= htmlspecialchars($inv['stock_in_qty']) ?>"
-                                data-stock_in_sold="<?= htmlspecialchars($inv['stock_in_sold']) ?>"
-                                data-stock_in_backjob="<?= htmlspecialchars($inv['stock_in_backjob']) ?>">
-                            Update
-                        </button>
-                        <button class="remove-stock-inv bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition"
-                                data-id="<?= htmlspecialchars($inv['stock_in_id']) ?>"
-                                data-table="stock"
-                                data-id_name="stock_in_id">
-                            Remove
-                        </button>
+
+                    <?php 
+                    if ($inv['stock_in_action_approval'] == "For Stock Deletion") {
+                        echo '<span class="text-center inline-block px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-medium rounded">
+                                Waiting For Deletion Approval
+                            </span>';
+                    } else if ($inv['stock_in_action_approval'] == "For Stock Update") {
+                        echo '<span class="text-center inline-block px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-medium rounded">
+                                Waiting For Update Approval
+                            </span>';
+                    } else {
+                    ?>
+                        <div class="flex gap-2">
+                            <button class="update-stock-inv bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition"
+                                    data-stock_in_id="<?= htmlspecialchars($inv['stock_in_id']) ?>"
+                                    data-stock_in_qty="<?= htmlspecialchars($inv['stock_in_qty']) ?>"
+                                    data-stock_in_sold="<?= htmlspecialchars($inv['stock_in_sold']) ?>"
+                                    data-stock_in_backjob="<?= htmlspecialchars($inv['stock_in_backjob']) ?>">
+                                Update
+                            </button>
+                            <button class="remove-stock-inv bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition"
+                                    data-id="<?= htmlspecialchars($inv['stock_in_id']) ?>"
+                                    data-table="stock"
+                                    data-id_name="stock_in_id">
+                                Remove
+                            </button>
+                        </div>
+                    <?php 
+                    } 
+                    ?>
+
+
+                        
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -99,7 +119,7 @@ $fetch_all_inventoryRecord = $db->fetch_all_stockRecord_paginated($search,$branc
     let stock_in_backjob= $(this).data('stock_in_backjob');
 
 
-    console.log(stock_in_sold);
+    console.log(stock_in_id);
 
     $("#update_stock_in_id").val(stock_in_id);
     $("#update_stock_in_qty").val(stock_in_qty);

@@ -507,6 +507,26 @@ class global_class extends db_connect
 
 
 
+    public function RequestToDeleteStocks($stock_in_id,$table,$id_name,$change_details) {
+        $action = "For Stock Deletion"; 
+
+         // Convert array to JSON string
+        $change_details_json = json_encode($change_details);
+        
+        $query = $this->conn->prepare(
+            "UPDATE `$table` SET `stock_in_action_approval` = ?,`stock_in_request_changes` = ?  WHERE $id_name = ?"
+        );
+        $query->bind_param("ssi", $action,$change_details_json, $stock_in_id);
+        
+        if ($query->execute()) {
+            return 'success';
+        } else {
+            return 'Error: ' . $query->error;
+        }
+    }
+
+
+
     public function GenericDelete($id,$table,$id_name) {
         $status = 0; 
         
@@ -538,6 +558,7 @@ class global_class extends db_connect
                 stock.stock_in_qty,
                 stock.stock_in_sold,
                 stock.stock_in_backjob,
+                stock.stock_in_action_approval,
                 (stock.stock_in_qty - (stock.stock_in_sold + stock.stock_in_backjob)) AS remaining_qty
             FROM stock
             LEFT JOIN products ON products.prod_id = stock.stock_in_prod_id
@@ -769,14 +790,19 @@ class global_class extends db_connect
     
 
 
-    public function updateInventoryRecord($stock_in_id, $branch_id, $stock_in_qty, $stock_in_sold, $stock_in_backjob) {
+    public function updateInventoryRecord($stock_in_id,$change_details) {
+
+        $action = "For Stock Update"; 
+
+        $change_details_json = json_encode($change_details);
+
         $query = $this->conn->prepare(
             "UPDATE `stock` 
-             SET `stock_in_branch_id` = ?, `stock_in_qty` = ?, `stock_in_sold` = ?, `stock_in_backjob` = ? 
+             SET `stock_in_action_approval` = ?, `stock_in_request_changes` = ?
              WHERE `stock_in_id` = ?"
         );
     
-        $query->bind_param("iiiii", $branch_id, $stock_in_qty, $stock_in_sold, $stock_in_backjob, $stock_in_id);
+        $query->bind_param("ssi",$action, $change_details_json, $stock_in_id);
     
         if ($query->execute()) {
             return 'success';
@@ -840,4 +866,5 @@ class global_class extends db_connect
     }
     
     
+
 }

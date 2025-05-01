@@ -3,7 +3,7 @@ $(document).on('click', '.remove-stock-inv', function(e) {
     var id = $(this).data('id');
     var table = $(this).data('table');
     var id_name = $(this).data('id_name');
-    console.log(id_name);
+    console.log(id);
 
     Swal.fire({
         title: 'Are you sure?',
@@ -16,7 +16,7 @@ $(document).on('click', '.remove-stock-inv', function(e) {
             $.ajax({
                 url: "backend/end-points/controller.php",
                 type: 'POST',
-                data: { id: id,table: table, id_name: id_name, requestType: 'GenericDelete' },
+                data: { id: id,table: table, id_name: id_name, requestType: 'RequestToDeleteStocks' },
                 dataType: 'json',  // Expect a JSON response
                 success: function(response) {
                     if (response.status === 200) {
