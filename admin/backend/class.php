@@ -12,6 +12,92 @@ class global_class extends db_connect
     }
 
 
+
+    public function count_notification()
+    {
+        // Count pending requests
+        $sql = "
+            SELECT  
+                COUNT(CASE WHEN stock.stock_in_action_approval != 'stock_in_action_approval' THEN 1 END) AS ListOfRequestCounts
+            FROM stock
+            WHERE stock.stock_in_status = '1'
+        ";
+    
+        $result = $this->conn->query($sql);
+    
+        if ($result && $row = $result->fetch_assoc()) {
+            echo json_encode([
+                'ListOfRequestCounts' => $row['ListOfRequestCounts']
+            ]);
+        } else {
+            echo json_encode([
+                'ListOfRequestCounts' => 0
+            ]);
+        }
+    }
+    
+
+    
+
+
+
+
+
+
+
+    public function StockUpdate($branch_id, $stock_in_prod_id, $stock_in_id, $stock_in_qty, $stock_in_sold, $stock_in_backjob) {
+        $query = $this->conn->prepare(
+            "UPDATE `stock` 
+             SET `stock_in_branch_id` = ?, `stock_in_qty` = ?, `stock_in_sold` = ?, `stock_in_backjob` = ?, 
+                 `stock_in_action_approval` = NULL, `stock_in_request_changes` = NULL 
+             WHERE `stock_in_id` = ?"
+        );
+    
+        $query->bind_param("iiiii", $branch_id, $stock_in_qty, $stock_in_sold, $stock_in_backjob, $stock_in_id);
+    
+        if ($query->execute()) {
+            return 'success';
+        } else {
+            return 'Error: ' . $query->error;
+        }
+    }
+    
+
+    public function StockDeletion($stock_in_id) {
+        $query = $this->conn->prepare(
+            "DELETE FROM `stock` WHERE stock_in_id = ?"
+        );
+        $query->bind_param("i", $stock_in_id);
+        
+        if ($query->execute()) {
+            return 'success';
+        } else {
+            return 'Error: ' . $query->error;
+        }
+    }
+    
+
+
+    
+    public function listRequest() {
+        $query = "SELECT * FROM stock WHERE stock_in_action_approval IS NOT NULL";  // Corrected the query
+    
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        $items = [];
+        while ($row = $result->fetch_assoc()) {
+            $items[] = $row;
+        }
+    
+        return $items;
+    }
+    
+
+
+
+
     public function purchase_record($invoice,$purchase_id) {
         $id = intval($invoice);
         $purchase_id = intval($purchase_id);
@@ -277,6 +363,50 @@ class global_class extends db_connect
         }
     }
     
+
+
+
+    public function check_branch($id) {
+        $id = intval($id);
+        $status = 1;
+    
+        $query = "SELECT * FROM user 
+                  LEFT JOIN branches 
+                  ON user.id = branches.branch_manager_id 
+                  AND branches.branch_status = ?
+                  WHERE user.id = ?";
+    
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("ii", $status, $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        $items = [];
+        while ($row = $result->fetch_assoc()) {
+            $items[] = $row;
+        }
+        
+        return $items;
+    }
+
+
+    public function check_product($id) {
+        $id = intval($id);
+    
+        $query = "SELECT * FROM products WHERE products.prod_id  = ?";
+    
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        $items = [];
+        while ($row = $result->fetch_assoc()) {
+            $items[] = $row;
+        }
+        
+        return $items;
+    }
 
     
 

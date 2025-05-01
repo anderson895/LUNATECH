@@ -182,6 +182,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(["status" => 400, "message" => $result]);
         }
         
+    }else if($_POST['requestType'] =='StockChangeApproval'){
+
+    //    echo "<pre>";
+    //    print_r($_POST);
+    //    echo "</pre>";
+
+       $request = $_POST['request'];
+
+        // Decode the JSON string to an associative array
+        $request_changes = json_decode($request['stock_in_request_changes'], true);
+
+        // Now access each field
+        $stock_in_id = $request_changes['stock_in_id'];
+        $user_id = $request_changes['user_id'];
+        $branch_id = $request['stock_in_branch_id']; // This should come from $request, not $request_changes
+        $stock_in_prod_id = $request['stock_in_prod_id']; // This should come from $request, not $request_changes
+        $stock_in_qty = $request['stock_in_qty']; // This should come from $request, not $request_changes
+        $stock_in_sold = $request['stock_in_sold']; // This should come from $request, not $request_changes
+        $stock_in_backjob = $request['stock_in_backjob']; // This should come from $request, not $request_changes
+        $date_request = $request_changes['date_request']; // This comes from $request_changes
+
+        // Handle approval types
+        if ($_POST['approval_type'] == "For Stock Deletion") {
+            $result = $db->StockDeletion($stock_in_id);
+        } elseif ($_POST['approval_type'] == "For Stock Update") {
+            $result = $db->StockUpdate($branch_id, $stock_in_prod_id, $stock_in_id, $stock_in_qty, $stock_in_sold, $stock_in_backjob);
+        }
+
+        // Return result
+        if ($result == "success") {
+            echo json_encode(["status" => 200, "message" => "Delete Successfully"]);
+        } else {
+            echo json_encode(["status" => 400, "message" => $result]);
+        }
+
+        
     }
 }
 ?>
