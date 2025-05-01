@@ -133,6 +133,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode(["status" => 400, "message" => $result]);
             }
             
+        }else if($_POST['requestType'] =='archivedTransaction'){
+
+            $purchase_id = $_POST['purchase_id'];
+          
+    
+            $result = $db->archivedTransaction($purchase_id);
+    
+            if ($result == "success") {
+                echo json_encode(["status" => 200, "message" => "Delete Successfully"]);
+            } else {
+                echo json_encode(["status" => 400, "message" => $result]);
+            }
+            
         }
     }
 }

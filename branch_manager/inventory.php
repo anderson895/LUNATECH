@@ -125,7 +125,7 @@ if(isset($On_Session[0]['branch_id'])){
                    
                     <th class="p-3 w-1/4 font-medium text-center">DATE ADDED</th>
                     <th class="p-3 w-1/4 font-medium text-center">MODEL</th>
-                    <th class="p-3 w-1/4 font-medium text-center">CURRENT STOCKS</th>
+                    <th class="p-3 w-1/4 font-medium text-center">STOCK IN</th>
                     <th class="p-3 w-1/4 font-medium text-center">SOLD</th>
                     <th class="p-3 w-1/4 font-medium text-center">BACKJOB</th>
                     <th class="p-3 w-1/4 font-medium text-center">Action</th>
