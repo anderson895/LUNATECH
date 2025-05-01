@@ -110,8 +110,9 @@
 
 
             <div class="flex justify-end gap-2">
-                <button type="button" class="togglerUpdateUserClose bg-gray-500 hover:bg-gray-600 text-white py-1 px-3 rounded-md">Cancel</button>
                 <button type="submit" id="btnUpdateuser" class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-md">Update</button>
+                <button type="button" class="togglerUpdateUserClose bg-gray-500 hover:bg-gray-600 text-white py-1 px-3 rounded-md">Cancel</button>
+                
             </div>
         </form>
     </div>
