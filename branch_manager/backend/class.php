@@ -378,7 +378,7 @@ class global_class extends db_connect
             LEFT JOIN user ON purchase_record.purchase_user_id = user.id
             LEFT JOIN branches ON branches.branch_id = purchase_record.purchase_branch_id 
             LEFT JOIN purchase_item ON purchase_item.item_purchase_id = purchase_record.purchase_id  
-            WHERE purchase_record.purchase_branch_id = ? $searchQuery
+            WHERE purchase_record.purchase_display_status='1' AND purchase_record.purchase_branch_id = ? $searchQuery
             GROUP BY purchase_record.purchase_date, user.user_fullname
             ORDER BY purchase_record.purchase_date DESC
             LIMIT ? OFFSET ?
@@ -407,7 +407,7 @@ class global_class extends db_connect
             FROM purchase_record
             LEFT JOIN user ON purchase_record.purchase_user_id = user.id
             LEFT JOIN branches ON branches.branch_id = purchase_record.purchase_branch_id 
-            WHERE purchase_record.purchase_branch_id = ? $searchQuery
+            WHERE purchase_record.purchase_display_status='1' AND purchase_record.purchase_branch_id = ? $searchQuery
         ";
     
         $stmt = $this->conn->prepare($sql);
@@ -488,6 +488,23 @@ class global_class extends db_connect
     }
     
     
+
+
+    public function archivedTransaction($purchase_id) {
+        $status = 0; 
+        
+        $query = $this->conn->prepare(
+            "UPDATE `purchase_record` SET `purchase_display_status` = ? WHERE purchase_id  = ?"
+        );
+        $query->bind_param("ii", $status, $purchase_id);
+        
+        if ($query->execute()) {
+            return 'success';
+        } else {
+            return 'Error: ' . $query->error;
+        }
+    }
+
 
 
     public function GenericDelete($id,$table,$id_name) {
