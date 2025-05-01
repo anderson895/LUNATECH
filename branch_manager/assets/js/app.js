@@ -8,7 +8,7 @@
             title: 'Are you sure?',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: 'Yes, delete it!',
+            confirmButtonText: 'Yes!',
             cancelButtonText: 'No, cancel!',
         }).then((result) => {
             if (result.isConfirmed) {
