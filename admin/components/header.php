@@ -93,7 +93,7 @@ if (isset($_SESSION['id'])) {
       <a href="list_action_request" class="flex items-center lg:justify-start space-x-3 text-gray-600 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
         <span class="material-icons">assignment</span>
         <span>List of Request</span>
-        <span id="ListOfRequestCounts" class="bg-red-500 text-white text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center ">
+        <span style="display:none;" id="ListOfRequestCounts" class="bg-red-500 text-white text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center ">
             0
         </span>
     </a>
