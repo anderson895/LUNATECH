@@ -814,7 +814,8 @@ class global_class extends db_connect
 
 
 
-    public function view_sales_summary($branch_id,$from, $to) {
+    public function view_sales_summary($branch_id, $from, $to) {
+        // Ensure that $from and $to are in 'YYYY-MM-DD' format
         $query = "SELECT 
                     purchase_record.*, 
                     user.*, 
@@ -826,12 +827,12 @@ class global_class extends db_connect
                   LEFT JOIN purchase_record ON purchase_record.purchase_id = purchase_item.item_purchase_id  
                   LEFT JOIN user ON user.id = purchase_record.purchase_user_id  
                   LEFT JOIN branches ON branches.branch_id = purchase_record.purchase_branch_id   
-                  WHERE purchase_record.purchase_date BETWEEN ? AND ? AND purchase_record.purchase_branch_id   = ?
-                  GROUP BY purchase_item.item_id
+                  WHERE DATE(purchase_record.purchase_date) BETWEEN ? AND ? 
+                  AND purchase_record.purchase_branch_id = ?
                   ORDER BY purchase_record.purchase_date ASC"; 
     
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("ssi", $from, $to,$branch_id);
+        $stmt->bind_param("ssi", $from, $to, $branch_id); // Bind the dates and branch_id
         $stmt->execute();
         $result = $stmt->get_result();
     
