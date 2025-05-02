@@ -18,11 +18,21 @@ include "components/header.php";
 <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
     <!-- Top Section (Button & Search) -->
     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4">
-        
+    
 
-        <input type="text" id="searchInput" placeholder="Search item..." 
-               class="border border-gray-300 p-2 rounded-md w-full sm:w-64 focus:ring-2 focus:ring-blue-400">
+    <input type="text" id="searchInput" placeholder="Search item..." 
+           class="border border-gray-300 p-2 rounded-md w-full sm:w-64 focus:ring-2 focus:ring-blue-400">
+
+
+    <div class="flex gap-2">
+        <button id="btnViewSummary" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md shadow flex items-center gap-2">
+            <span class="material-icons">bar_chart</span>
+            Sales Summary
+        </button>
     </div>
+
+
+</div>
 
     <!-- Table Wrapper for Responsiveness -->
     <div class="overflow-x-auto">
@@ -45,6 +55,80 @@ include "components/header.php";
         <div id="pagination" class="flex justify-center space-x-2 mt-4"></div>
     </div>
 </div>
+
+
+
+
+
+
+<!-- Modal Overlay -->
+<div id="salesSummaryModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" style="display: none;">
+    <div class="bg-white w-full max-w-md rounded-lg shadow-lg p-6 relative">
+        <!-- Close Button -->
+        <button id="closeModal" class="absolute top-2 right-2 text-gray-500 hover:text-gray-800 text-2xl font-bold">
+            &times;
+        </button>
+
+        <!-- Modal Content -->
+        <h2 class="text-xl font-semibold mb-4 text-gray-700">Sales Summary</h2>
+
+        <!-- Date Inputs -->
+        <div class="mb-4">
+            <label for="fromDate" class="block text-sm font-medium text-gray-600">From:</label>
+            <input type="date" id="fromDate" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-400 focus:border-blue-400">
+        </div>
+
+        <div class="mb-4">
+            <label for="toDate" class="block text-sm font-medium text-gray-600">To:</label>
+            <input type="date" id="toDate" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-400 focus:border-blue-400">
+        </div>
+
+        <!-- View Button -->
+        <button id="viewSummaryBtn" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md">
+            View
+        </button>
+    </div>
+</div>
+
+
+
+
+
+
+<script>
+$(document).ready(function() {
+    $('#btnViewSummary').click(function() {
+        $('#salesSummaryModal').fadeIn(200);
+    });
+
+    $('#closeModal').click(function() {
+        $('#salesSummaryModal').fadeOut(200);
+    });
+
+    // Optional: Close when clicking outside the modal content
+    $('#salesSummaryModal').click(function(e) {
+        if (e.target.id === 'salesSummaryModal') {
+            $(this).fadeOut(200);
+        }
+    });
+
+
+    $('#viewSummaryBtn').click(function() {
+    const from = $('#fromDate').val();
+    const to = $('#toDate').val();
+
+        if (!from || !to) {
+            alert("Please select both dates.");
+            return;
+        }
+
+        // Redirect with query parameters
+        window.location.href = `View_summary?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
+    });
+
+
+});
+</script>
 
 
 
