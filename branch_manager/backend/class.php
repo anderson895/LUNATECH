@@ -813,6 +813,41 @@ class global_class extends db_connect
     
 
 
+
+    public function view_sales_summary($from, $to) {
+        $query = "SELECT 
+                    purchase_record.*, 
+                    user.*, 
+                    branches.*, 
+                    purchase_item.*, 
+                    products.*
+                  FROM purchase_item  
+                  LEFT JOIN products ON products.prod_id = purchase_item.item_prod_id  
+                  LEFT JOIN purchase_record ON purchase_record.purchase_id = purchase_item.item_purchase_id  
+                  LEFT JOIN user ON user.id = purchase_record.purchase_user_id  
+                  LEFT JOIN branches ON branches.branch_id = purchase_record.purchase_branch_id   
+                  WHERE purchase_record.purchase_date BETWEEN ? AND ?
+                  GROUP BY purchase_item.item_id
+                  ORDER BY purchase_record.purchase_date ASC"; 
+    
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("ss", $from, $to);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        $items = [];
+        while ($row = $result->fetch_assoc()) {
+            $items[] = $row;
+        }
+    
+        return $items;
+    }
+    
+    
+
+
+
+
      public function purchase_record($invoice,$purchase_id) {
         $id = intval($invoice);
         $purchase_id = intval($purchase_id);
