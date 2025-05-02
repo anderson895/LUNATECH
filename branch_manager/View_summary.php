@@ -4,13 +4,14 @@ include "components/header.php";
 // Validate 'from' and 'to' parameters
 $from = isset($_GET['from']) ? $_GET['from'] : null;
 $to = isset($_GET['to']) ? $_GET['to'] : null;
+$branch_id = isset($_GET['branch_id']) ? $_GET['branch_id'] : null;
 
 if (!$from || !$to) {
     echo "Please provide a valid date range.";
     exit; // Stop further execution if parameters are missing
 }
 
-$purchase_record = $db->view_sales_summary($from, $to);
+$purchase_record = $db->view_sales_summary($branch_id,$from, $to);
 
 // Ensure 'invoice' is defined before use
 $invoice = isset($invoice) ? $invoice : 'N/A'; // Set a default if not defined
