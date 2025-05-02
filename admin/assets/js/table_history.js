@@ -34,12 +34,17 @@ $(document).ready(function () {
         fetchHistory();
     });
 
-    // Handle Branch Click (Including "View All")
     $(document).on("click", ".branch-filter", function () {
-        selectedBranchId = $(this).data("branch-id") || ""; // If empty, reset filter
-        currentPage = 1; // Reset to page 1
+        selectedBranchId = $(this).data("branch-id") || "";
+        currentPage = 1;
+    
+        // Set the label text
+        let branchName = selectedBranchId === "" ? "All Branches" : $(this).text().trim();
+        $("#branch-label").text(branchName);
+    
         fetchHistory();
     });
+    
 
     // Pagination Controls
     function updatePagination(totalPages) {
