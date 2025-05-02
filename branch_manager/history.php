@@ -112,19 +112,25 @@ $(document).ready(function() {
         }
     });
 
-
     $('#viewSummaryBtn').click(function() {
-    const from = $('#fromDate').val();
-    const to = $('#toDate').val();
+        const from = $('#fromDate').val();
+        const to = $('#toDate').val();
 
-        if (!from || !to) {
-            alert("Please select both dates.");
+        // Check if both 'from' and 'to' dates are selected
+        if (!from) {
+            alertify.error("Please select date from.");
             return;
         }
 
-        // Redirect with query parameters
+        if (!to) {
+            alertify.error("Please select date to.");
+            return;
+        }
+
+        // Redirect with query parameters if both dates are selected
         window.location.href = `View_summary?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
     });
+
 
 
 });
