@@ -5,7 +5,10 @@ $(document).ready(function () {
 
     function fetchHistory() {
         let searchQuery = $("#searchInput").val();
-        
+    
+        // Show spinner
+        $("#spinner").removeClass("hidden");
+    
         $.ajax({
             url: 'backend/end-points/history_list.php',
             type: 'GET',
@@ -18,15 +21,20 @@ $(document).ready(function () {
                     console.error("Invalid JSON response:", response);
                     return;
                 }
-
+    
                 $("#historyTable tbody").html(data.table);
                 updatePagination(data.totalPages);
             },
             error: function () {
                 console.error("Failed to fetch history list.");
+            },
+            complete: function () {
+                // Hide spinner after success or error
+                $("#spinner").addClass("hidden");
             }
         });
     }
+    
 
     // Search Filtering 
     $("#searchInput").on("keyup", function () {
