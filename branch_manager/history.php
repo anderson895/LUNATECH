@@ -1,7 +1,10 @@
 <?php 
 include "components/header.php";
-?>
 
+
+
+?>
+<input type="text" id="branch_id" value="<?=$On_Session[0]['branch_id']?>">
 <!-- Top bar with user profile -->
 <div class="max-w-12xl mx-auto flex justify-between items-center bg-white p-4 mb-6 rounded-md shadow-md">
     <h2 class="text-lg font-semibold text-gray-700">History</h2>
@@ -113,6 +116,7 @@ $(document).ready(function() {
     });
 
     $('#viewSummaryBtn').click(function() {
+        const branch_id= $("#branch_id").val();
         const from = $('#fromDate').val();
         const to = $('#toDate').val();
 
@@ -128,7 +132,8 @@ $(document).ready(function() {
         }
 
         // Redirect with query parameters if both dates are selected
-        window.location.href = `View_summary?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
+        window.location.href = `View_summary?branch_id=${branch_id}&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
+
     });
 
 
