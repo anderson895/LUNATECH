@@ -213,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = $db->StockDeletion($stock_in_id);
         } elseif ($_POST['approval_type'] == "For Stock Update") {
 
-
+                // sss
                 //  echo "<pre>";
                 //    print_r($_POST);
                 //    echo "</pre>";
